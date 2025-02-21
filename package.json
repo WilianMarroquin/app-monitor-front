@@ -37,6 +37,7 @@
     "mapbox-gl": "3.5.2",
     "next-auth": "4.21.1",
     "nuxt": "3.14.1592",
+    "nuxt-auth-sanctum": "^0.5.5",
     "ofetch": "1.4.1",
     "pinia": "2.3.0",
     "prismjs": "1.29.0",
