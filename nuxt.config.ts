@@ -17,9 +17,14 @@ export default defineNuxtConfig({
     },
   },
 
+  server: {
+    host: '0.0.0.0',
+    port: 3000
+  },
+
   sanctum: {
-    mode: 'token',
-    baseUrl: 'http://proyecto-base-back.test/',
+    mode: 'cookie',
+    baseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
     userStateKey: 'sanctum.user.identity',
     redirectIfAuthenticated: true,
     redirectIfUnauthenticated: true,
@@ -70,6 +75,16 @@ export default defineNuxtConfig({
       path: '~/components',
       pathPrefix: false,
     }],
+  },
+
+  runtimeConfig: {
+    // Private keys are only available on the server
+    apiSecret: '123',
+
+    // Public keys that are exposed to the client
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api',
+    },
   },
 
   plugins: ['@/plugins/vuetify/index.ts', '@/plugins/iconify/index.ts'],

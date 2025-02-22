@@ -1,3 +1,11 @@
+<script lang="ts" setup>
+const { isAuthenticated } = useSanctumAuth()
+
+console.log(isAuthenticated.value)
+
+
+</script>
+
 <template>
   <div>
     <VCard

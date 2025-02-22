@@ -16,11 +16,30 @@ definePageMeta({
 
 })
 
+const { login } = useSanctumAuth()
+
 const form = ref({
   email: '',
   password: '',
-  remember: false,
 })
+
+interface LoginForm {
+  username: string
+  password: string
+}
+
+const onSubmit = async (): Promise<void> => {
+  try {
+
+    await login(form.value as LoginForm)
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error('Error during login:', e.message);
+    } else {
+      console.error('Unknown error during login');
+    }
+  }
+}
 
 const isPasswordVisible = ref(false)
 const authV2LoginMask = useGenerateImageVariant(authV2LoginMaskLight, authV2LoginMaskDark)
@@ -80,7 +99,7 @@ const authV2LoginIllustration = useGenerateImageVariant (authV2LoginIllustration
         </VCardText>
 
         <VCardText>
-          <VForm @submit.prevent="() => {}">
+          <VForm @submit.prevent="onSubmit">
             <VRow>
               <!-- email -->
               <VCol cols="12">
@@ -106,19 +125,19 @@ const authV2LoginIllustration = useGenerateImageVariant (authV2LoginIllustration
                 />
 
                 <!-- remember me checkbox -->
-                <div class="d-flex align-center justify-space-between flex-wrap my-6 gap-x-2">
-                  <VCheckbox
-                    v-model="form.remember"
-                    label="Remember me"
-                  />
+<!--                <div class="d-flex align-center justify-space-between flex-wrap my-6 gap-x-2">-->
+<!--                  <VCheckbox-->
+<!--                    v-model="form.remember"-->
+<!--                    label="Remember me"-->
+<!--                  />-->
 
-                  <a
-                    class="text-primary"
-                    href="javascript:void(0)"
-                  >
-                    Forgot Password?
-                  </a>
-                </div>
+<!--                  <a-->
+<!--                    class="text-primary"-->
+<!--                    href="javascript:void(0)"-->
+<!--                  >-->
+<!--                    Forgot Password?-->
+<!--                  </a>-->
+<!--                </div>-->
 
                 <!-- login button -->
                 <VBtn
