@@ -37,6 +37,9 @@ const userProfileList = [
     href: '#',
   },
 ]
+
+const {logout} = useSanctumAuth()
+
 </script>
 
 <template>
@@ -121,7 +124,7 @@ const userProfileList = [
                 color="error"
                 size="small"
                 append-icon="ri-logout-box-r-line"
-                :to="{ name: 'login' }"
+                @click="logout"
               >
                 Logout
               </VBtn>

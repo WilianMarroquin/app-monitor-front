@@ -12,8 +12,6 @@ import { themeConfig } from '@themeConfig'
 
 definePageMeta({
   layout: 'blank',
-  public: true,
-
 })
 
 const { login } = useSanctumAuth()

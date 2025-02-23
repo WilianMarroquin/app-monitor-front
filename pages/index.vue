@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-const { isAuthenticated } = useSanctumAuth()
+const { user } = useSanctumAuth()
 
-console.log(isAuthenticated.value)
+console.log(user.value)
 
 
 </script>

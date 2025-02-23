@@ -17,17 +17,15 @@ export default defineNuxtConfig({
     },
   },
 
-  server: {
+  server : {
     host: '0.0.0.0',
-    port: 3000
+    port: 3000,
   },
 
   sanctum: {
     mode: 'cookie',
     baseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
     userStateKey: 'sanctum.user.identity',
-    redirectIfAuthenticated: true,
-    redirectIfUnauthenticated: true,
     endpoints: {
       csrf: 'sanctum/csrf-cookie',
       login: 'api/login',
