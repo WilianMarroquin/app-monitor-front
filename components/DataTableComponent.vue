@@ -34,13 +34,13 @@ interface QueryParams {
   [key: string]: string | number | undefined
 }
 
-const props = defineProps<DataTableProps>();
+const props = defineProps<DataTableProps>()
 
-const cantidadPorPaginaValorDefault: number[] = [10, 20, 30];
+const cantidadPorPaginaValorDefault: number[] = [10, 20, 30]
 
-const botonesDefault: string[] = ['xlsx', 'pdf', 'csv', 'reiniciar'];
+const botonesDefault: string[] = ['xlsx', 'pdf', 'csv', 'reiniciar']
 
-const fecha = new Date();
+const fecha = new Date()
 
 let {
   columnas,
