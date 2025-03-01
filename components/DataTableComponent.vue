@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const { get } = useClienteRequest()
-
+import { exportarDataFormatoCSV, exportarDataFormatoXLSX } from "@/utils/dataTable/exports";
 interface Columna {
   title: string
   key: string
@@ -150,7 +150,7 @@ defineExpose({
                 block
                 @click="exportarDataFormatoCSV(items, nombreArchivoExport, columnas)"
               >
-                <VIcon icon="tabler-file-type-csv" start/>
+                <VIcon class="ri-file-text-line"/>
                 CSV
               </VBtn>
 
@@ -161,20 +161,20 @@ defineExpose({
                 block
                 @click="exportarDataFormatoXLSX(items, nombreArchivoExport, columnas)"
               >
-                <VIcon icon="tabler-file-type-xls" start/>
+                <VIcon class="ri-file-excel-2-line"/>
                 Excel
               </VBtn>
 
-              <VBtn
-                v-if="botones.includes('pdf')"
-                class="mb-1"
-                variant="tonal"
-                block
-                @click="exportarDataFormatoPDF(items, nombreArchivoExport, columnas)"
-              >
-                <VIcon icon="tabler-file-type-pdf" start/>
-                PDF
-              </VBtn>
+<!--              <VBtn-->
+<!--                v-if="botones.includes('pdf')"-->
+<!--                class="mb-1"-->
+<!--                variant="tonal"-->
+<!--                block-->
+<!--                @click="exportarDataFormatoPDF(items, nombreArchivoExport, columnas)"-->
+<!--              >-->
+<!--                <VIcon icon="tabler-file-type-pdf" start/>-->
+<!--                PDF-->
+<!--              </VBtn>-->
             </VList>
           </VMenu>
           <VBtn
