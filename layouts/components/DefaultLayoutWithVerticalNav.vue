@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import navItems from '@/navigation/vertical'
+
+const opcionesMenu = <[]>useState('menu');
+
 import { useConfigStore } from '@core/stores/config'
 import { themeConfig } from '@themeConfig'
 
@@ -29,7 +32,7 @@ watch([
 </script>
 
 <template>
-  <VerticalNavLayout :nav-items="navItems">
+  <VerticalNavLayout :nav-items="opcionesMenu">
     <!-- 👉 navbar -->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center">
