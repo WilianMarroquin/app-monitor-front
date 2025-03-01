@@ -57,7 +57,7 @@ const guardarPermission = async ( Permission: PermissionInterface ): Promise<voi
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/permissiones/"
+      to="/permisos/"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

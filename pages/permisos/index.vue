@@ -63,7 +63,7 @@ const deleteItem = async (id: number) => {
       v-if="can('crear permisos', 'permissiones')"
       class="ml-auto"
       color="success"
-      to="/permissiones/create"
+      to="/permisos/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
       Nuev@ Permission
