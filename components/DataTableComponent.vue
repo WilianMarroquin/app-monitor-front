@@ -138,7 +138,7 @@ defineExpose({
           <VMenu>
             <template v-slot:activator="{ props }">
               <VBtn color="primary" v-bind="props">
-                <VIcon icon="upluat2" start/>
+                <VIcon class="mr-2 ri-upload-2-fill"/>
                 Exportar
               </VBtn>
             </template>
@@ -179,14 +179,15 @@ defineExpose({
           </VMenu>
           <VBtn
             v-if="botones.includes('reiniciar')"
-            class="mr-2 mb-3"
+            class="mr-2 mb-3 ml-2"
             variant="tonal"
             @click="reiniciar"
+
           >
             <VTooltip activator="parent" location="top" start>
               <span>Reiniciar</span>
             </VTooltip>
-            <VIcon icon="tabler-refresh"/>
+            <VIcon class="mr-2 ri-loop-left-fill"/>
             Recargar
           </VBtn>
         </VRow>
