@@ -5,23 +5,23 @@
       v-if="!esTituloSeccion"
       :to="`/admin/menu/create/${id}`"
       color="success"
-      icon="tabler-plus"
-      size="extra-small"
+      icon="ri-eye-line"
       variant="tonal"
+      size="small"
     />
 
     <VBtn
       :to="`/admin/menu/edit/${id}`"
       color="warning"
-      icon="tabler-edit"
-      size="extra-small"
+      icon="ri-edit-box-line"
+      size="small"
       variant="tonal"
     />
 
     <VBtn
       color="error"
-      icon="tabler-trash"
-      size="extra-small"
+      icon="ri-delete-bin-line"
+      size="small"
       variant="tonal"
       @click="eliminar"
     />
@@ -30,6 +30,8 @@
 </template>
 
 <script lang="ts" setup>
+
+import {can} from "@layouts/plugins/casl";
 
 interface Props {
   id: string | number;

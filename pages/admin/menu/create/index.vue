@@ -21,7 +21,7 @@ const guardarOpcion = async (data: MenuOpcionInterface) => {
 
   try {
 
-    let res = await post('api/menu_opciones', data);
+    let res = await post('api/menu-opcions', data);
 
     menu.value = res.data;
 
