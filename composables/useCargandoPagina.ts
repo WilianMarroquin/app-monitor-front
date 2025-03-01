@@ -1,5 +1,5 @@
 export const useCargandoPagina = () => {
-  const paginaCargando = useState('paginaEstaCargando', () => false);
+  const paginaEspera = useState('paginaEspera', () => false);
 
-  return { paginaCargando }
+  return { paginaEspera }
 };

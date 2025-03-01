@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
-definePageMeta({
-  middleware: 'permissions',
-  action: 'crear {{ modelPlural }}', // Acción requerida
-  subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-});
+// definePageMeta({
+//   middleware: 'permissions',
+//   action: 'crear {{ modelPlural }}', // Acción requerida
+//   subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+// });
 
 import fields from '@/views/pages/{{ modelPlural }}/fields.vue'
 

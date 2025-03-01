@@ -18,9 +18,9 @@ const { layoutAttrs, injectSkinClasses } = useSkins()
 
 injectSkinClasses()
 
-const {paginaCargando} = useCargandoPagina()
+const {paginaEspera} = useCargandoPagina()
 
-paginaCargando.value = false
+paginaEspera.value = false
 
 </script>
 
@@ -33,7 +33,7 @@ paginaCargando.value = false
   </Component>
 
   <VOverlay
-    v-model="paginaCargando"
+    v-model="paginaEspera"
     contained
     persistent
     scroll-strategy="none"
