@@ -5,7 +5,7 @@
       v-if="!esTituloSeccion"
       :to="`/admin/menu/create/${id}`"
       color="success"
-      icon="ri-eye-line"
+      icon="ri-add-line"
       variant="tonal"
       size="small"
     />
@@ -31,8 +31,6 @@
 
 <script lang="ts" setup>
 
-import {can} from "@layouts/plugins/casl";
-
 interface Props {
   id: string | number;
   esTituloSeccion: boolean;
@@ -44,9 +42,7 @@ const {paginaEspera} = useCargandoPagina();
 
 const {id, esTituloSeccion} = defineProps<Props>();
 
-const {deleted, get} = useClienteRequest();
-
-import type {RespuestaRequest} from "@/types/admin/menu-opciones/types";
+const { deleted, get} = useClienteRequest();
 
 const menu = <object>useState('menu');
 
@@ -60,7 +56,7 @@ const eliminar = async (): Promise<void> => {
 
       paginaEspera.value = true;
 
-      let res: RespuestaRequest = await deleted(`api/menu_opciones/${id}`);
+      let res = await deleted(`api/menu-opcions/${id}`);
 
       await getOpcionesMenu();
 
@@ -84,9 +80,9 @@ const getOpcionesMenu = async (): Promise<void> => {
 
   try {
 
-    const res = await get("api/menu_opciones");
+    const res = await get("api/menu-opcions");
 
-    menu.value = res.data;
+    menu.value = res.data.data;
 
   } catch (error) {
 

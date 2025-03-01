@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 
-definePageMeta({
-  middleware: 'permissions',
-  action: 'crear opcion menu',
-  subject: 'menu opcion',
-})
+// definePageMeta({
+//   middleware: 'permissions',
+//   action: 'crear opcion menu',
+//   subject: 'menu opcion',
+// })
 
-import Fields from '@/views/admin/menuOpciones/fields.vue';
-import type {MenuOpcion, RespuestaRequest} from "@/types/admin/menu-opciones/types";
-import type {Permission} from "@/types/admin/permisos/types";
+import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
+import type { MenuOpcionInterface } from "@/types/admin/MenuOpcionInterface"
+import type { PermisoInterface } from "@/types/admin/PermisoInterface"
 
 const route = useRoute<{ parentId: string }>();
 
@@ -20,7 +20,7 @@ const {showToastError, showToastSuccess} = useToast();
 
 const menu = useState('menu');
 
-const guardarOpcion = async (data: MenuOpcion) => {
+const guardarOpcion = async (data: MenuOpcionInterface) => {
 
   paginaEspera.value = true;
 
@@ -31,7 +31,7 @@ const guardarOpcion = async (data: MenuOpcion) => {
 
   try {
 
-    let res: RespuestaRequest = await post('api/menu_opciones', datos);
+    let res = await post('api/menu-opcions', datos);
 
     showToastSuccess(res.message);
 
@@ -51,7 +51,7 @@ const guardarOpcion = async (data: MenuOpcion) => {
 
 };
 
-const permisos = ref<Permission>({} as Permission);
+const permisos = ref<PermisoInterface>({} as PermisoInterface);
 
 const getPermisos = async (): Promise<void> => {
 
@@ -59,15 +59,13 @@ const getPermisos = async (): Promise<void> => {
 
     paginaEspera.value = true;
 
-    const response: { data: Permission } = await get('api/permisos', {
+    const response: { data: PermisoInterface } = await get('api/permissions', {
       params: {
         'page[size]': -1
       }
     });
 
     permisos.value = response.data.data;
-
-    console.log('El valor de los permisos: ', permisos.value);
 
   } catch (error: { message: string }) {
 
