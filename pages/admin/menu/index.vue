@@ -63,7 +63,7 @@ const actualizarOpciones = async (opciones: MenuOpcionInterface[]): Promise<void
 
     paginaEspera.value = true;
 
-    const respuesta = await post('api/menu_opciones/actualizar/orden', data);
+    const respuesta = await post('api/menu-opcions/actualizar/orden', data);
 
     opcionesMenu.value = respuesta.data;
 
