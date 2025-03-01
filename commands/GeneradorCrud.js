@@ -231,22 +231,22 @@ const formatoHtmlInputsFormulario = (campos) => {
 
     obj.forEach(key => {
         inputs.push(`
-               <VCol cols="12"
-                md="6"               
-               >
-                <AppTextField
-                  v-model="data.${campos[key]}"
-                  :rules="[requiredValidator]"
-                  label="${formatearCampoLabel(campos[key])}"
-                  placeholder="Ingrese ${formatearCampoLabel(campos[key])}"
+            <VCol cols="12" md="6">
+                <VTextField
+                    :id="useId()"
+                    v-model="data.${campos[key]}"
+                    :rules="[requiredValidator]"
+                    label="${formatearCampoLabel(campos[key])}"
+                    placeholder="Ingrese ${formatearCampoLabel(campos[key])}"
+                    required
                 />
-              </VCol>   
+            </VCol>
         `);
     });
 
     return inputs.join('');
-
 };
+
 
 const formatoCamposInterfaz = (campos) => {
 

@@ -51,10 +51,6 @@ const deleteItem = async (id: number) => {
     </VBtn>
   </div>
 
-  <VCard tile="{{ model }}">
-
-    <VCardText>
-
       <DataTableComponent
         :columnas="headers"
         endpoint="{{ url }}"
@@ -62,11 +58,8 @@ const deleteItem = async (id: number) => {
         :cantidadPorPaginaOpciones="[10, 20, 30]"
         :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
         titulo="Listado de usuarios"
+        title="Listado de {{ modelPlural }}"
       />
-
-    </VCardText>
-
-  </VCard>
 
 </template>
 
