@@ -106,6 +106,9 @@ importers:
       shepherd.js:
         specifier: 13.0.3
         version: 13.0.3
+      sortablejs:
+        specifier: ^1.15.6
+        version: 1.15.6
       sweetalert2:
         specifier: ^11.17.2
         version: 11.17.2
@@ -5350,6 +5353,9 @@ packages:
 
   smob@1.5.0:
     resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
+
+  sortablejs@1.15.6:
+    resolution: {integrity: sha512-aNfiuwMEpfBM/CN6LY0ibyhxPfPbyFeBTYJKCvzkJ2GkUpazIt3H+QIPAMHwqQ7tMKaHz1Qj+rJJCqljnf4p3A==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -12202,6 +12208,8 @@ snapshots:
       is-fullwidth-code-point: 3.0.0
 
   smob@1.5.0: {}
+
+  sortablejs@1.15.6: {}
 
   source-map-js@1.2.1: {}
 
