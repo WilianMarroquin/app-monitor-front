@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 
-definePageMeta({
-  middleware: 'permissions',
-  action: 'editar opcion menu',
-  subject: 'menu opcion',
-})
+// definePageMeta({
+//   middleware: 'permissions',
+//   action: 'editar opcion menu',
+//   subject: 'menu opcion',
+// })
 
-import Fields from '@/views/admin/menuOpciones/fields.vue';
-import type {MenuOpcion, RespuestaRequest} from "@/types/admin/menu-opciones/types";
-
-import type {Permission} from "@/types/admin/permisos/types";
+import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
+import type { MenuOpcionInterface } from "@/types/admin/MenuOpcionInterface"
+import type { PermisoInterface } from "@/types/admin/PermisoInterface"
 
 const {put, get} = useClienteRequest();
 
@@ -21,19 +20,19 @@ const route = useRoute<{ id: number }>();
 
 const id = <number>route.params.id;
 
-const opcion = ref<MenuOpcion>({} as MenuOpcion);
+const opcion = ref<MenuOpcionInterface>({} as MenuOpcionInterface);
 
-const permisos = ref<Permission>({} as Permission);
+const permisos = ref<PermisoInterface>({} as PermisoInterface);
 
 const menu = useState('menu');
 
-const actualizarOpcion = async (opcion: MenuOpcion): Promise<void> => {
+const actualizarOpcion = async (opcion: MenuOpcionInterface): Promise<void> => {
 
   try {
 
     paginaEspera.value = true;
 
-    const response: RespuestaRequest = await put(`api/menu_opciones/${id}`, opcion);
+    const response = await put(`api/menu-opcions/${id}`, opcion);
 
     menu.value = response.data;
 
@@ -59,7 +58,7 @@ const getOpcion = async (): Promise<void> => {
 
     paginaEspera.value = true;
 
-    const response: { data: MenuOpcion } = await get(`api/menu_opciones/${id}`);
+    const response: { data: MenuOpcionInterface } = await get(`api/menu-opcions/${id}`);
 
     opcion.value = response.data;
 
@@ -82,7 +81,7 @@ const getPermisos = async (): Promise<void> => {
 
     paginaEspera.value = true;
 
-    const response: { data: Permission } = await get('api/permisos', {
+    const response: { data: PermisoInterface } = await get('api/permissions', {
       params: {
         'page[size]': -1
       }
@@ -105,6 +104,7 @@ const getPermisos = async (): Promise<void> => {
 getOpcion();
 
 getPermisos();
+
 
 const puedeMostrarDatos = computed(() => {
 
