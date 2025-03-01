@@ -134,7 +134,7 @@ defineExpose({
 
     <VCardText>
       <VContainer fluid>
-        <VRow justify="end">
+        <VRow justify="end" class="mb-0">
           <VMenu>
             <template v-slot:activator="{ props }">
               <VBtn color="primary" v-bind="props">

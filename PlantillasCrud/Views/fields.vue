@@ -61,6 +61,7 @@ const onSubmit = () => {
           type="submit"
           class="me-3"
         >
+          <VIcon class="mr-2 ri-save-3-fill"/>
           Submit
         </VBtn>
         <VBtn
@@ -69,6 +70,7 @@ const onSubmit = () => {
           color="error"
           to="/{{ directory }}"
         >
+          <VIcon class="mr-2 ri-contract-left-fill"/>
           Cancel
         </VBtn>
       </VCol>

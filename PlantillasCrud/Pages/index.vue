@@ -40,7 +40,7 @@ const deleteItem = async (id: number) => {
 
 <template>
 
-  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
+  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Listado de {{ modelPlural }}'"/>
     <VBtn
       v-if="can('crear {{ modelPlural }}', '{{ modelPlural }}')"
@@ -59,7 +59,6 @@ const deleteItem = async (id: number) => {
         :cantidadPorPagina="10"
         :cantidadPorPaginaOpciones="[10, 20, 30]"
         :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
-        titulo="Listado de usuarios"
       >
         <template #item.Acciones="{ item }">
           <VBtn

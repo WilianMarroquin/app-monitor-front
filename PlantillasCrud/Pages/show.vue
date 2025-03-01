@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
-definePageMeta({
-  middleware: 'permissions',
-  action: 'ver {{ modelPlural }}', // Acción requerida
-  subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-});
+// definePageMeta({
+//   middleware: 'permissions',
+//   action: 'ver {{ modelPlural }}', // Acción requerida
+//   subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+// });
 
 import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/index.ts';
 
@@ -58,22 +58,18 @@ get{{ model }}();
 <template>
 
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
+    <h1 v-text="'Visualizar {{ model }}'"/>
     <VBtn
       class="ml-auto"
       color="secondary"
       to="/{{ directory }}/"
     >
+      <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
     </VBtn>
   </div>
 
   <VCard>
-
-    <VCardItem>
-
-      <VCardTitle>Visualizar {{ model }}</VCardTitle>
-
-    </VCardItem>
 
     <VCardText>
 

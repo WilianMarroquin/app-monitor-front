@@ -53,24 +53,19 @@ const guardar{{ model }} = async ( {{ model }}: {{ model }}Interface ): Promise<
 <template>
 
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
-
+    <h1 v-text="'Crear {{ model }}'"/>
     <VBtn
       class="ml-auto"
       color="secondary"
       to="/{{ directory }}/"
     >
+      <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
     </VBtn>
 
   </div>
 
   <VCard>
-
-    <VCardItem>
-
-      <VCardTitle>Crear {{ model }}</VCardTitle>
-
-    </VCardItem>
 
     <VCardText>
 
