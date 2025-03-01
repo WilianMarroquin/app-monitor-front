@@ -133,17 +133,24 @@ watch(permisoSeleccionado, (id) => {
   >
     <VCol class="d-flex flex-wrap" cols="12">
       <VCol cols="12" md="6">
-        <AppTextField v-model="opcion.titulo" :rules="[requiredValidator]" label="Título"/>
+        <VTextField
+          :id="useId()"
+          v-model="opcion.titulo"
+          placeholder="Ingrese Icono"
+          required
+          :rules="[requiredValidator]"
+          label="Título"
+        />
       </VCol>
 
       <VCol cols="12" md="6">
-        <AppAutocomplete
+        <VAutocomplete
           v-model="opcion.ruta"
+          label="Ruta:"
           :items="RutasFiltradas"
-          item-title="name"
-          item-value="name"
-          label="Ruta"
           placeholder="Seleccione una ruta"
+          item-title="name"
+          item-value="id"
         />
       </VCol>
 
@@ -154,18 +161,22 @@ watch(permisoSeleccionado, (id) => {
         >Icono:
           <NuxtLink class="ml-2" target="_blank" to="https://tablericons.com/">Ver iconos</NuxtLink>
         </VLabel>
-        <AppTextField v-model="opcion.icono"/>
+        <VTextField
+          :id="useId()"
+          v-model="opcion.icono"
+          placeholder="Ingrese Icono"
+          required
+        />
       </VCol>
 
       <VCol cols="12" md="6">
-        <AppAutocomplete
+        <VAutocomplete
           v-model="permisoSeleccionado"
-          :items="props.permisos"
-          :rules="[requiredValidator]"
-          item-title="name_y_subject"
-          item-value="id"
           label="Permiso:"
-          placeholder="Seleccione un permiso"
+          :items="props.permisos"
+          placeholder="Select State"
+          item-title="name_y_subjet"
+          item-value="id"
         />
       </VCol>
 
@@ -182,22 +193,25 @@ watch(permisoSeleccionado, (id) => {
   >
     <VCol class="d-flex flex-wrap" cols="12">
       <VCol cols="12" md="6">
-        <AppTextField
+
+        <VTextField
+          :id="useId()"
           v-model="opcion.titulo_seccion"
           :rules="[requiredValidator]"
           label="Título Sección"
+          placeholder="Ingrese titulo de sección"
+          required
         />
       </VCol>
 
       <VCol cols="12" md="6">
-        <AppAutocomplete
+        <VAutocomplete
           v-model="permisoSeleccionado"
-          :items="props.permisos"
-          :rules="[requiredValidator]"
-          item-title="name_y_subject"
-          item-value="id"
           label="Permiso:"
-          placeholder="Seleccione un permiso"
+          :items="props.permisos"
+          placeholder="Select State"
+          item-title="name"
+          item-value="id"
         />
       </VCol>
     </VCol>

@@ -20,7 +20,27 @@ injectSkinClasses()
 
 const {paginaEspera} = useCargandoPagina()
 
-paginaEspera.value = false
+const opcionesMenu = <[]>useState('menu', () => []);
+
+const {get} = useClienteRequest()
+
+const {showToastError} = useToast()
+
+const obtenerOpcionesMenu = async (): Promise<void> => {
+  try {
+    paginaEspera.value = true
+    const respuesta = await get('api/menu-opcions')
+    opcionesMenu.value = respuesta.data.data
+    console.log(opcionesMenu.value)
+  } catch (error: { message: string }) {
+    showToastError(error.message)
+  } finally {
+    paginaEspera.value = false
+  }
+}
+
+obtenerOpcionesMenu()
+
 
 </script>
 
