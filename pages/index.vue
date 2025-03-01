@@ -5,8 +5,12 @@ const data = ref([
     key: 'id',
   },
   {
-    title: 'name',
-    key: 'name',
+    title: 'nombre',
+    key: 'nombre',
+  },
+  {
+    title: 'descripcion',
+    key: 'descripcion',
   },
 ])
 </script>
@@ -14,7 +18,7 @@ const data = ref([
 <template>
   <DataTableComponent
     :columnas="data"
-    endpoint="api/users"
+    endpoint="api/pruebas"
     :cantidadPorPagina="10"
     :cantidadPorPaginaOpciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"

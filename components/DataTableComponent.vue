@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { get } = useClienteResquest()
+const { get } = useClienteRequest()
 
 interface Columna {
   title: string
