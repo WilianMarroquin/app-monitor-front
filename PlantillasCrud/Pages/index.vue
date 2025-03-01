@@ -41,12 +41,14 @@ const deleteItem = async (id: number) => {
 <template>
 
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
+    <h1 v-text="'Listado de {{ modelPlural }}'"/>
     <VBtn
       v-if="can('crear {{ modelPlural }}', '{{ modelPlural }}')"
       class="ml-auto"
       color="success"
       to="/{{ directory }}/create"
     >
+      <VIcon class="mr-2 ri-add-large-fill"/>
       Nuev@ {{ model }}
     </VBtn>
   </div>
@@ -58,8 +60,35 @@ const deleteItem = async (id: number) => {
         :cantidadPorPaginaOpciones="[10, 20, 30]"
         :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
         titulo="Listado de usuarios"
-        title="Listado de {{ modelPlural }}"
-      />
+      >
+        <template #item.Acciones="{ item }">
+          <VBtn
+            v-if="can('ver {{ modelPlural }}', '{{ modelPlural }}')"
+            icon="ri-eye-line"
+            variant="tonal"
+            color="info"
+            :to="'/{{ directory }}/show/' + item.id "
+            class="mr-1"
+          />
+          <VBtn
+            v-if="can('editar {{ modelPlural }}', '{{ modelPlural }}')"
+            icon="ri-edit-box-line"
+            variant="tonal"
+            color="warning"
+            :to="'/{{ directory }}/edit/' + item.id "
+            class="mr-1"
+          />
+          <VBtn
+            v-if="can('eliminar {{ modelPlural }}', '{{ modelPlural }}')"
+            icon="ri-delete-bin-line"
+            variant="tonal"
+            color="error"
+            @click="deleteItem(item.id)"
+          />
+
+        </template>
+
+      </DataTableComponent>
 
 </template>
 
