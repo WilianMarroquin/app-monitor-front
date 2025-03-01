@@ -1,13 +1,19 @@
 <template>
   <div>
-    <VCard title="Create Awesome 🙌">
-      <VCardText>This is your second page.</VCardText>
-      <VCardText>
-        Chocolate sesame snaps pie carrot cake pastry pie lollipop muffin.
-        Carrot cake dragée chupa chups jujubes. Macaroon liquorice cookie
-        wafer tart marzipan bonbon. Gingerbread jelly-o dragée
-        chocolate.
-      </VCardText>
-    </VCard>
+    <button @click="confirmarEliminacion">Eliminar Item</button>
   </div>
 </template>
+
+<script setup>
+const { preguntaEliminar } = useToast()
+
+const confirmarEliminacion = async () => {
+  const respuesta = await preguntaEliminar()
+  if (respuesta) {
+    console.log('Eliminación confirmada')
+    // Aquí puedes agregar la lógica para eliminar el elemento
+  } else {
+    console.log('Eliminación cancelada')
+  }
+}
+</script>

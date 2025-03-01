@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2'
 export const useToast = () => {
   const toast = useNuxtApp().$toast
 
@@ -17,5 +18,18 @@ export const useToast = () => {
     toast.info(message)
   }
 
-  return { showToastSuccess, showToastError, showToastWarning, showToastInfo }
+  const preguntaEliminar = async (mensaje: string) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: mensaje,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+    })
+    return result.isConfirmed
+    }
+
+  return { showToastSuccess, showToastError, showToastWarning, showToastInfo, preguntaEliminar }
 }

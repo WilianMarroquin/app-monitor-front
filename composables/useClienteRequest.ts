@@ -1,4 +1,4 @@
-export const useClienteResquest = () => {
+export const useClienteRequest = () => {
   const client = useSanctumClient();
 
   const request = async (url: string, method: string, body: any = null) => {
