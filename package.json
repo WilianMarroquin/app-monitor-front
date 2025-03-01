@@ -10,7 +10,8 @@
     "build:icons": "tsx plugins/iconify/build-icons.ts",
     "postinstall": "nuxt prepare && npm run build:icons ",
     "generate": "nuxt generate",
-    "generarCrud": "node commands/GeneradorCrud.js"
+    "generarCrud": "node commands/GeneradorCrud.js",
+    "generarCrudV2": "node commands/GeneradorCrudv2.js"
   },
   "dependencies": {
     "@casl/ability": "6.7.2",
