@@ -1,6 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import readline from 'readline';
+import fs from 'fs'
+import path from 'path'
+import readline from 'readline'
+import chalk from 'chalk'
 
 const __dirname = path.resolve();
 // Configura readline
@@ -174,11 +175,25 @@ const askQuestions = async () => {
         }
         fs.writeFileSync(path.join(showDir, '[id].vue'), showTemplate);
 
-        console.log(`Archivos creados en ${directory}:`);
-        console.log('- index.vue');
-        console.log('- create.vue');
-        console.log('- edit/[id].vue');
-        console.log('- show/[id].vue');
+        console.log(chalk.greenBright('\n✅ Archivos generados correctamente:\n'))
+
+        console.log(chalk.blue('📂 Páginas:'))
+        console.log(chalk.cyanBright('  └── 📌 ' + directory))
+        console.log(chalk.cyan('       ├── 📄 index.vue'))
+        console.log(chalk.magentaBright('       ├── 📄 create.vue'))
+        console.log(chalk.yellowBright('       ├── 📄 edit/[id].vue'))
+        console.log(chalk.greenBright('       └── 📄️ show/[id].vue'))
+
+        console.log(chalk.blue('📂 Interfaces:'))
+        console.log(chalk.cyanBright('    └── 📌 ' + directoryTypes))
+        console.log(chalk.cyan('        └── 📄 types.ts'))
+
+        console.log(chalk.blue('📂 Vistas:'))
+        console.log(chalk.cyanBright('    └── 📌 ' + directoryViews))
+        console.log(chalk.cyan('        └── 📄 fields.vue'))
+
+        console.log(chalk.greenBright('\n ¡Generación de CRUD completada!\n'))
+
 
     } catch (error) {
         console.error(`Error: ${error.message}`);
