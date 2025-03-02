@@ -6,10 +6,6 @@ import { switchToVerticalNavOnLtOverlayNavBreakpoint } from '@layouts/utils'
 const DefaultLayoutWithHorizontalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithHorizontalNav.vue'))
 const DefaultLayoutWithVerticalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithVerticalNav.vue'))
 
-definePageMeta({
-  middleware: ['sanctum:auth'],
-})
-
 const configStore = useConfigStore()
 
 switchToVerticalNavOnLtOverlayNavBreakpoint()
