@@ -70,6 +70,9 @@ importers:
       chart.js:
         specifier: 4.4.7
         version: 4.4.7
+      clipboardy:
+        specifier: ^4.0.0
+        version: 4.0.0
       cookie-es:
         specifier: 1.2.2
         version: 1.2.2

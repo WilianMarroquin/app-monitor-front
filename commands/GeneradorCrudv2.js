@@ -2,9 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import readline from 'readline'
 import chalk from 'chalk'
+import clipboardy from 'clipboardy';
 
 const __dirname = path.resolve();
-// Configura readline
+
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -51,8 +52,13 @@ const objectSchema = (campos) => {
 const askQuestions = async () => {
     try {
 
-        const urlBakend = await question('Ingrese la URL dada en el Backend');
-        if (!urlBakend) throw new Error("La URL no puede estar vacía.");
+        // const urlBakend = await question('Ingrese la URL dada en el Backend');
+        const urlBakend = clipboardy.readSync();
+        console.log('URL obtenida del portapapeles:', urlBakend);
+
+        if (!urlBakend) {
+            throw new Error('El portapapeles está vacío o no contiene una URL válida.');
+        }
 
         const response = await fetch(urlBakend)
 

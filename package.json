@@ -33,6 +33,7 @@
     "apexcharts": "3.54.1",
     "chalk": "^5.4.1",
     "chart.js": "4.4.7",
+    "clipboardy": "^4.0.0",
     "cookie-es": "1.2.2",
     "destr": "2.0.3",
     "eslint-plugin-regexp": "2.7.0",
