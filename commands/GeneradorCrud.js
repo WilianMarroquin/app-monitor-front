@@ -90,7 +90,7 @@ const askQuestions = async () => {
 
         const modelPlurar = pluralizar(modeloMinusculas);
 
-        const listTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'index.vue'), 'utf-8')
+        const listTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'index.txt'), 'utf-8')
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ headers }}/g, columnasJSON)
@@ -99,14 +99,14 @@ const askQuestions = async () => {
 
         const inputsFormulario = formatoHtmlInputsFormulario(campos);
 
-        const Viewfields = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Views', 'fields.vue'), 'utf-8')
+        const Viewfields = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Views', 'fields.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
             .replace(/{{ directory }}/g, directory.split('pages/')[1])
             .replace(/{{ inputsFormulario }}/g, inputsFormulario);
 
-        const createTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'create.vue'), 'utf-8')
+        const createTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'create.txt'), 'utf-8')
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
@@ -115,11 +115,11 @@ const askQuestions = async () => {
 
         const camposInterfaz = formatoCamposInterfaz(campos);
 
-        const interfazTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Types', 'index.ts'), 'utf-8')
+        const interfazTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Types', 'types.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ fieldsInterfaz }}/g, camposInterfaz);
 
-        const editTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'edit.vue'), 'utf-8')
+        const editTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'edit.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ url }}/g, url)
@@ -128,7 +128,7 @@ const askQuestions = async () => {
 
         const camposFormShow = formatoShowInputs(campos);
 
-        const showTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'show.vue'), 'utf-8')
+        const showTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'show.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
@@ -138,13 +138,13 @@ const askQuestions = async () => {
             .replace(/{{ camposForm }}/g, camposFormShow);
 
 
-        fs.writeFileSync(path.join(directory, 'index.vue'), listTemplate);
+        fs.writeFileSync(path.join(directory, 'index.txt'), listTemplate);
 
-        fs.writeFileSync(path.join(directory, 'create.vue'), createTemplate);
+        fs.writeFileSync(path.join(directory, 'create.txt'), createTemplate);
 
-        fs.writeFileSync(path.join(directoryViews, 'fields.vue'), Viewfields);
+        fs.writeFileSync(path.join(directoryViews, 'fields.txt'), Viewfields);
 
-        fs.writeFileSync(path.join(directoryTypes, 'index.ts'), interfazTemplate);
+        fs.writeFileSync(path.join(directoryTypes, 'types.txt'), interfazTemplate);
 
         const editDir = path.join(directory, 'edit');
         if (!fs.existsSync(editDir)) {
@@ -160,8 +160,8 @@ const askQuestions = async () => {
         fs.writeFileSync(path.join(showDir, '[id].vue'), showTemplate);
 
         console.log(`Archivos creados en ${directory}:`);
-        console.log('- index.vue');
-        console.log('- create.vue');
+        console.log('- index.txt');
+        console.log('- create.txt');
         console.log('- edit/[id].vue');
         console.log('- show/[id].vue');
 

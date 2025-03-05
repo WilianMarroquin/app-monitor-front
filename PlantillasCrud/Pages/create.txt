@@ -8,7 +8,7 @@
 
 import fields from '@/views/pages/{{ modelPlural }}/fields.vue'
 
-import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/index.ts';
+import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types.ts';
 
 import {ref} from "vue";
 

@@ -11,8 +11,18 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-const question = (query) => {
-    return new Promise((resolve) => rl.question(query, resolve));
+const formatoCamposFormCreate = (campos) => {
+
+    let state = {};
+
+    campos.forEach(campo => {
+        state[campo] = null;
+    });
+
+    const stateText = `{ ${Object.entries(state).map(([key, value]) => `${key}: ${value}`).join(',\n')} }`;
+
+    return stateText;
+
 };
 
 const formatearCamposTable = (campos) => {
@@ -25,65 +35,26 @@ const formatearCamposTable = (campos) => {
     });
 };
 
-const formatearCamposFormCreate = (campos) => {
-
-    let state = {};
-
-    campos.forEach(campo => {
-        state[campo] = 'undefined';
-    });
-
-    const stateText = `{ ${Object.entries(state).map(([key, value]) => `${key}: ${value}`).join(',\n')} }`; // Agrega un salto de línea aquí
-    return stateText;
-
-};
-
-const objectSchema = (campos) => {
-    let esquema = {};
-
-    campos.forEach(campo => {
-        esquema[campo] = 'string().required("Este campo es requerido")';
-    });
-
-    const schemaText = `object({ ${Object.entries(esquema).map(([key, value]) => `${key}: ${value}`).join(',\n')} })`; // Agrega un salto de línea aquí
-    return schemaText;
-};
-
 const askQuestions = async () => {
     try {
 
-        // const urlBakend = await question('Ingrese la URL dada en el Backend');
-        const urlBakend = clipboardy.readSync();
-        console.log('URL obtenida del portapapeles:', urlBakend);
+        let datosBackend = clipboardy.readSync(); // Leer del portapapeles
 
-        if (!urlBakend) {
-            throw new Error('El portapapeles está vacío o no contiene una URL válida.');
+        datosBackend = datosBackend.replace(/\u0000/g, "").trim();
+
+        const datosJSON = JSON.parse(datosBackend);
+
+        if( !datosJSON ) {
+
+            throw new Error('El contenido del portapapeles no es un JSON válido');
+
         }
 
-        const response = await fetch(urlBakend)
+        const modelo = datosJSON.Modelo
+        const url = datosJSON.Ruta
+        const camposInput = Object.keys(datosJSON.columnas)
 
-        if (!response.ok) {
-            throw new Error(`Error al obtener los datos: ${response.status} ${response.statusText}`);
-        }
-
-        const respuesta = await response.json()
-
-        const modelo = respuesta.data.nombreDelModelo
-        const url = respuesta.data.ruta
-        const camposInput = respuesta.data.columns.join(',')
-
-        // const modelo = await question('Ingrese el nombre del directorio PascalCase (Ej: UsuarioConfiguracion): ');
-        // if (!modelo) throw new Error("El nombre del directorio no puede estar vacío.");
-        //
-        // const camposInput = await question('Ingrese los nombres de los campos separados por coma (Ej: nombre,apellido,segundo_nombre): ');
-        // if (!camposInput) throw new Error("Los campos no pueden estar vacíos.");
-        //
-        // const url = await question('Ingrese la url de la API (Ejemplo: /api/user_configuracion): ');
-        // if (!url) throw new Error("La url no puede estar vacía.");
-
-        const camposSinFiltrar = camposInput.split(',').map(campo => campo.trim());
-
-        const campos = camposSinFiltrar.filter(campo => campo !== '');
+        const campos = camposInput.filter(campo => campo !== '');
 
         const modeloMinusculas = modelo.toLowerCase();
 
@@ -108,11 +79,13 @@ const askQuestions = async () => {
         const columnas = formatearCamposTable([...campos, 'Acciones']);
         const columnasJSON = JSON.stringify(columnas, null, 2);
 
+
         const camposFormCreate = formatoCamposFormCreate(campos);
+
 
         const modelPlurar = pluralizar(modeloMinusculas);
 
-        const listTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'index.vue'), 'utf-8')
+        const listTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'index.txt'), 'utf-8')
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ headers }}/g, columnasJSON)
@@ -121,27 +94,25 @@ const askQuestions = async () => {
 
         const inputsFormulario = formatoHtmlInputsFormulario(campos);
 
-        const Viewfields = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Views', 'fields.vue'), 'utf-8')
+        const Viewfields = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Views', 'fields.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
             .replace(/{{ directory }}/g, directory.split('pages/')[1])
             .replace(/{{ inputsFormulario }}/g, inputsFormulario);
 
-        const createTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'create.vue'), 'utf-8')
+        const createTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'create.txt'), 'utf-8')
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
             .replace(/{{ url }}/g, url)
             .replace(/{{ directory }}/g, directory.split('pages/')[1]);
 
-        const camposInterfaz = formatoCamposInterfaz(campos);
-
-        const interfazTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Types', 'index.ts'), 'utf-8')
+        const interfazTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Types', 'types.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
-            .replace(/{{ fieldsInterfaz }}/g, camposInterfaz);
+            .replace(/{{ fieldsInterfaz }}/g, JSON.stringify(datosJSON.columnas, null, 2));
 
-        const editTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'edit.vue'), 'utf-8')
+        const editTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'edit.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ url }}/g, url)
@@ -150,7 +121,7 @@ const askQuestions = async () => {
 
         const camposFormShow = formatoShowInputs(campos);
 
-        const showTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'show.vue'), 'utf-8')
+        const showTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'show.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
@@ -159,14 +130,13 @@ const askQuestions = async () => {
             .replace(/{{ url }}/g, url)
             .replace(/{{ camposForm }}/g, camposFormShow);
 
-
         fs.writeFileSync(path.join(directory, 'index.vue'), listTemplate);
 
         fs.writeFileSync(path.join(directory, 'create.vue'), createTemplate);
 
         fs.writeFileSync(path.join(directoryViews, 'fields.vue'), Viewfields);
 
-        fs.writeFileSync(path.join(directoryTypes, 'index.ts'), interfazTemplate);
+        fs.writeFileSync(path.join(directoryTypes, 'types.ts'), interfazTemplate);
 
         const editDir = path.join(directory, 'edit');
         if (!fs.existsSync(editDir)) {
@@ -228,9 +198,6 @@ function pluralizar(palabra) {
     }
 }
 
-askQuestions();
-
-
 function formatearCampoLabel(str) {
 
     return str
@@ -240,25 +207,6 @@ function formatearCampoLabel(str) {
         .join(' ');
 
 }
-
-
-const tiposInputFormulario = (campos) => {
-    let obj = Object.keys(campos);
-
-    let tipoInput = [];
-
-
-    obj.forEach(key => {
-        tipoInput.push({
-            label: formatearCampoLabel(campos[key]),
-            type: "text",
-            key: campos[key]
-        });
-    });
-
-    return JSON.stringify(tipoInput, null, 2);
-};
-
 
 const formatoHtmlInputsFormulario = (campos) => {
     let obj = Object.keys(campos);
@@ -284,21 +232,6 @@ const formatoHtmlInputsFormulario = (campos) => {
 };
 
 
-const formatoCamposInterfaz = (campos) => {
-
-    let obj = Object.keys(campos);
-
-    let camposInterfaz = [];
-
-    obj.forEach(key => {
-        camposInterfaz.push(`
-        ${campos[key]}: string;
-        `);
-    });
-
-    return camposInterfaz.join('');
-};
-
 const formatoShowInputs = (campos) => {
 
     let obj = Object.keys(campos);
@@ -321,17 +254,4 @@ const formatoShowInputs = (campos) => {
     return camposInterfaz.join('');
 };
 
-const formatoCamposFormCreate = (campos) => {
-
-    let state = {};
-
-    campos.forEach(campo => {
-        state[campo] = null;
-    });
-
-    const stateText = `{ ${Object.entries(state).map(([key, value]) => `${key}: ${value}`).join(',\n')} }`; // Agrega un salto de línea aquí
-
-    return stateText;
-
-};
-
+askQuestions();

@@ -6,7 +6,7 @@
 //   subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
 // });
 
-import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/index.ts';
+import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types.ts';
 
 import {ref} from "vue";
 

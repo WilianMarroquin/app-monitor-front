@@ -6,7 +6,7 @@ const isFormValid = ref(false)
 
 const refForm = ref<VForm>()
 
-import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/index.ts';
+import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types.ts';
 
 const data = ref( <{{ model }}Interface>
   {{ camposFormCreate }}
