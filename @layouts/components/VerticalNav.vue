@@ -31,7 +31,8 @@ const resolveNavItemComponent = (item: NavLink | NavSectionTitle | NavGroup): un
   if (item?.titulo_seccion){
     return VerticalNavSectionTitle
   }
-  if (item?.children?.lenght > 0) {
+
+  if (item?.children?.length > 0) {
     return VerticalNavGroup
   }
 
