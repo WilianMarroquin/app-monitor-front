@@ -26,14 +26,11 @@ const hideTitleAndBadge = configStore.isVerticalNavMini()
       v-bind="getComputedNavLinkToProp(item)"
       :class="{ 'router-link-active router-link-exact-active': isNavLinkActive(item, $router) }"
     >
-<!--      <Component-->
-<!--        :is="layoutConfig.app.iconRenderer || 'div'"-->
-<!--        v-bind="item.icono || layoutConfig.verticalNav.defaultNavItemIconProps"-->
-<!--        class="nav-item-icon"-->
-<!--      />-->
-<!--      -->
-      <VIcon :icon="item.icono ?? 'ri-circle-line'"/>
-
+      <Component
+        :is="layoutConfig.app.iconRenderer || 'div'"
+        v-bind="item.icono || layoutConfig.verticalNav.defaultNavItemIconProps"
+        class="nav-item-icon"
+      />
       <TransitionGroup name="transition-slide-x">
         <!-- 👉 Title -->
         <Component
@@ -47,17 +44,17 @@ const hideTitleAndBadge = configStore.isVerticalNavMini()
         </Component>
 
         <!-- 👉 Badge -->
-<!--        <Component-->
-<!--          :is="layoutConfig.app.i18n.enable ? 'i18n-t' : 'span'"-->
-<!--          v-if="item.badgeContent"-->
-<!--          v-show="!hideTitleAndBadge"-->
-<!--          key="badge"-->
-<!--          class="nav-item-badge"-->
-<!--          :class="item.badgeClass"-->
-<!--          v-bind="getDynamicI18nProps(item.badgeContent, 'span')"-->
-<!--        >-->
-<!--          {{ item.badgeContent }}-->
-<!--        </Component>-->
+        <Component
+          :is="layoutConfig.app.i18n.enable ? 'i18n-t' : 'span'"
+          v-if="item.badgeContent"
+          v-show="!hideTitleAndBadge"
+          key="badge"
+          class="nav-item-badge"
+          :class="item.badgeClass"
+          v-bind="getDynamicI18nProps(item.badgeContent, 'span')"
+        >
+          {{ item.badgeContent }}
+        </Component>
       </TransitionGroup>
     </Component>
   </li>

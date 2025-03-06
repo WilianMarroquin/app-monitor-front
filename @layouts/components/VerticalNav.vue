@@ -28,13 +28,10 @@ provide(injectionKeyIsVerticalNavHovered, isHovered)
 const configStore = useLayoutConfigStore()
 
 const resolveNavItemComponent = (item: NavLink | NavSectionTitle | NavGroup): unknown => {
-  if (item?.titulo_seccion){
+  if (item?.titulo_seccion)
     return VerticalNavSectionTitle
-  }
-
-  if (item?.children?.length > 0) {
+  if ('children' in item)
     return VerticalNavGroup
-  }
 
   return VerticalNavLink
 }
@@ -57,7 +54,6 @@ const handleNavScroll = (evt: Event) => {
 }
 
 const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
-
 </script>
 
 <template>

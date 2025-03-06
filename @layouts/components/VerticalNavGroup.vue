@@ -175,7 +175,7 @@ watch(
           key="title"
           class="nav-item-title"
         >
-          {{ item.title }}
+          {{ item.titulo }}
         </Component>
 
         <!-- 👉 Badge -->
@@ -207,7 +207,7 @@ watch(
         <Component
           :is="'children' in child ? 'VerticalNavGroup' : VerticalNavLink"
           v-for="child in item.children"
-          :key="child.title"
+          :key="child.titulo"
           :item="child"
         />
       </ul>

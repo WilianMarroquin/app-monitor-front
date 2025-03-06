@@ -2,10 +2,9 @@
 import { VerticalNav } from '@layouts/components'
 import { useLayoutConfigStore } from '@layouts/stores/config'
 import type { VerticalNavItems } from '@layouts/types'
-import type { MenuOpcionInterface } from "@/types/admin/MenuOpcionInterface"
 
 interface Props {
-  navItems: MenuOpcionInterface
+  navItems: VerticalNavItems
   verticalNavAttrs?: {
     wrapper?: string
     wrapperProps?: Record<string, unknown>
