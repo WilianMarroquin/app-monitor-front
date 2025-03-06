@@ -157,12 +157,12 @@ watch(
       class="nav-group-label"
       @click="isGroupOpen = !isGroupOpen"
     >
-      <Component
-        :is="layoutConfig.app.iconRenderer || 'div'"
-        v-bind="item.icon || layoutConfig.verticalNav.defaultNavItemIconProps"
-        class="nav-item-icon"
-      />
-
+<!--      <Component-->
+<!--        :is="layoutConfig.app.iconRenderer || 'div'"-->
+<!--        v-bind="item.icon || layoutConfig.verticalNav.defaultNavItemIconProps"-->
+<!--        class="nav-item-icon"-->
+<!--      />-->
+      <VIcon :icon="item.icono ?? 'ri-circle-line'"/>
       <Component
         :is="TransitionGroup"
         name="transition-slide-x"
@@ -170,7 +170,7 @@ watch(
         <!-- 👉 Title -->
         <Component
           :is=" layoutConfig.app.i18n.enable ? 'i18n-t' : 'span'"
-          v-bind="getDynamicI18nProps(item.title, 'span')"
+          v-bind="getDynamicI18nProps(item.titulo, 'span')"
           v-show="!hideTitleAndBadge"
           key="title"
           class="nav-item-title"

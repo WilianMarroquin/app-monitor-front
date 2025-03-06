@@ -159,7 +159,7 @@ watch(permisoSeleccionado, (id) => {
           class="mb-1 text-body-2 text-wrap"
           style="line-height: 15px;"
         >Icono:
-          <NuxtLink class="ml-2" target="_blank" to="https://tablericons.com/">Ver iconos</NuxtLink>
+          <NuxtLink class="ml-2" target="_blank" to="https://remixicon.com/">Ver iconos</NuxtLink>
         </VLabel>
         <VTextField
           :id="useId()"
