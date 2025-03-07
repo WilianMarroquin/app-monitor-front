@@ -12,8 +12,6 @@
 
     <VBtn
       class="ms-auto"
-      style="inline-size: 18rem;"
-      prepend-icon="tabler-plus"
       to="/admin/menu/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>

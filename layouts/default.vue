@@ -61,4 +61,10 @@ obtenerOpcionesMenu()
 <style lang="scss">
 // As we are using `layouts` plugin we need its styles to be imported
 @use "@layouts/styles/default-layout";
+
+:root {
+  --toastify-color-light: #fff;
+  --toastify-color-dark: #1A1B35;
+}
+
 </style>
