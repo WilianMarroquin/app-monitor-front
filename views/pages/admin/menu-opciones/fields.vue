@@ -154,27 +154,29 @@ watch(permisoSeleccionado, (id) => {
         />
       </VCol>
 
-      <VCol cols="12" md="6">
-        <VLabel
-          class="mb-1 text-body-2 text-wrap"
-          style="line-height: 15px;"
-        >Icono:
-          <NuxtLink class="ml-2" target="_blank" to="https://remixicon.com/">Ver iconos</NuxtLink>
-        </VLabel>
+      <VCol cols="12" md="6" >
         <VTextField
+          label="Icono"
           :id="useId()"
           v-model="opcion.icono"
           placeholder="Ingrese Icono"
           required
         />
+          <NuxtLink class="ms-auto text-blue"
+                    target="_blank"
+
+                    to="https://remixicon.com/"
+          >
+            Ver iconos
+          </NuxtLink>
       </VCol>
 
-      <VCol cols="12" md="6" class="mt-5">
+      <VCol cols="12" md="6">
         <VAutocomplete
           v-model="permisoSeleccionado"
-          label="Permiso:"
           :items="props.permisos"
-          placeholder="Select State"
+          label="Permiso"
+          placeholder="Seleccione el Permiso"
           item-title="name_y_subjet"
           item-value="id"
         />

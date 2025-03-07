@@ -96,7 +96,7 @@ const puedeMostrarDatos = computed(() => {
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6">
 
     <p class="text-2xl">
-      Editar Menu
+      Agregar Subopción
     </p>
 
     <VBtn
