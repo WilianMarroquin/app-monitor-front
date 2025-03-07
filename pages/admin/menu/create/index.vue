@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 // definePageMeta({
 //   middleware: 'permissions',
 //   action: 'crear opcion menu',
@@ -10,81 +9,62 @@ import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
 import type { MenuOpcionInterface } from "@/types/admin/MenuOpcionInterface"
 import type { PermisoInterface } from "@/types/admin/PermisoInterface"
 
-const {post, get} = useClienteRequest();
-const {paginaEspera} = useCargandoPagina();
-const {showToastError, showToastSuccess} = useToast();
-const menu = useState('menu');
+const { post, get } = useClienteRequest()
+const { paginaEspera } = useCargandoPagina()
+const { showToastError, showToastSuccess } = useToast()
+const menu = useState('menu')
 
 const guardarOpcion = async (data: MenuOpcionInterface) => {
-
-  paginaEspera.value = true;
+  paginaEspera.value = true
 
   try {
-
-    let res = await post('api/menu-opcions', data);
-
-    menu.value = res.data;
-
-    showToastSuccess(res.message);
-
-    navigateTo('/admin/menu');
-
+    let res = await post('api/menu-opciones', data)
+    await obtenerOpcionesMenu()
+    showToastSuccess(res.message)
+    navigateTo('/admin/menu')
   } catch (error: { message: string }) {
-
-    showToastError(error.message);
-
+    showToastError(error.message)
   } finally {
-
-    paginaEspera.value = false;
-
+    paginaEspera.value = false
   }
-
-};
+}
 
 const permisos = ref<PermisoInterface>({} as PermisoInterface);
 
 const getPermisos = async (): Promise<void> => {
 
   try {
-
-    paginaEspera.value = true;
-
+    paginaEspera.value = true
     const response: { data: PermisoInterface } = await get('api/permissions', {
       params: {
         'page[size]': -1
       }
     });
-
     permisos.value = response.data.data;
-
-    console.log('El valor de los permisos: ', permisos.value);
-
   } catch (error: { message: string }) {
-
-    showToastError(error.message);
-
+    showToastError(error.message)
   } finally {
-
-    paginaEspera.value = false;
-
+    paginaEspera.value = false
   }
+}
 
-};
+getPermisos()
 
-getPermisos();
+const obtenerOpcionesMenu = async (): Promise<void> => {
+  try {
+    const respuesta = await get('api/get/menu-opciones/')
+    menu.value = respuesta.data
+  } catch (error: { message: string }) {
+    showToastError(error.message)
+  }
+}
 
-
-const puedeMostrarDatos = computed(() => {
-
-
+const puedeMostrarDatos: ComputedRef<boolean> = computed(() => {
   return Array.isArray(permisos.value) && permisos.value.length > 0
-
-});
-
+})
 </script>
 
 <template>
-
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6">
 
     <p class="text-2xl">

@@ -32,7 +32,7 @@ const actualizarOpcion = async (opcion: MenuOpcionInterface): Promise<void> => {
 
     paginaEspera.value = true;
 
-    const response = await put(`api/menu-opcions/${id}`, opcion);
+    const response = await put(`api/menu-opciones/${id}`, opcion);
 
     menu.value = response.data;
 
@@ -58,7 +58,7 @@ const getOpcion = async (): Promise<void> => {
 
     paginaEspera.value = true;
 
-    const response: { data: MenuOpcionInterface } = await get(`api/menu-opcions/${id}`);
+    const response: { data: MenuOpcionInterface } = await get(`api/menu-opciones/${id}`);
 
     opcion.value = response.data;
 
@@ -81,13 +81,9 @@ const getPermisos = async (): Promise<void> => {
 
     paginaEspera.value = true;
 
-    const response: { data: PermisoInterface } = await get('api/permissions', {
-      params: {
-        'page[size]': -1
-      }
-    });
+    const response = await get('api/get/menu-opciones/')
 
-    permisos.value = response.data.data;
+    permisos.value = response.data;
 
   } catch (error: { message: string }) {
 

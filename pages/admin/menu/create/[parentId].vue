@@ -31,7 +31,7 @@ const guardarOpcion = async (data: MenuOpcionInterface) => {
 
   try {
 
-    let res = await post('api/menu-opcions', datos);
+    let res = await post('api/menu-opciones', datos);
 
     showToastSuccess(res.message);
 
@@ -59,13 +59,9 @@ const getPermisos = async (): Promise<void> => {
 
     paginaEspera.value = true;
 
-    const response: { data: PermisoInterface } = await get('api/permissions', {
-      params: {
-        'page[size]': -1
-      }
-    });
+    const response = await get('api/get/menu-opciones/')
 
-    permisos.value = response.data.data;
+    permisos.value = response.data;
 
   } catch (error: { message: string }) {
 
