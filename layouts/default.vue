@@ -25,7 +25,7 @@ const {showToastError} = useToast()
 const obtenerOpcionesMenu = async (): Promise<void> => {
   try {
     paginaEspera.value = true
-    const respuesta = await get('api/menu-opcions/get')
+    const respuesta = await get('api/get/menu-opciones/')
     opcionesMenu.value = respuesta.data
     console.log(opcionesMenu.value)
   } catch (error: { message: string }) {
