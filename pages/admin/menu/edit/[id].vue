@@ -93,6 +93,7 @@ const getPermisos = async (): Promise<void> => {
 }
 
 getPermisos()
+console.log(permisos.value)
 
 getOpcion();
 

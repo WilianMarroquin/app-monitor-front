@@ -56,7 +56,7 @@ const eliminar = async (): Promise<void> => {
 
       paginaEspera.value = true;
 
-      let res = await deleted(`api/menu-opcions/${id}`);
+      let res = await deleted(`api/menu-opciones/${id}`);
 
       await getOpcionesMenu();
 
@@ -80,7 +80,7 @@ const getOpcionesMenu = async (): Promise<void> => {
 
   try {
 
-    const res = await get("api/menu-opcions");
+    const res = await get("api/menu-opciones");
 
     menu.value = res.data.data;
 

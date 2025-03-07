@@ -32,6 +32,6 @@ export const useClienteRequest = () => {
     get: (url: string) => request(url, 'GET'),
     post: (url: string, body: any) => request(url, 'POST', body),
     put: (url: string, body: any) => request(url, 'PUT', body),
-    delete: (url: string) => request(url, 'DELETE'),
+    deleted: (url: string) => request(url, 'DELETE'),
   };
 };

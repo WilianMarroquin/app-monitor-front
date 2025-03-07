@@ -49,6 +49,7 @@ const getPermisos = async (): Promise<void> => {
 }
 
 getPermisos()
+console.log(permisos.value)
 
 const obtenerOpcionesMenu = async (): Promise<void> => {
   try {

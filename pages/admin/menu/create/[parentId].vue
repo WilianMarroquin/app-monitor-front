@@ -59,9 +59,13 @@ const getPermisos = async (): Promise<void> => {
 
     paginaEspera.value = true;
 
-    const response = await get('api/get/menu-opciones/')
+    const response: { data: PermisoInterface } = await get('api/permissions', {
+      params: {
+        'page[size]': -1
+      }
+    });
 
-    permisos.value = response.data;
+    permisos.value = response.data.data;
 
   } catch (error: { message: string }) {
 

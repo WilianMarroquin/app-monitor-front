@@ -27,7 +27,6 @@ const obtenerOpcionesMenu = async (): Promise<void> => {
     paginaEspera.value = true
     const respuesta = await get('api/get/menu-opciones/')
     opcionesMenu.value = respuesta.data
-    console.log(opcionesMenu.value)
   } catch (error: { message: string }) {
     showToastError(error.message)
   } finally {

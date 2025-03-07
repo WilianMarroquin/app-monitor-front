@@ -169,7 +169,7 @@ watch(permisoSeleccionado, (id) => {
         />
       </VCol>
 
-      <VCol cols="12" md="6">
+      <VCol cols="12" md="6" class="mt-5">
         <VAutocomplete
           v-model="permisoSeleccionado"
           label="Permiso:"
