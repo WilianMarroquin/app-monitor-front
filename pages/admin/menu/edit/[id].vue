@@ -78,29 +78,23 @@ const getOpcion = async (): Promise<void> => {
 const getPermisos = async (): Promise<void> => {
 
   try {
-
-    paginaEspera.value = true;
-
-    const response = await get('api/get/menu-opciones/')
-
-    permisos.value = response.data;
-
+    paginaEspera.value = true
+    const response: { data: PermisoInterface } = await get('api/permissions', {
+      params: {
+        'page[size]': -1
+      }
+    });
+    permisos.value = response.data.data;
   } catch (error: { message: string }) {
-
-    showToastError(error.message);
-
+    showToastError(error.message)
   } finally {
-
-    paginaEspera.value = false;
-
+    paginaEspera.value = false
   }
+}
 
-};
+getPermisos()
 
 getOpcion();
-
-getPermisos();
-
 
 const puedeMostrarDatos = computed(() => {
 
