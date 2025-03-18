@@ -11,7 +11,7 @@ import type { PermisoInterface } from "@/types/admin/PermisoInterface"
 
 const { post, get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()
-const { showToastError, showToastSuccess } = useToast()
+const { success, error } = useToast()
 const menu = useState('menu')
 
 const guardarOpcion = async (data: MenuOpcionInterface) => {
@@ -20,10 +20,10 @@ const guardarOpcion = async (data: MenuOpcionInterface) => {
   try {
     let res = await post('api/menu-opciones', data)
     await obtenerOpcionesMenu()
-    showToastSuccess(res.message)
-    navigateTo('/admin/menu')
+    success(res.message)
+    navigateTo('admin/menu')
   } catch (error: { message: string }) {
-    showToastError(error.message)
+    error(error.message)
   } finally {
     paginaEspera.value = false
   }
@@ -42,7 +42,7 @@ const getPermisos = async (): Promise<void> => {
     });
     permisos.value = response.data.data;
   } catch (error: { message: string }) {
-    showToastError(error.message)
+    error(error.message)
   } finally {
     paginaEspera.value = false
   }
@@ -56,7 +56,7 @@ const obtenerOpcionesMenu = async (): Promise<void> => {
     const respuesta = await get('api/get/menu-opciones/')
     menu.value = respuesta.data
   } catch (error: { message: string }) {
-    showToastError(error.message)
+    error(error.message)
   }
 }
 

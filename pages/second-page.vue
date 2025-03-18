@@ -1,12 +1,14 @@
-<template>
-
-<h1>hola</h1>
-</template>
-
 <script setup>
+const { can } = useAbility()
+const usuarioAutenticado = useSanctumUser()
 
-const {success} = useToast()
-
-success('Hello World')
-
+console.log(usuarioAutenticado.value)
 </script>
+
+<template>
+  <div>
+    <h1>Bienvenido</h1>
+    <VBtn v-if="can('create', 'post')">Crear Post</VBtn>
+    <VBtn v-if="can('delete', 'user')">Eliminar Usuario</VBtn>
+  </div>
+</template>

@@ -17,12 +17,12 @@ definePageMeta({
 const { login } = useSanctumAuth()
 
 const form = ref({
-  email: '',
+  nombre_usuario: '',
   password: '',
 })
 
 interface LoginForm {
-  username: string
+  nombre_usuario: string
   password: string
 }
 
@@ -102,7 +102,7 @@ const authV2LoginIllustration = useGenerateImageVariant (authV2LoginIllustration
               <!-- email -->
               <VCol cols="12">
                 <VTextField
-                  v-model="form.email"
+                  v-model="form.nombre_usuario"
                   autofocus
                   label="Email"
                   type="email"
