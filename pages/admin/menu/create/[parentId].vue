@@ -16,7 +16,7 @@ const parentId = <string>route.params.parentId;
 
 const {post, get} = useClienteRequest();
 const {paginaEspera} = useCargandoPagina();
-const {showToastError, showToastSuccess} = useToast();
+const {error, success} = useToast();
 
 const menu = useState('menu');
 
@@ -33,15 +33,15 @@ const guardarOpcion = async (data: MenuOpcionInterface) => {
 
     let res = await post('api/menu-opciones', datos);
 
-    showToastSuccess(res.message);
+    success(res.message);
 
     menu.value = res.data;
 
     navigateTo('/admin/menu');
 
-  } catch (error: { message: string }) {
+  } catch (e: { message: string }) {
 
-    showToastError(error.message);
+    error(e.message);
 
   } finally {
 
@@ -69,7 +69,7 @@ const getPermisos = async (): Promise<void> => {
 
   } catch (error: { message: string }) {
 
-    showToastError(error.message);
+    error(error.message);
 
   } finally {
 

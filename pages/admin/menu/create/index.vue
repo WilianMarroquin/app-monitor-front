@@ -6,12 +6,12 @@
 // })
 
 import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
-import type { MenuOpcionInterface } from "@/types/admin/MenuOpcionInterface"
-import type { PermisoInterface } from "@/types/admin/PermisoInterface"
+import type {MenuOpcionInterface} from "@/types/admin/MenuOpcionInterface"
+import type {PermisoInterface} from "@/types/admin/PermisoInterface"
 
-const { post, get } = useClienteRequest()
-const { paginaEspera } = useCargandoPagina()
-const { success, error } = useToast()
+const {post, get} = useClienteRequest()
+const {paginaEspera} = useCargandoPagina()
+const {success, error} = useToast()
 const menu = useState('menu')
 
 const guardarOpcion = async (data: MenuOpcionInterface) => {
@@ -21,9 +21,9 @@ const guardarOpcion = async (data: MenuOpcionInterface) => {
     let res = await post('api/menu-opciones', data)
     await obtenerOpcionesMenu()
     success(res.message)
-    navigateTo('admin/menu')
-  } catch (error: { message: string }) {
-    error(error.message)
+    navigateTo('/admin/menu')
+  } catch (e: { message: string }) {
+    error(e.message)
   } finally {
     paginaEspera.value = false
   }
@@ -41,8 +41,8 @@ const getPermisos = async (): Promise<void> => {
       }
     });
     permisos.value = response.data.data;
-  } catch (error: { message: string }) {
-    error(error.message)
+  } catch (e: { message: string }) {
+    error(e.message)
   } finally {
     paginaEspera.value = false
   }
@@ -55,8 +55,8 @@ const obtenerOpcionesMenu = async (): Promise<void> => {
   try {
     const respuesta = await get('api/get/menu-opciones/')
     menu.value = respuesta.data
-  } catch (error: { message: string }) {
-    error(error.message)
+  } catch (e: { message: string }) {
+    error(e.message)
   }
 }
 

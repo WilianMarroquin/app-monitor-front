@@ -22,5 +22,5 @@ export function useToast() {
     error: (title: string) => showToast('error', title),
     warning: (title: string) => showToast('warning', title),
     info: (title: string) => showToast('info', title),
-  };
+  }
 }

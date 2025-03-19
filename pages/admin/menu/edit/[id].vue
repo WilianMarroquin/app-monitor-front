@@ -12,7 +12,7 @@ import type { PermisoInterface } from "@/types/admin/PermisoInterface"
 
 const {put, get} = useClienteRequest();
 
-const {showToastSuccess, showToastError} = useToast();
+const {success, error} = useToast();
 
 const {paginaEspera} = useCargandoPagina();
 
@@ -36,13 +36,13 @@ const actualizarOpcion = async (opcion: MenuOpcionInterface): Promise<void> => {
 
     menu.value = response.data;
 
-    showToastSuccess(response.message);
+    success(response.message);
 
     navigateTo("/admin/menu");
 
-  } catch (error: any) {
+  } catch (e: any) {
 
-    showToastError(error.message);
+    error(e.message);
 
   } finally {
 
@@ -62,9 +62,9 @@ const getOpcion = async (): Promise<void> => {
 
     opcion.value = response.data;
 
-  } catch (error: { message: string }) {
+  } catch (e: { message: string }) {
 
-    showToastError(error.message);
+    error(e.message);
 
   } finally {
 
@@ -85,8 +85,8 @@ const getPermisos = async (): Promise<void> => {
       }
     });
     permisos.value = response.data.data;
-  } catch (error: { message: string }) {
-    showToastError(error.message)
+  } catch (e: { message: string }) {
+    error(e.message)
   } finally {
     paginaEspera.value = false
   }
