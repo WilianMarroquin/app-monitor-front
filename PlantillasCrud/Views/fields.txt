@@ -62,7 +62,7 @@ const onSubmit = () => {
           class="me-3"
         >
           <VIcon class="mr-2 ri-save-3-fill"/>
-          Submit
+          Guardar
         </VBtn>
         <VBtn
           type="reset"
