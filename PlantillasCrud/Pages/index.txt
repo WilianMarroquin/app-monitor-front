@@ -1,45 +1,36 @@
 <script setup lang="ts">
-//
+import { can } from '@layouts/plugins/casl'
+import { manejaError } from '@/utils/funcionesComunes'
 //definePageMeta({
 //  middleware: 'permissions',
 //  action: 'listar {{ modelPlural }}', // Acción requerida
 //  subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
 //});
 
-import {can} from "@layouts/plugins/casl";
+const { deleted } = useClienteRequest()
+const { success, preguntaEliminar } = useToast()
+const dataTable = ref<any>(null)
 
-const { get , deleted } = useClienteRequest();
-
-const { success, error, preguntaEliminar } = useToast()
-
-const headers =  {{ headers }}
+const headers = {{ headers }}
 
 const deleteItem = async (id: number) => {
+  const confirm = await preguntaEliminar('¿Desea Eliminar {{ model }}?')
+  if (!confirm)
+    return
+  try {
+    const respuesta = await deleted(`{{ url }}/${id}`)
 
-  const confirm = await preguntaEliminar('¿Desea Eliminar {{ model }}?' );
-
-  if (!confirm) return;
-
-    try {
-
-      const respuesta = await deleted('{{ url }}/' + id);
-
-      success(respuesta.message);
-
-      await getItems();
-
-    } catch (errorCarpturado) {
-
-      error(errorCarpturado.message);
-
-    }
-
+    success(respuesta.message)
+    if (dataTable.value)
+      dataTable.value.getItems()
+  }
+  catch (errorCarpturado) {
+    manejaError(errorCarpturado)
+  }
 }
-
 </script>
 
 <template>
-
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Listado de {{ modelPlural }}'"/>
     <VBtn
@@ -52,43 +43,40 @@ const deleteItem = async (id: number) => {
       Nuev@ {{ model }}
     </VBtn>
   </div>
-
-      <DataTableComponent
-        :columnas="headers"
-        endpoint="{{ url }}"
-        :cantidadPorPagina="10"
-        :cantidadPorPaginaOpciones="[10, 20, 30]"
-        :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
-      >
-        <template #item.Acciones="{ item }">
-          <VBtn
-            v-if="can('ver {{ modelPlural }}', '{{ modelPlural }}')"
-            icon="ri-eye-line"
-            variant="tonal"
-            color="info"
-            :to="'/{{ directory }}/show/' + item.id "
-            class="mr-1"
-          />
-          <VBtn
-            v-if="can('editar {{ modelPlural }}', '{{ modelPlural }}')"
-            icon="ri-edit-box-line"
-            variant="tonal"
-            color="warning"
-            :to="'/{{ directory }}/edit/' + item.id "
-            class="mr-1"
-          />
-          <VBtn
-            v-if="can('eliminar {{ modelPlural }}', '{{ modelPlural }}')"
-            icon="ri-delete-bin-line"
-            variant="tonal"
-            color="error"
-            @click="deleteItem(item.id)"
-          />
-
-        </template>
-
-      </DataTableComponent>
-
+  <DataTableComponent
+    :columnas="headers"
+    endpoint="{{ url }}"
+    :cantidadPorPagina="10"
+    :cantidadPorPaginaOpciones="[10, 20, 30]"
+    :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
+    ref="dataTable"
+  >
+    <template #item.Acciones="{ item }">
+      <VBtn
+        v-if="can('ver {{ modelPlural }}', '{{ modelPlural }}')"
+        icon="ri-eye-line"
+        variant="tonal"
+        color="info"
+        :to="`/{{ directory }}/show/${item.id}` "
+        class="mr-1"
+      />
+      <VBtn
+        v-if="can('editar {{ modelPlural }}', '{{ modelPlural }}')"
+        icon="ri-edit-box-line"
+        variant="tonal"
+        color="warning"
+        :to="`/{{ directory }}/edit/${item.id}`"
+        class="mr-1"
+      />
+      <VBtn
+        v-if="can('eliminar {{ modelPlural }}', '{{ modelPlural }}')"
+        icon="ri-delete-bin-line"
+        variant="tonal"
+        color="error"
+        @click="deleteItem(item.id)"
+      />
+    </template>
+  </DataTableComponent>
 </template>
 
 <style scoped lang="scss">
