@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Fields from '@/views/pages/roles/fields.vue'
+import Fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
@@ -36,7 +36,7 @@ const guardarRol = async (Rol: RolInterface): Promise<void> => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/roles/"
+      to="/admin/modulo-usuarios/roles/"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

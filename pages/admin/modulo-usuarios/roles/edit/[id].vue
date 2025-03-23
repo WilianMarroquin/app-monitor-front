@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import fields from '@/views/pages/roles/fields.vue'
+import fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 import type { RolInterface } from '@/types/admin/modulo-usuarios/types';
 import { manejaError } from '@/utils/funcionesComunes'
 
@@ -66,7 +66,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/roles/"
+      to="/admin/modulo-usuarios/roles/"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

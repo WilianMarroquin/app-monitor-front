@@ -43,7 +43,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/roles/"
+      to="/admin/modulo-usuarios/roles/"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
