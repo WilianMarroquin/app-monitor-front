@@ -31,7 +31,7 @@ const deleteItem = async (id: number) => {
   if (!confirm)
     return
   try {
-    const respuesta = await deleted(`api/roles/${id}`)
+    const respuesta = await deleted(`api/admin/modulo-usuarios/roles/${id}`)
 
     success(respuesta.message)
     if (dataTable.value)
@@ -58,7 +58,7 @@ const deleteItem = async (id: number) => {
   </div>
   <DataTableComponent
     :columnas="headers"
-    endpoint="api/roles"
+    endpoint="api/admin/modulo-usuarios/roles"
     :cantidadPorPagina="10"
     :cantidadPorPaginaOpciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"

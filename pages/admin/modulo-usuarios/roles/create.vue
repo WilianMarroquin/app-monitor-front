@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import fields from '@/views/pages/roles/fields.vue'
-import type { RolInterface } from '@/types/roles/types'
+import Fields from '@/views/pages/roles/fields.vue'
+import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 // definePageMeta({
@@ -16,7 +16,7 @@ const { paginaEspera } = useCargandoPagina()
 const guardarRol = async (Rol: RolInterface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta: { message: string } = await post('api/roles', Rol)
+    const respuesta: { message: string } = await post('api/admin/modulo-usuarios/roles', Rol)
 
     success(respuesta.message)
     navigateTo('/admin/modulo-usuarios/roles')
@@ -46,7 +46,7 @@ const guardarRol = async (Rol: RolInterface): Promise<void> => {
 
   <VCard>
     <VCardText>
-      <fields :fields="fields"
+      <Fields :fields="fields"
               @emitirDatos="guardarRol"
       />
     </VCardText>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import fields from '@/views/pages/roles/fields.vue'
-import type { RolInterface } from '@/types/roles/types';
+import type { RolInterface } from '@/types/admin/modulo-usuarios/types';
 import { manejaError } from '@/utils/funcionesComunes'
 
 // definePageMeta({
@@ -19,7 +19,7 @@ const id = route.params.id;
 const actualizarRol = async (Rol: RolInterface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta = await put('api/roles/' + id, Rol);
+    const respuesta = await put('api/admin/modulo-usuarios/roles/' + id, Rol);
 
     success(respuesta.message);
     navigateTo('/admin/modulo-usuarios/roles');
@@ -40,7 +40,7 @@ guard_name: null }
 const getRol = async () => {
   paginaEspera.value = true;
   try {
-    const respuesta: {data: RolInterface } = await get(`api/roles/${id}/`);
+    const respuesta: {data: RolInterface } = await get(`api/admin/modulo-usuarios/roles/${id}/`);
     itemRol.value = respuesta.data;
 
   }

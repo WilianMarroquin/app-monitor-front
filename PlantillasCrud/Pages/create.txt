@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import fields from '@/views/pages/{{ modelPlural }}/fields.vue'
+import Fields from '@/views/pages/{{ modelPlural }}/fields.vue'
 import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
@@ -46,7 +46,7 @@ const guardar{{ model }} = async ({{ model }}: {{ model }}Interface): Promise<vo
 
   <VCard>
     <VCardText>
-      <fields :fields="fields"
+      <Fields :fields="fields"
               @emitirDatos="guardar{{ model }}"
       />
     </VCardText>

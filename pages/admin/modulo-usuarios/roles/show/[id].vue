@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RolInterface } from '@/types/roles/types'
+import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 // definePageMeta({
@@ -13,8 +13,7 @@ const { paginaEspera } = useCargandoPagina()
 
 const route = useRoute()
 const id = route.params.id
-const item = ref(<RolInterface>
-  {
+const item = ref(<RolInterface>{
     name: null,
     guard_name: null,
   },
@@ -23,7 +22,7 @@ const item = ref(<RolInterface>
 const getRol = async () => {
   try {
     paginaEspera.value = true
-    const respuesta: { data: RolInterface } = await get('api/roles/' + id)
+    const respuesta: { data: RolInterface } = await get('api/admin/modulo-usuarios/roles/' + id)
     item.value = respuesta.data
   } catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
