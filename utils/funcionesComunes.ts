@@ -1,6 +1,7 @@
-const { error } = useToast()
+import { useToast } from '@/composables/useToast'
 
 export function manejaError(errorCapturado: any) {
+  const { error } = useToast()
   if (errorCapturado.response) {
     const mensaje = errorCapturado.response.data?.message || 'Error del servidor'
 
