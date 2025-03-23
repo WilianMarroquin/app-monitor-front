@@ -1,62 +1,43 @@
 <script setup lang="ts">
+import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
+import { manejaError } from '@/utils/funcionesComunes'
 
 // definePageMeta({
 //   middleware: 'permissions',
-//   action: 'ver {{ modelPlural }}', // Acción requerida
-//   subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// });
+//   action: 'ver {{ modelPlural }}',
+//   subject: '{{ modelPlural }}',
+// })
 
-import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types.ts';
+const { get } = useClienteRequest()
+const { paginaEspera } = useCargandoPagina()
 
-import {ref} from "vue";
-
-const { get } = useClienteRequest();
-
-const { error } = useToast();
-
-const route = useRoute();
-
-const id = route.params.id;
-
-const { paginaEspera } = useCargandoPagina();
-
-const item = ref( <{{ model }}Interface>
+const route = useRoute()
+const id = route.params.id
+const item = ref(<{{ model }}Interface>
 {{ camposFormCreate }}
 )
 
 const get{{ model }} = async () => {
-
   try {
-
-    paginaEspera.value = true;
-
-    const respuesta: { data: {{ model }}Interface } = await get('{{ url }}/' + id );
-
-    item.value = respuesta.data;
-
-
-  } catch (errorCarpturado: { message: string }) {
-
-    error(errorCarpturado.message);
-
+    paginaEspera.value = true
+    const respuesta: { data: {{ model }}Interface } = await get('{{ url }}/' + id )
+    item.value = respuesta.data
   }
-
-  paginaEspera.value = false;
-
+  catch (errorCarpturado: any) {
+    manejaError(errorCarpturado)
+  }
+  finally {
+      paginaEspera.value = false
+    }
 }
+get{{ model }}()
 
 const puedeMostrarDatos = computed(() => {
-
-  return Object.values(item.value).some(valor => valor !== null && valor !== undefined);
-
-});
-
-get{{ model }}();
-
+  return Object.values(item.value).some(valor => valor !== null && valor !== undefined)
+})
 </script>
 
 <template>
-
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
     <h1 v-text="'Visualizar {{ model }}'"/>
     <VBtn
@@ -70,19 +51,12 @@ get{{ model }}();
   </div>
 
   <VCard>
-
     <VCardText>
-
       <VList class="card-list mt-2" v-if="puedeMostrarDatos">
-
-        {{ camposForm }}
-
+  {{ camposForm }}
       </VList>
-
     </VCardText>
-
   </VCard>
-
 </template>
 
 <style scoped lang="scss">
