@@ -14,7 +14,7 @@ import {ref} from "vue";
 
 const { post  } = useClienteRequest();
 
-const { showToastSuccess, showToastError } = useToast();
+const { success, error } = useToast();
 
 const requestInProgress = ref(false) // Evitar solicitudes concurrentes
 const { paginaEspera } = useCargandoPagina();
@@ -30,13 +30,13 @@ const guardar{{ model }} = async ( {{ model }}: {{ model }}Interface ): Promise<
 
       const respuesta: { message: string } = await post('{{ url }}', {{ model }} );
 
-      showToastSuccess(respuesta.message);
+      success(respuesta.message);
 
       navigateTo('/{{ directory }}');
 
-    } catch (error: any) {
+    } catch (errorCarpturado: any) {
 
-      showToastError(error.message);
+      error(errorCarpturado.message);
 
     }  finally {
 

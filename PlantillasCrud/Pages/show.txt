@@ -12,7 +12,7 @@ import {ref} from "vue";
 
 const { get } = useClienteRequest();
 
-const { showToastSuccess, showToastError } = useToast();
+const { error } = useToast();
 
 const route = useRoute();
 
@@ -35,9 +35,9 @@ const get{{ model }} = async () => {
     item.value = respuesta.data;
 
 
-  } catch (error: { message: string }) {
+  } catch (errorCarpturado: { message: string }) {
 
-    showToastError(error.message);
+    error(errorCarpturado.message);
 
   }
 

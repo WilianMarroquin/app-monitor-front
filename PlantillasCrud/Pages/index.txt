@@ -10,7 +10,7 @@ import {can} from "@layouts/plugins/casl";
 
 const { get , deleted } = useClienteRequest();
 
-const { showToastSuccess, showToastError, preguntaEliminar } = useToast()
+const { success, error, preguntaEliminar } = useToast()
 
 const headers =  {{ headers }}
 
@@ -24,13 +24,13 @@ const deleteItem = async (id: number) => {
 
       const respuesta = await deleted('{{ url }}/' + id);
 
-      showToastSuccess(respuesta.message);
+      success(respuesta.message);
 
       await getItems();
 
-    } catch (error) {
+    } catch (errorCarpturado) {
 
-      showToastError(error.message);
+      error(errorCarpturado.message);
 
     }
 

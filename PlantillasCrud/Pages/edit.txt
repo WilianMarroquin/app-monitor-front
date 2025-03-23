@@ -14,7 +14,7 @@ import {ref} from "vue";
 
 const { put, get  } = useClienteRequest();
 
-const { showToastSuccess, showToastError } = useToast();
+const { success, error } = useToast();
 
 const route = useRoute();
 
@@ -36,13 +36,13 @@ const actualizar{{ model }} = async ( {{ model }}: {{ model }}Interface ): Promi
 
       const respuesta = await put('{{ url }}/' + id, {{ model }} );
 
-      showToastSuccess(respuesta.message);
+      success(respuesta.message);
 
       navigateTo('/{{ directory }}');
 
-    } catch (error) {
+    } catch (errorCarpturado) {
 
-      showToastError(error.message);
+      error(errorCarpturado.message);
 
     } finally {
 
@@ -69,9 +69,9 @@ const get{{ model }} = async () => {
 
     item{{ model }}.value = respuesta.data;
 
-  } catch (error: { message: string }) {
+  } catch (errorCarpturado: { message: string }) {
 
-    showToastError(error.message);
+    error(errorCarpturado.message);
 
   }
 
