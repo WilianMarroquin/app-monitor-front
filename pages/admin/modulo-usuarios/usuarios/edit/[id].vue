@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
-import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types';
+import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 // definePageMeta({
@@ -9,61 +9,59 @@ import { manejaError } from '@/utils/funcionesComunes'
 //   subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
 // });
 
-const { put, get } = useClienteRequest();
-const { success } = useToast();
-const { paginaEspera } = useCargandoPagina();
+const { put, get } = useClienteRequest()
+const { success } = useToast()
+const { paginaEspera } = useCargandoPagina()
 
-const route = useRoute();
-const id = route.params.id;
+const route = useRoute()
+const id = route.params.id
 
 const actualizarUser = async (User: UsuarioInterface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta = await put('api/admin/modulo-usuarios/users/' + id, User);
+    const respuesta = await put('api/admin/modulo-usuarios/users/' + id, User)
 
-    success(respuesta.message);
-    navigateTo('/admin/modulo-usuarios/usuarios');
-  }
-  catch (errorCarpturado: any) {
+    success(respuesta.message)
+    navigateTo('/admin/modulo-usuarios/usuarios')
+  } catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
-  }
-  finally {
-    paginaEspera.value = false;
+  } finally {
+    paginaEspera.value = false
   }
 }
 
 const itemUser = ref(<UsuarioInterface>
-{ primer_nombre: null,
-segundo_nombre: null,
-primer_apellido: null,
-segundo_apellido: null,
-usuario: null,
-email: null,
-email_verified_at: null,
-password: null,
-remember_token: null }
+  {
+    primer_nombre: null,
+    segundo_nombre: null,
+    primer_apellido: null,
+    segundo_apellido: null,
+    usuario: null,
+    email: null,
+    email_verified_at: null,
+    password: null,
+    remember_token: null,
+  },
 )
 
 const getUser = async () => {
-  paginaEspera.value = true;
+  paginaEspera.value = true
   try {
-    const respuesta: {data: UsuarioInterface } = await get(`api/admin/modulo-usuarios/users/${id}/`);
-    itemUser.value = respuesta.data;
+    const respuesta: { data: UsuarioInterface } = await get(`api/admin/modulo-usuarios/users/${id}/`)
+    itemUser.value = respuesta.data
 
-  }
-  catch (errorCarpturado: any) {
+  } catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
-  }
-  finally {
-      paginaEspera.value = false
+  } finally {
+    paginaEspera.value = false
   }
 }
 
-getUser();
+getUser()
 
 const puedeMostrarDatos = computed(() => {
-  return Object.values(itemUser .value).some(valor => valor !== null && valor !== undefined);
-});
+  return Object.values(itemUser.value).some(valor => valor !== null && valor !== undefined)
+})
 </script>
 
 <template>
@@ -83,15 +81,15 @@ const puedeMostrarDatos = computed(() => {
 
   <VCard>
 
-      <VCardText>
+    <VCardText>
 
-        <fields :fields="fields"
-                v-if="puedeMostrarDatos"
-                :item="itemUser"
-                @emitirDatos="actualizarUser"
-        />
+      <fields :fields="fields"
+              v-if="puedeMostrarDatos"
+              :item="itemUser"
+              @emitirDatos="actualizarUser"
+      />
 
-      </VCardText>
+    </VCardText>
 
   </VCard>
 

@@ -14,8 +14,8 @@ const dataTable = ref<any>(null)
 
 const headers = [
   {
-    title: 'Nombre',
-    key: 'nombre_completo',
+    title: 'Usuario',
+    key: 'usuario',
   },
   {
     title: 'Usuario',
@@ -84,7 +84,7 @@ const deleteItem = async (id: number) => {
         icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
-        :to="`/admin/modulo-usuarios/usuarios/${item.id}`"
+        :to="`/admin/modulo-usuarios/usuarios/edit/${item.id}`"
         class="mr-1"
       />
       <VBtn

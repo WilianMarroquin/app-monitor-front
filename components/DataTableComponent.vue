@@ -92,10 +92,8 @@ const getItems = async (): Promise<void> => {
     loading.value = true
 
     const respuesta: { data: PaginatedResponse } = await get(endpoint, {
-      params: {
         ...data,
         search: search.value,
-      },
     })
 
     items.value = respuesta.data.data
