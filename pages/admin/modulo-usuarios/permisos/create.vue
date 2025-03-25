@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Fields from '@/views/pages/permissiones/fields.vue'
-import type { PermissionInterface } from '@/types/admin/modulo-usuarios/types'
+import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 // definePageMeta({
@@ -13,7 +13,7 @@ const { post } = useClienteRequest()
 const { success } = useToast()
 const { paginaEspera } = useCargandoPagina()
 
-const guardarPermission = async (Permission: PermissionInterface): Promise<void> => {
+const guardarPermission = async (Permission: PermisoInterface): Promise<void> => {
   paginaEspera.value = true
   try {
     const respuesta: { message: string } = await post('api/admin/modulo-usuarios/permissions', Permission)

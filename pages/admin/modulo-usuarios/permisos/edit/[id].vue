@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import fields from '@/views/pages/permissiones/fields.vue'
-import type { PermissionInterface } from '@/types/admin/modulo-usuarios/types';
+import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types';
 import { manejaError } from '@/utils/funcionesComunes'
 
 // definePageMeta({
@@ -16,7 +16,7 @@ const { paginaEspera } = useCargandoPagina();
 const route = useRoute();
 const id = route.params.id;
 
-const actualizarPermission = async (Permission: PermissionInterface): Promise<void> => {
+const actualizarPermission = async (Permission: PermisoInterface): Promise<void> => {
   paginaEspera.value = true
   try {
     const respuesta = await put('api/admin/modulo-usuarios/permissions/' + id, Permission);
@@ -32,7 +32,7 @@ const actualizarPermission = async (Permission: PermissionInterface): Promise<vo
   }
 }
 
-const itemPermission = ref(<PermissionInterface>
+const itemPermission = ref(<PermisoInterface>
 { name: null,
 subject: null,
 guard_name: null }
@@ -41,7 +41,7 @@ guard_name: null }
 const getPermission = async () => {
   paginaEspera.value = true;
   try {
-    const respuesta: {data: PermissionInterface } = await get(`api/admin/modulo-usuarios/permissions/${id}/`);
+    const respuesta: {data: PermisoInterface } = await get(`api/admin/modulo-usuarios/permissions/${id}/`);
     itemPermission.value = respuesta.data;
 
   }

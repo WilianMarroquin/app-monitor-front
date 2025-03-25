@@ -3,7 +3,7 @@ export interface RolInterface {
   guard_name: string | null
 }
 
-export interface PermissionInterface {
+export interface PermisoInterface {
   name: string | null
   subject: string | null
   guard_name: string | null
