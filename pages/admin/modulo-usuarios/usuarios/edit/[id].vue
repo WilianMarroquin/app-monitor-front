@@ -22,7 +22,7 @@ const actualizarUser = async (User: UsuarioInterface): Promise<void> => {
     const respuesta = await put('api/admin/modulo-usuarios/users/' + id, User);
 
     success(respuesta.message);
-    navigateTo('/usuarios');
+    navigateTo('/admin/modulo-usuarios/usuarios');
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)

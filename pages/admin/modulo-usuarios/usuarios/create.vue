@@ -19,7 +19,7 @@ const guardarUser = async (User: UsuarioInterface): Promise<void> => {
     const respuesta: { message: string } = await post('api/admin/modulo-usuarios/users', User)
 
     success(respuesta.message)
-    navigateTo('/usuarios')
+    navigateTo('/admin/modulo-usuarios/usuarios')
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
@@ -46,8 +46,7 @@ const guardarUser = async (User: UsuarioInterface): Promise<void> => {
 
   <VCard>
     <VCardText>
-      <Fields :fields="fields"
-              @emitirDatos="guardarUser"
+      <Fields @emitirDatos="guardarUser"
       />
     </VCardText>
   </VCard>

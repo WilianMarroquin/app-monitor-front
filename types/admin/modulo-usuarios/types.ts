@@ -10,11 +10,13 @@ export interface PermisoInterface {
 }
 
 export interface UsuarioInterface {
-  primer_nombre: string
-  segundo_nombre: string
-  primer_apellido: string
-  segundo_apellido: string
-  nombre_completo: string
-  usuario: string
-  email: string
+  primer_nombre: string | null
+  segundo_nombre: string | null
+  primer_apellido: string | null
+  segundo_apellido: string | null
+  nombre_completo: string | null
+  usuario: string | null
+  email: string | null
+  password: string | null
+  password_confirmation: string | null
 }
