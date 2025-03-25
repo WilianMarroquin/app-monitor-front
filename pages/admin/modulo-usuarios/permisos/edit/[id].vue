@@ -19,10 +19,10 @@ const id = route.params.id;
 const actualizarPermission = async (Permission: PermissionInterface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta = await put('api/permissions/' + id, Permission);
+    const respuesta = await put('api/admin/modulo-usuarios/permissions/' + id, Permission);
 
     success(respuesta.message);
-    navigateTo('/permisos');
+    navigateTo('/admin/modulo-usuarios/permisos');
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
@@ -41,7 +41,7 @@ guard_name: null }
 const getPermission = async () => {
   paginaEspera.value = true;
   try {
-    const respuesta: {data: PermissionInterface } = await get(`api/permissions/${id}/`);
+    const respuesta: {data: PermissionInterface } = await get(`api/admin/modulo-usuarios/permissions/${id}/`);
     itemPermission.value = respuesta.data;
 
   }
@@ -67,7 +67,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/permissiones/"
+      to="/admin/modulo-usuarios/permisos"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

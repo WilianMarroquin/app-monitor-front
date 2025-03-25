@@ -24,7 +24,7 @@ const item = ref(<PermissionInterface>
 const getPermission = async () => {
   try {
     paginaEspera.value = true
-    const respuesta: { data: PermissionInterface } = await get('api/permissions/' + id)
+    const respuesta: { data: PermissionInterface } = await get('api/admin/modulo-usuarios/permissions/' + id)
     item.value = respuesta.data
   } catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
@@ -45,7 +45,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/permissiones/"
+      to="/admin/modulo-usuarios/permisos"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

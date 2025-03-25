@@ -13,21 +13,21 @@ const dataTable = ref<any>(null)
 
 const headers = [
   {
-    "title": "Name",
-    "value": "name"
+    title: 'Name',
+    key: 'name',
   },
   {
-    "title": "Subject",
-    "value": "subject"
+    title: 'Suject',
+    key: 'subject',
   },
   {
-    "title": "Guard Name",
-    "value": "guard_name"
+    title: 'guard_name',
+    key: 'guard_name',
   },
   {
-    "title": "Acciones",
-    "value": "Acciones"
-  }
+    title: 'Accones',
+    key: 'Acciones',
+  },
 ]
 
 const deleteItem = async (id: number) => {
@@ -35,7 +35,7 @@ const deleteItem = async (id: number) => {
   if (!confirm)
     return
   try {
-    const respuesta = await deleted(`api/permissions/${id}`)
+    const respuesta = await deleted(`api/admin/modulo-usuarios/permissions${id}`)
 
     success(respuesta.message)
     if (dataTable.value)
@@ -54,7 +54,7 @@ const deleteItem = async (id: number) => {
       v-if="can('crear permisos', 'permissiones')"
       class="ml-auto"
       color="success"
-      to="/permissiones/create"
+      to="/admin/modulo-usuarios/permisos/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
       Nuev@ Permission
@@ -62,7 +62,7 @@ const deleteItem = async (id: number) => {
   </div>
   <DataTableComponent
     :columnas="headers"
-    endpoint="api/permissions"
+    endpoint="api/admin/modulo-usuarios/permissions"
     :cantidadPorPagina="10"
     :cantidadPorPaginaOpciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
@@ -74,7 +74,7 @@ const deleteItem = async (id: number) => {
         icon="ri-eye-line"
         variant="tonal"
         color="info"
-        :to="`/permissiones/show/${item.id}` "
+        :to="`/admin/modulo-usuarios/permisos/show/${item.id}` "
         class="mr-1"
       />
       <VBtn
@@ -82,7 +82,7 @@ const deleteItem = async (id: number) => {
         icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
-        :to="`/permissiones/edit/${item.id}`"
+        :to="`/admin/modulo-usuarios/permisos/edit/${item.id}`"
         class="mr-1"
       />
       <VBtn

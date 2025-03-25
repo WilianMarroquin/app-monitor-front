@@ -16,10 +16,10 @@ const { paginaEspera } = useCargandoPagina()
 const guardarPermission = async (Permission: PermissionInterface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta: { message: string } = await post('api/permissions', Permission)
+    const respuesta: { message: string } = await post('api/admin/modulo-usuarios/permissions', Permission)
 
     success(respuesta.message)
-    navigateTo('/permisos')
+    navigateTo('/admin/modulo-usuarios/permisos')
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
@@ -36,7 +36,7 @@ const guardarPermission = async (Permission: PermissionInterface): Promise<void>
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/permissiones/"
+      to="/admin/modulo-usuarios/permisos"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
@@ -46,8 +46,7 @@ const guardarPermission = async (Permission: PermissionInterface): Promise<void>
 
   <VCard>
     <VCardText>
-      <Fields :fields="fields"
-              @emitirDatos="guardarPermission"
+      <Fields @emitirDatos="guardarPermission"
       />
     </VCardText>
   </VCard>
