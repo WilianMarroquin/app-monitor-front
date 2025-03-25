@@ -18,8 +18,9 @@ const headers = [
     key: 'usuario',
   },
   {
-    title: 'Usuario',
-    key: 'usuario',
+    title: 'Roles',
+    key: 'roles',
+    orderable: false,
   },
   {
     title: 'Email',
@@ -69,7 +70,19 @@ const deleteItem = async (id: number) => {
     :cantidadPorPaginaOpciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
     ref="dataTable"
+    :relaciones="['roles']"
   >
+    <template #item.roles="{ item }">
+      <VChip
+        v-for="rol in item.roles"
+        :key="rol.id"
+        color="primary"
+        class="ma-1"
+      >
+        {{ rol.name }}
+      </VChip>
+    </template>
+
     <template #item.Acciones="{ item }">
       <VBtn
         v-if="can('ver usuarios', 'usuarios')"
