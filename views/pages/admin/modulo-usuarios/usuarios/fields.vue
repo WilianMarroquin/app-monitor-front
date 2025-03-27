@@ -34,7 +34,6 @@ if (props.item) {
 }
 
 const onSubmit = () => {
-  console.log('prueba')
   refForm.value?.validate().then(({ valid }) => {
     if (valid) {
       emit('emitirDatos', data.value)

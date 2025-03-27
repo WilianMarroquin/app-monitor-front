@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import Autenticacion from "@/views/pages/admin/modulo-usuarios/usuarios/SeccionAutenticacion.vue"
 import fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
+import RolesPermisos from '@/views/pages/admin/modulo-usuarios/usuarios/SeccionRolesPermisos.vue'
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
@@ -79,20 +81,41 @@ const puedeMostrarDatos = computed(() => {
 
   </div>
 
-  <VCard>
+  <VExpansionPanels multiple>
 
-    <VCardText>
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        Información General
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <fields :fields="fields"
+                class="mt-1"
+                v-if="puedeMostrarDatos"
+                :item="itemUser"
+                @emitirDatos="actualizarUser"
+        />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-      <fields :fields="fields"
-              v-if="puedeMostrarDatos"
-              :item="itemUser"
-              @emitirDatos="actualizarUser"
-      />
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        Autenticación
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <Autenticacion />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-    </VCardText>
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        Roles y Permisos
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <RolesPermisos />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-  </VCard>
-
+  </VExpansionPanels>
 </template>
 
 <style scoped lang="scss">
