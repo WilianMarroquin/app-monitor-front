@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import Autenticacion from "@/views/pages/admin/modulo-usuarios/usuarios/SeccionAutenticacion.vue"
 import fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
-import RolesPermisos from '@/views/pages/admin/modulo-usuarios/usuarios/SeccionRolesPermisos.vue'
+import Roles from '@/views/pages/admin/modulo-usuarios/usuarios/SeccionRoles.vue'
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
+import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 // definePageMeta({
@@ -16,7 +18,8 @@ const { success } = useToast()
 const { paginaEspera } = useCargandoPagina()
 
 const route = useRoute()
-const id = route.params.id
+const id = <number>route.params.id
+const rolesAsignadosActualmente = ref<RolInterface[]>([])
 
 const actualizarUser = async (User: UsuarioInterface): Promise<void> => {
   paginaEspera.value = true
@@ -30,6 +33,11 @@ const actualizarUser = async (User: UsuarioInterface): Promise<void> => {
   } finally {
     paginaEspera.value = false
   }
+}
+
+interface UserEdit {
+  roles: RolInterface[]
+  user: UsuarioInterface
 }
 
 const itemUser = ref(<UsuarioInterface>
@@ -49,8 +57,9 @@ const itemUser = ref(<UsuarioInterface>
 const getUser = async () => {
   paginaEspera.value = true
   try {
-    const respuesta: { data: UsuarioInterface } = await get(`api/admin/modulo-usuarios/users/${id}/`)
-    itemUser.value = respuesta.data
+    const respuesta: SendResponseInterface<UserEdit> = await get(`api/admin/modulo-usuarios/users/${id}/`)
+    itemUser.value = respuesta.data?.user
+    rolesAsignadosActualmente.value = respuesta.data.roles
 
   } catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
@@ -102,16 +111,16 @@ const puedeMostrarDatos = computed(() => {
         Autenticación
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <Autenticacion />
+        <Autenticacion/>
       </VExpansionPanelText>
     </VExpansionPanel>
 
     <VExpansionPanel>
       <VExpansionPanelTitle>
-        Roles y Permisos
+        Roles
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <RolesPermisos />
+        <Roles :rolesActuales="rolesAsignadosActualmente" :user_id="id"/>
       </VExpansionPanelText>
     </VExpansionPanel>
 

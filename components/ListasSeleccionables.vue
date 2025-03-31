@@ -66,7 +66,7 @@ const filteredSelectedItems = computed(() => {
 const selectItem = item => {
   selectedItems.value.push(item)
   availableItems.value = availableItems.value.filter(i => i.id !== item.id)
-  emit('update:selectedItems', selectedItems.value)
+  emit('update:selectedItems', item)
 }
 
 // Función para deseleccionar un item
@@ -93,14 +93,6 @@ const moveAllToAvailable = () => {
 
 <template>
   <VContainer fluid>
-    <VRow justify="center">
-      <VCol cols="12">
-        <h2 class="text-h5 text-center font-weight-medium mb-4">
-          {{ `Selector de ${props.tipo}` }}
-        </h2>
-      </VCol>
-    </VRow>
-
     <VRow
       align="stretch"
       justify="center"
