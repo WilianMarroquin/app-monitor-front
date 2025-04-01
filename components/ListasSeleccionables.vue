@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 
-// Props para el título, items disponibles y seleccionados
 const props = defineProps({
   title: {
     type: String,
@@ -21,18 +20,18 @@ const props = defineProps({
   },
 })
 
-// Emitir eventos cuando los items seleccionados cambien
-const emit = defineEmits(['update:selectedItems'])
+const emit = defineEmits([
+  'update:selectedItems',
+  'itemAgregada',
+  'itemQuitada',
+])
 
-// Items disponibles y seleccionados
 const availableItems = ref([])
 const selectedItems = ref([])
 
-// Campos de búsqueda
 const searchAvailable = ref('')
 const searchSelected = ref('')
 
-// Inicializar items
 const inicializarItems = () => {
   selectedItems.value = [...props.selectedItems]
   availableItems.value = props.items.filter(
@@ -40,7 +39,6 @@ const inicializarItems = () => {
   )
 }
 
-// Watcher para sincronizar props y estado interno
 watch(
   () => [props.items, props.selectedItems],
   () => {
@@ -49,7 +47,6 @@ watch(
   { immediate: true, deep: true },
 )
 
-// Items filtrados según búsqueda
 const filteredAvailableItems = computed(() => {
   return availableItems.value.filter(item =>
     item.name.toLowerCase().includes(searchAvailable.value.toLowerCase()),
@@ -62,34 +59,35 @@ const filteredSelectedItems = computed(() => {
   )
 })
 
-// Función para seleccionar un item
 const selectItem = item => {
   selectedItems.value.push(item)
   availableItems.value = availableItems.value.filter(i => i.id !== item.id)
-  emit('update:selectedItems', item)
+  emit('update:selectedItems', selectedItems.value)
+  emit('itemAgregada', item)
 }
 
-// Función para deseleccionar un item
 const deselectItem = item => {
   availableItems.value.push(item)
   selectedItems.value = selectedItems.value.filter(i => i.id !== item.id)
   emit('update:selectedItems', selectedItems.value)
+  emit('itemQuitada', item)
 }
 
-// Función para mover todos los disponibles a seleccionados
 const moveAllToSelected = () => {
+  availableItems.value.forEach(item => emit('itemAgregada', item))
   selectedItems.value.push(...availableItems.value)
   availableItems.value = []
   emit('update:selectedItems', selectedItems.value)
 }
 
-// Función para mover todos los seleccionados a disponibles
 const moveAllToAvailable = () => {
+  selectedItems.value.forEach(item => emit('itemQuitada', item))
   availableItems.value.push(...selectedItems.value)
   selectedItems.value = []
   emit('update:selectedItems', selectedItems.value)
 }
 </script>
+
 
 <template>
   <VContainer fluid>
