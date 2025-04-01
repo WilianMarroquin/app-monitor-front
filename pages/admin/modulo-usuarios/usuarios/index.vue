@@ -34,17 +34,16 @@ const headers = [
 
 const deleteItem = async (id: number) => {
   const confirm = await preguntaEliminar('¿Desea Eliminar User?')
-  if (!confirm) {
+  if (!confirm)
     return
-  }
   try {
     const respuesta = await deleted(`api/admin/modulo-usuarios/users/${id}`)
 
     success(respuesta.message)
-    if (dataTable.value) {
+    if (dataTable.value)
       dataTable.value.getItems()
-    }
-  } catch (errorCarpturado) {
+  }
+  catch (errorCarpturado) {
     manejaError(errorCarpturado)
   }
 }

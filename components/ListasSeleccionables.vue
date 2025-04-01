@@ -48,10 +48,10 @@ const disponiblesFiltrados = computed(() =>
 )
 
 const seleccionadasFiltradas = computed(() =>
-  seleccionadas.value.filter(item =>
-    item.name.toLowerCase().includes(searchSeleccionada.value.toLowerCase()),
-  ),
-)
+  seleccionadas.value?.filter(item =>
+    item.name?.toLowerCase().includes(searchSeleccionada.value?.toLowerCase() || ''),
+  ) || []
+);
 
 const seleccionar = item => {
   seleccionadas.value.push(item)

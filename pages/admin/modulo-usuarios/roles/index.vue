@@ -13,17 +13,21 @@ const dataTable = ref<any>(null)
 
 const headers = [
   {
-    "title": "Name",
-    "value": "name"
+    title: 'Id',
+    key: 'id',
   },
   {
-    "title": "Guard Name",
-    "value": "guard_name"
+    title: 'Name',
+    key: 'name',
   },
   {
-    "title": "Acciones",
-    "value": "Acciones"
-  }
+    title: 'Permisos',
+    key: 'permissions',
+  },
+  {
+    title: 'Acciones',
+    key: 'Acciones',
+  },
 ]
 
 const deleteItem = async (id: number) => {
@@ -63,7 +67,18 @@ const deleteItem = async (id: number) => {
     :cantidadPorPaginaOpciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
     ref="dataTable"
+    :relaciones="['permissions']"
   >
+    <template #item.permissions="{ item }">
+      <VChip
+        v-for="permiso in item.permissions"
+        :key="permiso.id"
+        color="primary"
+        class="ma-1"
+      >
+        {{ permiso.name }}
+      </VChip>
+    </template>
     <template #item.Acciones="{ item }">
       <VBtn
         v-if="can('ver roles', 'roles')"
