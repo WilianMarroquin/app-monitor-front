@@ -7,11 +7,12 @@ import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'editar usuarios', // Acción requerida
-//   subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// });
+definePageMeta({
+  navActiveLink: 'admin-modulo-usuarios-usuarios',
+  // middleware: 'permissions',
+  // action: 'editar usuarios', // Acción requerida
+  // subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+});
 
 const { put, get } = useClienteRequest()
 const { success } = useToast()

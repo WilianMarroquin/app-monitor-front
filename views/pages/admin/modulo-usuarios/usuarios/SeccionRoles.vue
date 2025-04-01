@@ -50,7 +50,6 @@ const getRolesDeUsuario = async () => {
 getRolesDeUsuario()
 
 const actualizarRolSeleccionado = async (rol: RolInterface) => {
-
   paginaEspera.value = true
   try {
     const res = await post('api/admin/modulo-usuarios/users/asignar/rol/aUser', {
@@ -87,8 +86,8 @@ const quitarRolSeleccionado = async (rol: RolInterface): Promise<void> => {
 
 <template>
   <ListasSeleccionables
-    :items="rolesDisponibles"
-    :selected-items="rolesAsignadoActualmente"
+    :ItemsDisponibles="rolesDisponibles"
+    :ItemsSeleccionadas="rolesAsignadoActualmente"
     tipo="Roles"
     @itemAgregada="actualizarRolSeleccionado"
     @itemQuitada="quitarRolSeleccionado"

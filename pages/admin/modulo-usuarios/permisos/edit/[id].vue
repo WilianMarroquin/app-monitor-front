@@ -3,11 +3,12 @@ import fields from '@/views/pages/permissiones/fields.vue'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types';
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'editar permisos', // Acción requerida
-//   subject: 'permisos',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// });
+definePageMeta({
+  navActiveLink: 'admin-modulo-usuarios-permisos',
+  // middleware: 'permissions',
+  // action: 'editar permisos', // Acción requerida
+  // subject: 'permisos',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+});
 
 const { put, get } = useClienteRequest();
 const { success } = useToast();

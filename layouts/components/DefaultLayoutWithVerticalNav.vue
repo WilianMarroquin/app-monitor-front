@@ -1,23 +1,17 @@
 <script lang="ts" setup>
 import navItems from '@/navigation/vertical'
-
-const opcionesMenu = <[]>useState('menu');
-
-import { useConfigStore } from '@core/stores/config'
-import { themeConfig } from '@themeConfig'
-
-// Components
 import Footer from '@/layouts/components/Footer.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
 import NavBarI18n from '@core/components/I18n.vue'
 
-// @layouts plugin
+import { useConfigStore } from '@core/stores/config'
+import { themeConfig } from '@themeConfig'
 import { VerticalNavLayout } from '@layouts'
 
 const configStore = useConfigStore()
+const opcionesMenu = <[]>useState('menu');
 
-// ℹ️ Provide animation name for vertical nav collapse icon.
 const verticalNavHeaderActionAnimationName = ref<'rotate-180' | 'rotate-back-180' | null>(null)
 
 watch([

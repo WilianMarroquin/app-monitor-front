@@ -2,11 +2,12 @@
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'ver permisos',
-//   subject: 'permisos',
-// })
+definePageMeta({
+  navActiveLink: 'admin-modulo-usuarios-permisos',
+  // middleware: 'permissions',
+  // action: 'ver permisos',
+  // subject: 'permisos',
+})
 
 const { get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()

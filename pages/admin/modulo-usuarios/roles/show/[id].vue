@@ -2,11 +2,12 @@
 import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'ver roles',
-//   subject: 'roles',
-// })
+definePageMeta({
+  navActiveLink: 'admin-modulo-usuarios-roles',
+  // middleware: 'permissions',
+  // action: 'ver roles',
+  // subject: 'roles',
+})
 
 const { get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()

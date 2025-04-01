@@ -3,11 +3,12 @@ import Fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'crear usuarios', // Acción requerida
-//   subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// })
+definePageMeta({
+  navActiveLink: 'admin-modulo-usuarios-usuarios',
+  // middleware: 'permissions',
+  // action: 'crear usuarios', // Acción requerida
+  // subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+})
 
 const { post } = useClienteRequest()
 const { success } = useToast()

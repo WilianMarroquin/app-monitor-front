@@ -2,11 +2,12 @@
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'ver usuarios',
-//   subject: 'usuarios',
-// })
+definePageMeta({
+  navActiveLink: 'admin-modulo-usuarios-usuarios',
+  // middleware: 'permissions',
+  // action: 'ver usuarios',
+  // subject: 'usuarios',
+})
 
 const { get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()

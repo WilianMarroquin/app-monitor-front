@@ -3,11 +3,12 @@ import Fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'crear roles', // Acción requerida
-//   subject: 'roles',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// })
+definePageMeta({
+  navActiveLink: 'admin-modulo-usuarios-roles',
+  // middleware: 'permissions',
+  // action: 'crear roles', // Acción requerida
+  // subject: 'roles',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+})
 
 const { post } = useClienteRequest()
 const { success } = useToast()
