@@ -42,7 +42,7 @@ const puedeMostrarDatos = computed(() => {
 
 <template>
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
-    <h1 v-text="'Visualizar Permission'"/>
+    <h1 v-text="'Visualizar Permiso'"/>
     <VBtn
       class="ml-auto"
       color="secondary"

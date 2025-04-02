@@ -13,20 +13,21 @@ const dataTable = ref<any>(null)
 
 const headers = [
   {
-    title: 'Name',
+    title: 'id',
+    key: 'id',
+  },
+  {
+    title: 'Nombre',
     key: 'name',
   },
   {
-    title: 'Suject',
+    title: 'Sujeto',
     key: 'subject',
   },
   {
-    title: 'guard_name',
-    key: 'guard_name',
-  },
-  {
-    title: 'Accones',
+    title: 'Acciones',
     key: 'Acciones',
+    sortable: false,
   },
 ]
 
