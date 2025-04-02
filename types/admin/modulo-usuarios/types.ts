@@ -11,6 +11,7 @@ export interface PermisoInterface {
 }
 
 export interface UsuarioInterface {
+  id: number
   primer_nombre: string | null
   segundo_nombre: string | null
   primer_apellido: string | null

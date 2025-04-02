@@ -139,21 +139,21 @@ const onSubmit = () => {
       </VCol>
 
       <VCol cols="12" class="d-flex flex-wrap justify-end ">
-        <VBtn
-          type="reset"
-          variant="tonal"
-          color="error"
-          to="/admin/modulo-usuarios/usuarios"
-          class="me-3"
-        >
-          <VIcon class="mr-2 ri-contract-left-fill"/>
-          Cancel
-        </VBtn>
+<!--        <VBtn-->
+<!--          type="reset"-->
+<!--          variant="tonal"-->
+<!--          color="error"-->
+<!--          to="/admin/modulo-usuarios/usuarios"-->
+<!--          class="me-3"-->
+<!--        >-->
+<!--          <VIcon class="mr-2 ri-contract-left-fill"/>-->
+<!--          Cancel-->
+<!--        </VBtn>-->
         <VBtn
           type="submit"
         >
           <VIcon class="mr-2 ri-save-3-fill"/>
-          Guardar
+          Guardar Información General
         </VBtn>
       </VCol>
     </VRow>

@@ -2,6 +2,7 @@
 import Fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
+import type { SendResponseInterface } from '@/types/generales/types'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-usuarios',
@@ -17,10 +18,10 @@ const { paginaEspera } = useCargandoPagina()
 const guardarUser = async (User: UsuarioInterface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta: { message: string } = await post('api/admin/modulo-usuarios/users', User)
+    const respuesta: SendResponseInterface<UsuarioInterface> = await post('api/admin/modulo-usuarios/users', User)
 
     success(respuesta.message)
-    navigateTo('/admin/modulo-usuarios/usuarios')
+    navigateTo(`/admin/modulo-usuarios/usuarios/edit/${respuesta?.data.id}`)
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)

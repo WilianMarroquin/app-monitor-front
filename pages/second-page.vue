@@ -46,10 +46,16 @@ const actualizarPermisoSeleccionados = (permisos: PermisoInterface[]) => {
 </script>
 
 <template>
-  <ListasSeleccionables
-    :items="permisosDiponibles"
-    :selected-items="permisosActualesDeRol"
-    tipo="Permisos"
-    @update:selected-items="actualizarPermisoSeleccionados"
-  />
+  <v-tooltip bottom>
+    <template v-slot:activator="{ props }">
+      <v-btn v-bind="props" color="primary" icon>
+        <v-icon>mdi-information</v-icon>
+      </v-btn>
+    </template>
+    <span>Información importante</span>
+  </v-tooltip>
+
+  <v-btn color="primary" icon v-tooltip="'Información importante'">
+    <v-icon>mdi-information</v-icon>
+  </v-btn>
 </template>

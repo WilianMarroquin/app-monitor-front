@@ -27,10 +27,12 @@ const searchDisponible = ref('')
 const searchSeleccionada = ref('')
 
 const inicializarItems = () => {
-  seleccionadas.value = [...props.ItemsSeleccionadas]
-  disponibles.value = props.ItemsDisponibles.filter(
-    item => !props.ItemsSeleccionadas.some(sel => sel.id === item.id),
-  )
+  seleccionadas.value = Array.isArray(props.ItemsSeleccionadas) ? [...props.ItemsSeleccionadas] : []
+  disponibles.value = Array.isArray(props.ItemsDisponibles)
+    ? props.ItemsDisponibles.filter(
+      item => !seleccionadas.value.some(sel => sel.id === item.id),
+    )
+    : []
 }
 
 watch(
@@ -50,8 +52,8 @@ const disponiblesFiltrados = computed(() =>
 const seleccionadasFiltradas = computed(() =>
   seleccionadas.value?.filter(item =>
     item.name?.toLowerCase().includes(searchSeleccionada.value?.toLowerCase() || ''),
-  ) || []
-);
+  ) || [],
+)
 
 const seleccionar = item => {
   seleccionadas.value.push(item)

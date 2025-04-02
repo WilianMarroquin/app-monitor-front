@@ -93,12 +93,14 @@ const deleteItem = async (id: number) => {
         icon="ri-eye-line"
         variant="tonal"
         color="info"
+        v-tooltip="'Ver'"
         :to="`/admin/modulo-usuarios/usuarios/show/${item.id}` "
         class="mr-1"
       />
       <VBtn
         v-if="can('editar usuarios', 'usuarios')"
         icon="ri-edit-box-line"
+        v-tooltip="'Gestionar'"
         variant="tonal"
         color="warning"
         :to="`/admin/modulo-usuarios/usuarios/edit/${item.id}`"
@@ -108,6 +110,7 @@ const deleteItem = async (id: number) => {
         v-if="can('eliminar usuarios', 'usuarios')"
         icon="ri-delete-bin-line"
         variant="tonal"
+        v-tooltip="'Eliminar'"
         color="error"
         @click="deleteItem(item.id)"
       />

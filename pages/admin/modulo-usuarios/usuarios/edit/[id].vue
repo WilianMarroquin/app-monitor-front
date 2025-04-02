@@ -12,7 +12,7 @@ definePageMeta({
   // middleware: 'permissions',
   // action: 'editar usuarios', // Acción requerida
   // subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-});
+})
 
 const { put, get } = useClienteRequest()
 const { success } = useToast()
@@ -28,7 +28,6 @@ const actualizarUser = async (User: UsuarioInterface): Promise<void> => {
     const respuesta = await put('api/admin/modulo-usuarios/users/' + id, User)
 
     success(respuesta.message)
-    navigateTo('/admin/modulo-usuarios/usuarios')
   } catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
   } finally {
@@ -91,41 +90,54 @@ const puedeMostrarDatos = computed(() => {
 
   </div>
 
-  <VExpansionPanels multiple>
+  <VCard>
+    <VCardText>
+      <VExpansionPanels multiple>
 
-    <VExpansionPanel>
-      <VExpansionPanelTitle>
-        Información General
-      </VExpansionPanelTitle>
-      <VExpansionPanelText>
-        <fields :fields="fields"
-                class="mt-1"
-                v-if="puedeMostrarDatos"
-                :item="itemUser"
-                @emitirDatos="actualizarUser"
-        />
-      </VExpansionPanelText>
-    </VExpansionPanel>
+        <VExpansionPanel>
+          <VExpansionPanelTitle>
+            Información General
+          </VExpansionPanelTitle>
+          <VExpansionPanelText>
+            <fields :fields="fields"
+                    class="mt-1"
+                    v-if="puedeMostrarDatos"
+                    :item="itemUser"
+                    @emitirDatos="actualizarUser"
+            />
+          </VExpansionPanelText>
+        </VExpansionPanel>
 
-    <VExpansionPanel>
-      <VExpansionPanelTitle>
-        Autenticación
-      </VExpansionPanelTitle>
-      <VExpansionPanelText>
-        <Autenticacion/>
-      </VExpansionPanelText>
-    </VExpansionPanel>
+        <VExpansionPanel>
+          <VExpansionPanelTitle>
+            Autenticación
+          </VExpansionPanelTitle>
+          <VExpansionPanelText>
+            <Autenticacion/>
+          </VExpansionPanelText>
+        </VExpansionPanel>
 
-    <VExpansionPanel>
-      <VExpansionPanelTitle>
-        Roles
-      </VExpansionPanelTitle>
-      <VExpansionPanelText>
-        <Roles :rolesActuales="rolesAsignadosActualmente" :user_id="id"/>
-      </VExpansionPanelText>
-    </VExpansionPanel>
+        <VExpansionPanel>
+          <VExpansionPanelTitle>
+            Roles
+          </VExpansionPanelTitle>
+          <VExpansionPanelText>
+            <Roles :rolesActuales="rolesAsignadosActualmente" :user_id="id"/>
+          </VExpansionPanelText>
+        </VExpansionPanel>
 
-  </VExpansionPanels>
+      </VExpansionPanels>
+      <VCol cols="12" class="text-end">
+        <VBtn
+          type="submit"
+          to="/admin/modulo-usuarios/usuarios"
+        >
+          <VIcon class="mr-2 ri-save-3-fill"/>
+          Finalizar
+        </VBtn>
+      </VCol>
+    </VCardText>
+  </VCard>
 </template>
 
 <style scoped lang="scss">
