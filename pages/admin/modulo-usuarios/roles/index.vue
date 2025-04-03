@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { can } from '@layouts/plugins/casl'
 import { manejaError } from '@/utils/funcionesComunes'
+import { can } from '@layouts/plugins/casl'
 //definePageMeta({
 //  middleware: 'permissions',
 //  action: 'listar roles', // Acción requerida
@@ -62,12 +62,12 @@ const deleteItem = async (id: number) => {
     </VBtn>
   </div>
   <DataTableComponent
+    ref="dataTable"
     :columnas="headers"
     endpoint="api/admin/modulo-usuarios/roles"
-    :cantidadPorPagina="10"
-    :cantidadPorPaginaOpciones="[10, 20, 30]"
+    :cantidad-por-pagina="10"
+    :cantidad-por-pagina-opciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
-    ref="dataTable"
     :relaciones="['permissions']"
   >
     <template #item.permissions="{ item }">

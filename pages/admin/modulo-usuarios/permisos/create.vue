@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Fields from '@/views/pages/permissiones/fields.vue'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
+import Fields from '@/views/pages/permissiones/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-permisos',
@@ -47,8 +47,7 @@ const guardarPermission = async (Permission: PermisoInterface): Promise<void> =>
 
   <VCard>
     <VCardText>
-      <Fields @emitirDatos="guardarPermission"
-      />
+      <Fields @emitir-datos="guardarPermission" />
     </VCardText>
   </VCard>
 </template>

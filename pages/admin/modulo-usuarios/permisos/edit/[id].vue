@@ -1,68 +1,68 @@
 <script setup lang="ts">
-import fields from '@/views/pages/permissiones/fields.vue'
-import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types';
+import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
+import Fields from '@/views/pages/permissiones/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-permisos',
   // middleware: 'permissions',
   // action: 'editar permisos', // Acción requerida
   // subject: 'permisos',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-});
+})
 
-const { put, get } = useClienteRequest();
-const { success } = useToast();
-const { paginaEspera } = useCargandoPagina();
+const { put, get } = useClienteRequest()
+const { success } = useToast()
+const { paginaEspera } = useCargandoPagina()
 
-const route = useRoute();
-const id = route.params.id;
+const route = useRoute()
+const id = route.params.id
 
 const actualizarPermission = async (Permission: PermisoInterface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta = await put('api/admin/modulo-usuarios/permissions/' + id, Permission);
+    const respuesta: SendResponseInterface<PermisoInterface> = await put(`api/admin/modulo-usuarios/permissions/${id}`, Permission)
 
-    success(respuesta.message);
-    navigateTo('/admin/modulo-usuarios/permisos');
+    success(respuesta.message)
+    navigateTo('/admin/modulo-usuarios/permisos')
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
   }
   finally {
-    paginaEspera.value = false;
+    paginaEspera.value = false
   }
 }
 
-const itemPermission = ref(<PermisoInterface>
-{ name: null,
-subject: null,
-guard_name: null }
-)
+const itemPermission = ref<PermisoInterface | [] >({
+  name: null,
+  subject: null,
+  guard_name: null,
+})
 
 const getPermission = async () => {
-  paginaEspera.value = true;
+  paginaEspera.value = true
   try {
-    const respuesta: {data: PermisoInterface } = await get(`api/admin/modulo-usuarios/permissions/${id}/`);
-    itemPermission.value = respuesta.data;
+    const respuesta: SendResponseInterface<PermisoInterface> = await get(`api/admin/modulo-usuarios/permissions/${id}/`)
 
+    itemPermission.value = respuesta.data ?? []
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
   }
   finally {
-      paginaEspera.value = false
+    paginaEspera.value = false
   }
 }
 
-getPermission();
+getPermission()
 
 const puedeMostrarDatos = computed(() => {
-  return Object.values(itemPermission .value).some(valor => valor !== null && valor !== undefined);
-});
+  return Object.values(itemPermission.value).some(valor => valor !== null && valor !== undefined)
+})
 </script>
 
 <template>
-
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
     <h1 v-text="'Editar Permiso'"/>
     <VBtn
@@ -77,19 +77,14 @@ const puedeMostrarDatos = computed(() => {
   </div>
 
   <VCard>
-
-      <VCardText>
-
-        <fields :fields="fields"
-                v-if="puedeMostrarDatos"
-                :item="itemPermission"
-                @emitirDatos="actualizarPermission"
-        />
-
-      </VCardText>
-
+    <VCardText>
+      <Fields
+        v-if="puedeMostrarDatos"
+        :item="itemPermission"
+        @emitir-datos="actualizarPermission"
+      />
+    </VCardText>
   </VCard>
-
 </template>
 
 <style scoped lang="scss">

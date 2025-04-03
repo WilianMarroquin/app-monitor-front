@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 definePageMeta({
@@ -14,25 +15,29 @@ const { paginaEspera } = useCargandoPagina()
 
 const route = useRoute()
 const id = route.params.id
-const item = ref(<PermisoInterface>
-  {
-    name: null,
-    subject: null,
-    guard_name: null,
-  },
-)
+
+const item = ref<PermisoInterface | [] >({
+  name: null,
+  subject: null,
+  guard_name: null,
+})
 
 const getPermission = async () => {
   try {
     paginaEspera.value = true
-    const respuesta: { data: PermisoInterface } = await get('api/admin/modulo-usuarios/permissions/' + id)
-    item.value = respuesta.data
-  } catch (errorCarpturado: any) {
+
+    const respuesta: SendResponseInterface<PermisoInterface> = await get(`api/admin/modulo-usuarios/permissions/${id}`)
+
+    item.value = respuesta.data ?? []
+  }
+  catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
-  } finally {
+  }
+  finally {
     paginaEspera.value = false
   }
 }
+
 getPermission()
 
 const puedeMostrarDatos = computed(() => {

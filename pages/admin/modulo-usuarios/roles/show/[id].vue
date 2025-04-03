@@ -14,23 +14,28 @@ const { paginaEspera } = useCargandoPagina()
 
 const route = useRoute()
 const id = route.params.id
-const item = ref(<RolInterface>{
-    name: null,
-    guard_name: null,
-  },
-)
+
+const item = ref<RolInterface>({
+  name: null,
+  guard_name: null,
+})
 
 const getRol = async () => {
   try {
     paginaEspera.value = true
-    const respuesta: { data: RolInterface } = await get('api/admin/modulo-usuarios/roles/' + id)
+
+    const respuesta: { data: RolInterface } = await get(`api/admin/modulo-usuarios/roles/${id}`)
+
     item.value = respuesta.data
-  } catch (errorCarpturado: any) {
+  }
+  catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
-  } finally {
+  }
+  finally {
     paginaEspera.value = false
   }
 }
+
 getRol()
 
 const puedeMostrarDatos = computed(() => {

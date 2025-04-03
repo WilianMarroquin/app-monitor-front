@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 import type { PermisoInterface, RolInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 
 import { manejaError } from '@/utils/funcionesComunes'
+import Fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-roles',
@@ -16,15 +16,15 @@ const { post, get } = useClienteRequest()
 const { success } = useToast()
 const { paginaEspera } = useCargandoPagina()
 
-const permisosDisponibles = ref<PermisoInterface[]>([])
-const permisosSeleccionados = ref<PermisoInterface[]>([])
+const permisosDisponibles = ref<PermisoInterface[] | []>([])
+const permisosSeleccionados = ref<PermisoInterface[] | []>([])
 
 const guardarRol = async (Rol: RolInterface): Promise<void> => {
   paginaEspera.value = true
   try {
     const dataRequest = {
       ...Rol,
-      permisos: permisosSeleccionados.value.map((permiso) => permiso.id),
+      permisos: permisosSeleccionados.value.map(p => p.id),
     }
 
     const respuesta: SendResponseInterface<RolInterface> = await post('api/admin/modulo-usuarios/roles', dataRequest)
@@ -42,8 +42,9 @@ const guardarRol = async (Rol: RolInterface): Promise<void> => {
 
 const getPermisos = async (): Promise<void> => {
   try {
-    const res = await get('api/admin/modulo-usuarios/permissions/all')
-    permisosDisponibles.value = res.data
+    const res: SendResponseInterface<PermisoInterface[]> = await get('api/admin/modulo-usuarios/permissions/all')
+
+    permisosDisponibles.value = res.data ?? []
   }
   catch (error: any) {
     manejaError(error)

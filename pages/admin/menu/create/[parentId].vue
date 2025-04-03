@@ -16,10 +16,8 @@ const { post, get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()
 const { success } = useToast()
 
-
 const route = useRoute()
-console.log(route.params)
-const parentId = route.params?.parentId as string
+const parentId = route.params?.parentId as number
 const menu = useState('menu')
 const permisos = ref<PermisoInterface[]>([])
 
@@ -88,7 +86,7 @@ const puedeMostrarDatos = computed(() => {
     <VCardText>
       <Fields
         v-if="puedeMostrarDatos"
-        :item="{}"
+        :item="null"
         :mostrar-titulo-seccion="false"
         :parent-id="parentId"
         :permisos="permisos"
