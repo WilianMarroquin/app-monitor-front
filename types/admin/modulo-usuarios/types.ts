@@ -1,17 +1,18 @@
 export interface RolInterface {
-  id: number
+  id?: number
   name: string | null
   guard_name: string | null
 }
 
 export interface PermisoInterface {
+  id?: number | null
   name: string | null
   subject: string | null
   guard_name: string | null
 }
 
 export interface UsuarioInterface {
-  id: number
+  id?: number
   primer_nombre: string | null
   segundo_nombre: string | null
   primer_apellido: string | null

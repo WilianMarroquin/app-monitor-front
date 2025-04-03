@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { SendResponseInterface } from '@/types/generales/types'
-import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
+import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-menu',
@@ -77,6 +77,7 @@ const puedeMostrarDatos = computed(() => {
       color="secondary"
       @click="navigateTo('/admin/menu')"
     >
+      <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
     </VBtn>
   </div>

@@ -1,13 +1,11 @@
 export interface MenuOpcionInterface {
-  id: number
+  id?: number | null
   titulo: string | null
   titulo_seccion: string | null
   icono: string | null
   ruta: string | null
-  orden: number
-  action: string
-  subject: string
-  option_id: number | null
-  created_at: string | null
-  updated_at: string | null
+  orden?: number | null
+  action: string | null
+  subject: string | null
+  parent_id: number | null
 }

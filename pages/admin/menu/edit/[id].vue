@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
-import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseInterface } from '@/types/generales/types'
+import { manejaError } from '@/utils/funcionesComunes'
+import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-menu',
@@ -87,6 +87,7 @@ const puedeMostrarDatos = computed(() => {
       class="ml-auto"
       color="secondary"
       to="/admin/menu"
+      prependIcon="ri-contract-left-fill"
     >
       Regresar
     </VBtn>
@@ -100,7 +101,7 @@ const puedeMostrarDatos = computed(() => {
               :item="opcion"
               :mostrar-titulo-seccion="false"
               :parent-id="null"
-              :permisos="permisos"
+              :permisos="permisos ?? []"
               @datos="actualizarOpcion"
       />
 

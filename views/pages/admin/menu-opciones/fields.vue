@@ -1,28 +1,28 @@
 <script lang="ts" setup>
-// Importaciones necesarias
-import type {VForm} from "vuetify/components/VForm";
-import type {MenuOpcion} from "@/types/admin/menu-opciones/types";
-import type {Permission} from "@/types/admin/permisos/types";
-import {ref, watch} from "vue";
-import {useRouter} from "vue-router";
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
+import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
+import { useRouter } from 'vue-router'
+import type { VForm } from 'vuetify/components/VForm'
 
 const props = defineProps<{
-  parentId: string | null;
-  item: MenuOpcion | null;
-  mostrarTituloSeccion: boolean;
-  permisos: Permission | null;
-}>();
+  parentId: number | null
+  item: MenuOpcionInterface | null
+  mostrarTituloSeccion: boolean
+  permisos: PermisoInterface[] | null
+}>()
 
 const emit = defineEmits<{
-  (event: "datos", value: MenuOpcion): void;
-}>();
+  (event: 'datos', value: MenuOpcionInterface): void
+}>()
 
-const esTituloSeccion = ref(false);
+const esTituloSeccion = ref(false)
+const formOpcion = ref<InstanceType<typeof VForm>>()
+const formTituloSeccion = ref<InstanceType<typeof VForm>>()
+const router = useRouter()
+const rutasSistema = router.getRoutes()
+const permisoSeleccionado = ref<string | null>(null)
 
-const formOpcion = ref<InstanceType<typeof VForm>>();
-const formTituloSeccion = ref<InstanceType<typeof VForm>>();
-
-const opcion = ref<MenuOpcion>({
+const opcion = ref<MenuOpcionInterface>({
   titulo: null,
   icono: null,
   ruta: null,
@@ -30,7 +30,7 @@ const opcion = ref<MenuOpcion>({
   parent_id: props.parentId ?? null,
   action: null,
   subject: null,
-});
+})
 
 opcion.value = props.item ?? {
   titulo: null,
@@ -40,58 +40,47 @@ opcion.value = props.item ?? {
   parent_id: props.parentId ?? null,
   action: null,
   subject: null,
-};
-
-if (opcion.value.titulo_seccion) {
-
-  esTituloSeccion.value = true;
-
 }
 
-const router = useRouter();
-const rutasSistema = router.getRoutes();
+if (opcion.value.titulo_seccion)
+  esTituloSeccion.value = true
 
 const RutasFiltradas = rutasSistema.filter(ruta => {
-  return !ruta.path.includes(":");
-});
+  return !ruta.path.includes(':')
+})
 
-const permisoSeleccionado = ref<string | null>(null);
+const permisoActualSeleccionado = props.item ? props.permisos?.find(permiso => permiso.name === props.item?.action && permiso.subject === props.item?.subject) ?? null : null
 
-const permisoActualSeleccionado = props.permisos?.find(permiso => permiso.name === props.item.action && permiso.subject === props.item.subject) ?? null;
-
-if (permisoActualSeleccionado !== null) {
-
-  permisoSeleccionado.value = permisoActualSeleccionado?.name + " - " + permisoActualSeleccionado?.subject;
-
-}
+if (permisoActualSeleccionado !== null)
+  permisoSeleccionado.value = `${permisoActualSeleccionado?.name} - ${permisoActualSeleccionado?.subject}`
 
 const onSubmitFormOpcion = (): void => {
-
-  formOpcion.value?.validate().then(({valid}) => {
-    if (valid) {
-      emit("datos", opcion.value);
-    }
-  });
-
-};
+  formOpcion.value?.validate().then(({ valid }) => {
+    if (valid)
+      emit('datos', opcion.value)
+  })
+}
 
 const onSubmitFormTituloSeccion = (): void => {
-  formTituloSeccion.value?.validate().then(({valid}) => {
-    if (valid) {
-      emit("datos", opcion.value);
-    }
-  });
-};
+  formTituloSeccion.value?.validate().then(({ valid }) => {
+    if (valid)
+      emit('datos', opcion.value)
+  })
+}
 
-watch(esTituloSeccion, (newVal) => {
+watch(esTituloSeccion, newVal => {
   if (newVal) {
     opcion.value = {
       titulo_seccion: opcion.value.titulo_seccion,
       action: opcion.value.action,
       subject: opcion.value.subject,
       parent_id: props.parentId ?? null,
-    };
-  } else {
+      icono: null,
+      ruta: null,
+      titulo: null,
+    }
+  }
+  else {
     opcion.value = {
       titulo: opcion.value.titulo,
       icono: opcion.value.icono,
@@ -99,40 +88,52 @@ watch(esTituloSeccion, (newVal) => {
       action: opcion.value.action,
       subject: opcion.value.subject,
       parent_id: props.parentId ?? null,
-    };
+      titulo_seccion: null,
+    }
   }
-});
+})
 
-watch(permisoSeleccionado, (id) => {
+watch(permisoSeleccionado, id => {
+  if (!id || typeof id !== 'string')
+    return
 
-  if (id) {
-    let permiso = props.permisos?.find(permiso => permiso.id === id);
+  const permisoEncontrado = props.permisos?.find(p => p.id?.toString() === id)
+
+  if (permisoEncontrado) {
     opcion.value = {
       ...opcion.value,
-      action: permiso?.name,
-      subject: permiso?.subject,
-    };
+      action: permisoEncontrado?.name ?? null,
+      subject: permisoEncontrado?.subject ?? null,
+    }
   }
-
-});
-
-
+})
 </script>
 
 <template>
-
-  <VCol v-if="props.mostrarTituloSeccion"
-        class="d-flex flex-wrap" cols="12">
-    <p class="text-h6 mt-3 ml-2 mr-2">¿Es un título de sección?</p>
-    <VSwitch v-model="esTituloSeccion"/>
+  <VCol
+    v-if="props.mostrarTituloSeccion"
+    class="d-flex flex-wrap"
+    cols="12"
+  >
+    <p class="text-h6 mt-3 ml-2 mr-2">
+      ¿Es un título de sección?
+    </p>
+    <VSwitch v-model="esTituloSeccion" />
   </VCol>
 
-  <VForm v-if="!esTituloSeccion"
-         ref="formOpcion"
-         @submit.prevent="onSubmitFormOpcion"
+  <VForm
+    v-if="!esTituloSeccion"
+    ref="formOpcion"
+    @submit.prevent="onSubmitFormOpcion"
   >
-    <VCol class="d-flex flex-wrap" cols="12">
-      <VCol cols="12" md="6">
+    <VCol
+      class="d-flex flex-wrap"
+      cols="12"
+    >
+      <VCol
+        cols="12"
+        md="6"
+      >
         <VTextField
           :id="useId()"
           v-model="opcion.titulo"
@@ -143,7 +144,10 @@ watch(permisoSeleccionado, (id) => {
         />
       </VCol>
 
-      <VCol cols="12" md="6">
+      <VCol
+        cols="12"
+        md="6"
+      >
         <VAutocomplete
           v-model="opcion.ruta"
           label="Ruta:"
@@ -154,27 +158,34 @@ watch(permisoSeleccionado, (id) => {
         />
       </VCol>
 
-      <VCol cols="12" md="6" >
+      <VCol
+        cols="12"
+        md="6"
+      >
         <VTextField
-          label="Icono"
           :id="useId()"
           v-model="opcion.icono"
+          label="Icono"
           placeholder="Ingrese Icono"
           required
         />
-          <NuxtLink class="ms-auto text-blue"
-                    target="_blank"
+        <NuxtLink
+          class="ms-auto text-blue"
+          target="_blank"
 
-                    to="https://remixicon.com/"
-          >
-            Ver iconos
-          </NuxtLink>
+          to="https://remixicon.com/"
+        >
+          Ver iconos
+        </NuxtLink>
       </VCol>
 
-      <VCol cols="12" md="6">
+      <VCol
+        cols="12"
+        md="6"
+      >
         <VAutocomplete
           v-model="permisoSeleccionado"
-          :items="props.permisos"
+          :items="props.permisos ?? []"
           label="Permiso"
           placeholder="Seleccione el Permiso"
           item-title="name_y_subjet"
@@ -182,20 +193,41 @@ watch(permisoSeleccionado, (id) => {
         />
       </VCol>
 
-      <VCol class="d-flex gap-4" cols="12">
-        <VBtn type="submit">Guardar</VBtn>
-        <VBtn color="secondary" type="reset" variant="tonal">Limpiar</VBtn>
+      <VCol
+        class="text-end"
+        cols="12"
+      >
+        <VBtn
+          color="secondary"
+          type="reset"
+          variant="outlined"
+          class="mr-1"
+          @click="formOpcion?.value?.reset()"
+        >
+          <VIcon class="mr-2 ri-filter-off-fill"/>
+          Limpiar Campos
+        </VBtn>
+        <VBtn type="submit">
+          <VIcon class="mr-2 ri-save-3-fill"/>
+          Guardar
+        </VBtn>
       </VCol>
     </VCol>
   </VForm>
 
-  <VForm v-else
-         ref="formTituloSeccion"
-         @submit.prevent="onSubmitFormTituloSeccion"
+  <VForm
+    v-else
+    ref="formTituloSeccion"
+    @submit.prevent="onSubmitFormTituloSeccion"
   >
-    <VCol class="d-flex flex-wrap" cols="12">
-      <VCol cols="12" md="6">
-
+    <VCol
+      class="d-flex flex-wrap"
+      cols="12"
+    >
+      <VCol
+        cols="12"
+        md="6"
+      >
         <VTextField
           :id="useId()"
           v-model="opcion.titulo_seccion"
@@ -206,11 +238,14 @@ watch(permisoSeleccionado, (id) => {
         />
       </VCol>
 
-      <VCol cols="12" md="6">
+      <VCol
+        cols="12"
+        md="6"
+      >
         <VAutocomplete
           v-model="permisoSeleccionado"
           label="Permiso:"
-          :items="props.permisos"
+          :items="props.permisos ?? []"
           placeholder="Select State"
           item-title="name"
           item-value="id"
@@ -218,10 +253,23 @@ watch(permisoSeleccionado, (id) => {
       </VCol>
     </VCol>
 
-    <VCol class="d-flex gap-4" cols="12">
-      <VBtn type="submit">Guardar</VBtn>
-      <VBtn color="secondary" type="reset" variant="tonal">Limpiar</VBtn>
+    <VCol
+      class="text-end"
+      cols="12"
+    >
+      <VBtn
+        color="secondary"
+        type="reset"
+        variant="tonal"
+        @click="formTituloSeccion?.value?.reset()"
+      >
+        <VIcon class="mr-2 ri-filter-off-fill"/>
+        Limpiar
+      </VBtn>
+      <VBtn type="submit">
+        <VIcon class="mr-2 ri-save-3-fill"/>
+        Guardar
+      </VBtn>
     </VCol>
   </VForm>
-
 </template>

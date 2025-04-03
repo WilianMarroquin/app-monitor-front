@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
 import type { MenuOpcionInterface } from '@/types/admin/MenuOpcionInterface'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
+import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
 
 // definePageMeta({
 //   middleware: 'permissions',
@@ -84,6 +84,7 @@ const puedeMostrarDatos: ComputedRef<boolean> = computed(() => {
       color="secondary"
       to="/admin/menu"
     >
+      <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
     </VBtn>
   </div>
