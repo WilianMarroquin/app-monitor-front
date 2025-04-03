@@ -1,64 +1,71 @@
 <script lang="ts" setup>
+import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
+import type { MenuOpcionInterface } from '@/types/admin/MenuOpcionInterface'
+import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
+import type { SendResponseInterface } from '@/types/generales/types'
+import { manejaError } from '@/utils/funcionesComunes'
+
 // definePageMeta({
 //   middleware: 'permissions',
 //   action: 'crear opcion menu',
 //   subject: 'menu opcion',
 // })
 
-import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
-import type {MenuOpcionInterface} from "@/types/admin/MenuOpcionInterface"
-import type {PermisoInterface} from "@/types/admin/PermisoInterface"
+const { post, get } = useClienteRequest()
+const { paginaEspera } = useCargandoPagina()
+const { success } = useToast()
+const menu = useState<MenuOpcionInterface[]>('menu')
 
-const {post, get} = useClienteRequest()
-const {paginaEspera} = useCargandoPagina()
-const {success, error} = useToast()
-const menu = useState('menu')
-
-const guardarOpcion = async (data: MenuOpcionInterface) => {
-  paginaEspera.value = true
-
+const obtenerOpcionesMenu = async (): Promise<void> => {
   try {
-    let res = await post('api/menu-opciones', data)
-    await obtenerOpcionesMenu()
-    success(res.message)
-    navigateTo('/admin/menu')
-  } catch (e: { message: string }) {
-    error(e.message)
-  } finally {
+    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await get('api/get/menu-opciones/')
+
+    menu.value = respuesta.data ?? []
+  }
+  catch (e: any) {
+    manejaError(e)
+  }
+  finally {
     paginaEspera.value = false
   }
 }
 
-const permisos = ref<PermisoInterface>({} as PermisoInterface);
+const guardarOpcion = async (data: MenuOpcionInterface) => {
+  paginaEspera.value = true
+  try {
+    const res: SendResponseInterface<MenuOpcionInterface> = await post('api/menu-opciones', data)
+
+    await obtenerOpcionesMenu()
+    success(res.message)
+    navigateTo('/admin/menu')
+  }
+  catch (e: any) {
+    manejaError(e)
+  }
+  finally {
+    paginaEspera.value = false
+  }
+}
+
+const permisos = ref<PermisoInterface[]>([])
 
 const getPermisos = async (): Promise<void> => {
-
   try {
     paginaEspera.value = true
-    const response: { data: PermisoInterface } = await get('api/permissions', {
-      params: {
-        'page[size]': -1
-      }
-    });
-    permisos.value = response.data.data;
-  } catch (e: { message: string }) {
-    error(e.message)
-  } finally {
+
+    const response: SendResponseInterface<PermisoInterface[]> = await get('api/admin/modulo-usuarios/permissions/all')
+
+    permisos.value = response.data ?? []
+  }
+  catch (e: any) {
+    manejaError(e)
+  }
+  finally {
     paginaEspera.value = false
   }
 }
 
 getPermisos()
-console.log(permisos.value)
-
-const obtenerOpcionesMenu = async (): Promise<void> => {
-  try {
-    const respuesta = await get('api/get/menu-opciones/')
-    menu.value = respuesta.data
-  } catch (e: { message: string }) {
-    error(e.message)
-  }
-}
 
 const puedeMostrarDatos: ComputedRef<boolean> = computed(() => {
   return Array.isArray(permisos.value) && permisos.value.length > 0
@@ -82,20 +89,15 @@ const puedeMostrarDatos: ComputedRef<boolean> = computed(() => {
   </div>
 
   <VCard>
-
     <VCardText>
-
-      <Fields v-if="puedeMostrarDatos"
-              :item="{}"
-              :mostrar-titulo-seccion="true"
-              :parentId="null"
-              :permisos="permisos"
-              @datos="guardarOpcion"
+      <Fields
+        v-if="puedeMostrarDatos"
+        :item="{}"
+        mostrar-titulo-seccion
+        :parent-id="null"
+        :permisos="permisos"
+        @datos="guardarOpcion"
       />
-
     </VCardText>
-
   </VCard>
-
-
 </template>

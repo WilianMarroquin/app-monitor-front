@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
 
-const { showToast } = useToastImprove()
-
-onMounted(() => {
-  showToast('Hola mundo', 'success', { autoClose: 2000, position: 'bottom-right' })
-})
 </script>
 
 <template>
+  <h1>En Contrucción</h1>
 </template>

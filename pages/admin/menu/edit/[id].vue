@@ -1,14 +1,16 @@
 <script lang="ts" setup>
 import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
-import type { MenuOpcionInterface } from "@/types/admin/MenuOpcionInterface"
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import { manejaError } from '@/utils/funcionesComunes'
+import type { SendResponseInterface } from '@/types/generales/types'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'editar opcion menu',
-//   subject: 'menu opcion',
-// })
+definePageMeta({
+  navActiveLink: 'admin-menu',
+  // middleware: 'permissions',
+  // action: 'editar opcion menu',
+  // subject: 'menu opcion',
+})
 
 const { put, get } = useClienteRequest()
 const { success } = useToast()
@@ -41,9 +43,8 @@ const actualizarOpcion = async (opcion: MenuOpcionInterface): Promise<void> => {
 const getOpcion = async (): Promise<void> => {
   try {
     paginaEspera.value = true
-    const response: { data: MenuOpcionInterface } = await get(`api/menu-opciones/${id}`)
-    opcion.value = response.data
-
+    const response: SendResponseInterface<MenuOpcionInterface> = await get(`api/menu-opciones/${id}`)
+    opcion.value = response.data ?? {} as MenuOpcionInterface
   }
   catch (e: any) {
     manejaError(e)
@@ -55,12 +56,9 @@ const getOpcion = async (): Promise<void> => {
 getOpcion()
 
 const getPermisos = async (): Promise<void> => {
-
   try {
     paginaEspera.value = true
-    const response = await get<{data: PermisoInterface}>('api/admin/modulo-usuarios/permissions', {
-        'page[size]': -1,
-    })
+    const response = await get<{data: PermisoInterface}>('api/admin/modulo-usuarios/permissions')
     permisos.value = response.data.data
   }
   catch (e: any) {
