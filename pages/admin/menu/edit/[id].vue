@@ -7,6 +7,7 @@ import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-menu',
+
   // middleware: 'permissions',
   // action: 'editar opcion menu',
   // subject: 'menu opcion',
@@ -16,21 +17,21 @@ const { put, get } = useClienteRequest()
 const { success } = useToast()
 const { paginaEspera } = useCargandoPagina()
 
-const route = useRoute<{ id: number }>()
-const id = <number>route.params.id
+const route = useRoute()
+const id = route.params?.id as string
 const opcion = ref<MenuOpcionInterface>({} as MenuOpcionInterface)
-const permisos = ref<PermisoInterface>({} as PermisoInterface)
+const permisos = ref<PermisoInterface[]>([])
 const menu = useState('menu')
 
-const actualizarOpcion = async (opcion: MenuOpcionInterface): Promise<void> => {
+const actualizarOpcion = async (opcionActualizada: MenuOpcionInterface): Promise<void> => {
   try {
     paginaEspera.value = true
-    const response = await put(`api/menu-opciones/${id}`, opcion)
+
+    const response = await put(`api/menu-opciones/${id}`, opcionActualizada)
+
     menu.value = response.data
-
     success(response.message)
-    navigateTo("/admin/menu")
-
+    navigateTo('/admin/menu')
   }
   catch (e: any) {
     manejaError(e)
@@ -43,7 +44,9 @@ const actualizarOpcion = async (opcion: MenuOpcionInterface): Promise<void> => {
 const getOpcion = async (): Promise<void> => {
   try {
     paginaEspera.value = true
+
     const response: SendResponseInterface<MenuOpcionInterface> = await get(`api/menu-opciones/${id}`)
+
     opcion.value = response.data ?? {} as MenuOpcionInterface
   }
   catch (e: any) {
@@ -53,13 +56,16 @@ const getOpcion = async (): Promise<void> => {
     paginaEspera.value = false
   }
 }
+
 getOpcion()
 
 const getPermisos = async (): Promise<void> => {
   try {
     paginaEspera.value = true
-    const response = await get<{data: PermisoInterface}>('api/admin/modulo-usuarios/permissions')
-    permisos.value = response.data.data
+
+    const response: SendResponseInterface<PermisoInterface[]> = await get('api/admin/modulo-usuarios/permissions/all')
+
+    permisos.value = response.data ?? []
   }
   catch (e: any) {
     manejaError(e)
@@ -68,6 +74,7 @@ const getPermisos = async (): Promise<void> => {
     paginaEspera.value = false
   }
 }
+
 getPermisos()
 
 const puedeMostrarDatos = computed(() => {
@@ -76,9 +83,7 @@ const puedeMostrarDatos = computed(() => {
 </script>
 
 <template>
-
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6">
-
     <p class="text-2xl">
       Editar Menu
     </p>
@@ -87,30 +92,22 @@ const puedeMostrarDatos = computed(() => {
       class="ml-auto"
       color="secondary"
       to="/admin/menu"
-      prependIcon="ri-contract-left-fill"
+      prepend-icon="ri-contract-left-fill"
     >
       Regresar
     </VBtn>
   </div>
 
   <VCard>
-
     <VCardText>
-
-      <Fields v-if="puedeMostrarDatos"
-              :item="opcion"
-              :mostrar-titulo-seccion="false"
-              :parent-id="null"
-              :permisos="permisos ?? []"
-              @datos="actualizarOpcion"
+      <Fields
+        v-if="puedeMostrarDatos"
+        :item="opcion"
+        :mostrar-titulo-seccion="false"
+        :parent-id="null"
+        :permisos="permisos ?? []"
+        @datos="actualizarOpcion"
       />
-
     </VCardText>
-
   </VCard>
-
 </template>
-
-<style lang="scss" scoped>
-
-</style>

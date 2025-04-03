@@ -16,7 +16,9 @@ const { post, get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()
 const { success } = useToast()
 
+
 const route = useRoute()
+console.log(route.params)
 const parentId = route.params?.parentId as string
 const menu = useState('menu')
 const permisos = ref<PermisoInterface[]>([])

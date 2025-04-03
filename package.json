@@ -88,6 +88,7 @@
     "@tiptap/extension-underline": "^2.11.5",
     "@types/mapbox-gl": "3.4.1",
     "@types/node": "22.10.2",
+    "@types/sortablejs": "^1.15.8",
     "@types/webfontloader": "1.6.38",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",

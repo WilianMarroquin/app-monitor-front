@@ -8,4 +8,5 @@ export interface MenuOpcionInterface {
   action: string | null
   subject: string | null
   parent_id: number | null
+  children?: MenuOpcionInterface[] | null
 }

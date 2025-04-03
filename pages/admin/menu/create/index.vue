@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MenuOpcionInterface } from '@/types/admin/MenuOpcionInterface'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
@@ -93,7 +93,7 @@ const puedeMostrarDatos: ComputedRef<boolean> = computed(() => {
     <VCardText>
       <Fields
         v-if="puedeMostrarDatos"
-        :item="{}"
+        :item="null"
         mostrar-titulo-seccion
         :parent-id="null"
         :permisos="permisos"
