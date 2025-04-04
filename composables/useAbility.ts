@@ -29,5 +29,21 @@ export function useAbility() {
   // Método para verificar permisos en la vista
   const can = (action, subject) => ability.can(action, subject)
 
-  return { ability, can }
+  /**
+   * Verifica si un grupo de navegación debe mostrarse en función de los permisos del usuario.
+   * Si ninguno de sus elementos hijos es accesible, se oculta el grupo.
+   * @param {NavGroup} item - Objeto del grupo de navegación.
+   * @returns {boolean} - `true` si el grupo debe mostrarse, `false` en caso contrario.
+   */
+  const canViewNavMenuGroup = (item) => {
+    const hasAnyVisibleChild = item.children.some(i => can(i.action, i.subject))
+
+    // Si no tiene action y subject definidos, solo verificamos si hay hijos visibles
+    if (!(item.action && item.subject))
+      return hasAnyVisibleChild
+
+    return can(item.action, item.subject) && hasAnyVisibleChild
+  }
+
+  return { ability, can, canViewNavMenuGroup }
 }

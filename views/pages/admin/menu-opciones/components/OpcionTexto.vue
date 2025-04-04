@@ -1,25 +1,17 @@
 <script lang="ts" setup>
-import OptionBotones from './OpcionBotones.vue';
-import {computed} from 'vue';
+import { computed } from 'vue'
+import OptionBotones from './OpcionBotones.vue'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 
-interface Item {
-  id: string;
-  titulo?: string | null;
-  icono?: string | null;
-  titulo_seccion?: string | null;
-  children?: Item[];
-}
-
-const props = defineProps<{ item: Item }>();
-
-const esTituloSeccion = computed(() => props.item.titulo_seccion !== null);
+const props = defineProps<{ item: MenuOpcionInterface }>()
+const esTituloSeccion = computed(() => props.item.titulo_seccion !== null)
 
 const iconClass = computed(() => {
   if (!props.item.icono)
-    return 'tabler-circle';
-  return props.item.icono || '';
-});
+    return 'tabler-circle'
 
+  return props.item.icono || ''
+})
 </script>
 
 <template>

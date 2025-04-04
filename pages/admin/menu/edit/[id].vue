@@ -24,6 +24,7 @@ const permisos = ref<PermisoInterface[]>([])
 const menu = useState('menu')
 
 const actualizarOpcion = async (opcionActualizada: MenuOpcionInterface): Promise<void> => {
+  console.log('opcionActualizada', opcionActualizada)
   try {
     paginaEspera.value = true
 

@@ -3,14 +3,14 @@
     :id="props.item.id"
     style="margin-bottom: 10px; list-style-type: none; "
   >
-    <option-text :item="props.item"/>
+    <OptionText :item="props.item"/>
 
     <ul
       v-if="props.item.children && props.item.children.length > 0"
       :ref="el => (refs['childrenList' + props.item.id] = el)"
       class="parent-list"
     >
-      <opcion
+      <Opcion
         v-for="child in props.item.children"
         :key="child.id"
         :item="child"
@@ -22,48 +22,43 @@
 </template>
 
 <script lang="ts" setup>
+import { onMounted, reactive } from 'vue'
+import Sortable from 'sortablejs'
 import OptionText from './OpcionTexto.vue'
-import { onMounted, reactive } from "vue"
-import Sortable from "sortablejs"
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 
-// Interfaz del item
-interface Item {
-  id: string | number
-  children?: Item[]
-}
+const props = defineProps<Props>()
 
-const emit = defineEmits(["update"])
+const emit = defineEmits(['update'])
 
 // Props del componente
 interface Props {
-  item: Item
+  item: MenuOpcionInterface[]
 }
-
-const props = defineProps<Props>()
 
 // Referencias dinámicas para Sortable
 const refs = reactive<Record<string, HTMLElement | null>>({})
 
 onMounted(() => {
-  const refKey = `childrenList${props.item.id}`; // Generar la clave de la referencia
-  const el = refs[refKey]; // Acceder al elemento DOM
+  const refKey = `childrenList${props.item?.id}` // Generar la clave de la referencia
+  const el = refs[refKey] // Acceder al elemento DOM
 
   if (el) {
     new Sortable(el, {
       group: `group-${props.item.id}`, // Grupo único basado en el ID del padre
       animation: 150,
       onEnd: (event) => {
-        const [moved] = props.item.children.splice(event.oldIndex, 1);
-        props.item.children.splice(event.newIndex, 0, moved);
-        emit("update", props.item);
+        const [moved] = props.item.children.splice(event.oldIndex, 1)
+        props.item.children.splice(event.newIndex, 0, moved)
+        emit("update", props.item)
       },
-    });
+    })
   }
-});
+})
 
-const updateChild = (updatedChild) => {
-  emit("update", props.item);
-};
+const updateChild = () => {
+  emit('update', props.item)
+}
 </script>
 
 <style scoped>

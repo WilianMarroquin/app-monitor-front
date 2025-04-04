@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import Sortable from 'sortablejs'
 import Opcion from './Opcion.vue'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 
 interface Props {
   opciones: MenuOpcionInterface[]
@@ -23,25 +23,26 @@ onMounted(() => {
       onEnd: (event) => {
         const [moved] = props.opciones.splice(event.oldIndex, 1)
         props.opciones.splice(event.newIndex, 0, moved)
-        emit("ItemsActualizadas", props.opciones)
+        emit('itemsActualizadas', props.opciones)
       },
     })
   }
 })
 
 const actualizacion = () => {
-  emit('ItemsActualizadas', props.opciones)
+  emit('itemsActualizadas', props.opciones)
 }
 </script>
 
 <template>
-  <ul ref="parentList"
-      class="parent-list"
-      style="list-style-type: none"
+  <ul
+    ref="parentList"
+    class="parent-list"
+    style="list-style-type: none"
   >
-    <opcion
+    <Opcion
       v-for="item in opciones"
-      :key="item.id"
+      :key="item.id ?? 'default-key'"
       :item="item"
       @update="actualizacion"
     />

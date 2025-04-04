@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { layoutConfig } from '@layouts'
-import { can } from '@layouts/plugins/casl'
+// import { can } from '@layouts/plugins/casl'
 import { useLayoutConfigStore } from '@layouts/stores/config'
 import type { NavSectionTitle } from '@layouts/types'
 import { getDynamicI18nProps } from '@layouts/utils'
@@ -8,6 +8,8 @@ import { getDynamicI18nProps } from '@layouts/utils'
 defineProps<{
   item: NavSectionTitle
 }>()
+
+const { can } = useAbility()
 
 const configStore = useLayoutConfigStore()
 const shallRenderIcon = configStore.isVerticalNavMini()

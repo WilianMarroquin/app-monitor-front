@@ -4,11 +4,11 @@ import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 import ListaOpciones from '@/views/pages/admin/menu-opciones/components/ListaOpciones.vue'
 
-// definePageMeta({
-//  middleware: 'permissions',
-//  action: 'ver opcion menu', // Acción requerida
-//  subject: 'menu opcion', // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// })
+definePageMeta({
+  // middleware: 'permissions',
+  // action: 'ver opcion menu',
+  // subject: 'menu opcion',
+})
 
 const { post } = useClienteRequest()
 const { success } = useToast()

@@ -2,7 +2,7 @@
 import {TransitionGroup} from 'vue'
 import {layoutConfig} from '@layouts'
 import {TransitionExpand, VerticalNavLink} from '@layouts/components'
-import {canViewNavMenuGroup} from '@layouts/plugins/casl'
+// import {canViewNavMenuGroup} from '@layouts/plugins/casl'
 import {useLayoutConfigStore} from '@layouts/stores/config'
 import {injectionKeyIsVerticalNavHovered} from '@layouts/symbols'
 import type {NavGroup} from '@layouts/types'
@@ -15,6 +15,8 @@ defineOptions({
 const props = defineProps<{
   item: NavGroup
 }>();
+
+const { can } = useAbility()
 
 const route = useRoute();
 const router = useRouter();
@@ -136,7 +138,7 @@ watch(
 
 <template>
   <li
-    v-if="canViewNavMenuGroup(item)"
+    v-if="can(item.action, item.subject)"
     :class="[
  {
  active: isGroupActive,

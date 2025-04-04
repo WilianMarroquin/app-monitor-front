@@ -94,11 +94,9 @@ watch(esTituloSeccion, newVal => {
 })
 
 watch(permisoSeleccionado, id => {
-  if (!id || typeof id !== 'string')
+  if (!id)
     return
-
-  const permisoEncontrado = props.permisos?.find(p => p.id?.toString() === id)
-
+  const permisoEncontrado = props.permisos?.find(p => p.id === Number(id))
   if (permisoEncontrado) {
     opcion.value = {
       ...opcion.value,
@@ -188,7 +186,7 @@ watch(permisoSeleccionado, id => {
           :items="props.permisos ?? []"
           label="Permiso"
           placeholder="Seleccione el Permiso"
-          item-title="name_y_subjet"
+          item-title="name_y_subject"
           item-value="id"
         />
       </VCol>
