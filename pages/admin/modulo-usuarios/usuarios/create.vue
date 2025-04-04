@@ -6,9 +6,9 @@ import type { SendResponseInterface } from '@/types/generales/types'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-usuarios',
-  // middleware: 'permissions',
-  // action: 'crear usuarios', // Acción requerida
-  // subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+  middleware: 'permissions',
+  action: 'Crear User',
+  subject: 'User',
 })
 
 const { post } = useClienteRequest()
