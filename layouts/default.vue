@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
+import type { SendResponseInterface } from '@/types/generales/types'
+import { manejaError } from '@/utils/funcionesComunes'
 import { useConfigStore } from '@core/stores/config'
 import { AppContentLayoutNav } from '@layouts/enums'
 import { switchToVerticalNavOnLtOverlayNavBreakpoint } from '@layouts/utils'
@@ -6,37 +9,35 @@ import { switchToVerticalNavOnLtOverlayNavBreakpoint } from '@layouts/utils'
 const DefaultLayoutWithHorizontalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithHorizontalNav.vue'))
 const DefaultLayoutWithVerticalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithVerticalNav.vue'))
 
-const configStore = useConfigStore()
-
-switchToVerticalNavOnLtOverlayNavBreakpoint()
-
 const { layoutAttrs, injectSkinClasses } = useSkins()
+const { paginaEspera } = useCargandoPagina()
+
+const configStore = useConfigStore()
 
 injectSkinClasses()
 
-const {paginaEspera} = useCargandoPagina()
+const opcionesMenu = useState<MenuOpcionInterface[]>('menu', () => [])
 
-const opcionesMenu = <[]>useState('menu', () => []);
-
-const {get} = useClienteRequest()
-
-const {showToastError} = useToast()
+const { get } = useClienteRequest()
 
 const obtenerOpcionesMenu = async (): Promise<void> => {
   try {
     paginaEspera.value = true
-    const respuesta = await get('api/get/menu-opciones/')
-    opcionesMenu.value = respuesta.data
-  } catch (error: { message: string }) {
-    showToastError(error.message)
-  } finally {
+
+    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await get('api/get/menu-opciones/')
+
+    opcionesMenu.value = respuesta.data ?? []
+  }
+  catch (error: any) {
+    manejaError(error)
+  }
+  finally {
     paginaEspera.value = false
   }
 }
 
 obtenerOpcionesMenu()
-
-
+switchToVerticalNavOnLtOverlayNavBreakpoint()
 </script>
 
 <template>
@@ -66,5 +67,4 @@ obtenerOpcionesMenu()
   --toastify-color-light: #fff;
   --toastify-color-dark: #1A1B35;
 }
-
 </style>
