@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { manejaError } from '@/utils/funcionesComunes'
-import { can } from '@layouts/plugins/casl'
-//definePageMeta({
-//  middleware: 'permissions',
-//  action: 'listar roles', // Acción requerida
-//  subject: 'roles',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-//});
 
+definePageMeta({
+  middleware: 'permissions',
+  action: 'Listar roles',
+  subject: 'Rol',
+})
+
+const { can } = useAbility()
 const { deleted } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
 const dataTable = ref<any>(null)
@@ -52,13 +53,12 @@ const deleteItem = async (id: number) => {
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Listado de roles'"/>
     <VBtn
-      v-if="can('crear roles', 'roles')"
+      v-if="can('Crear roles', 'Rol')"
       class="ml-auto"
-      color="success"
       to="/admin/modulo-usuarios/roles/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
-      Nuev@ Rol
+      Nuevo Rol
     </VBtn>
   </div>
   <DataTableComponent
@@ -82,7 +82,7 @@ const deleteItem = async (id: number) => {
     </template>
     <template #item.Acciones="{ item }">
       <VBtn
-        v-if="can('ver roles', 'roles')"
+        v-if="can('Ver roles', 'Rol')"
         icon="ri-eye-line"
         variant="tonal"
         color="info"
@@ -90,7 +90,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('editar roles', 'roles')"
+        v-if="can('Editar roles', 'Rol')"
         icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
@@ -98,7 +98,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('eliminar roles', 'roles')"
+        v-if="can('Eliminar roles', 'Rol')"
         icon="ri-delete-bin-line"
         variant="tonal"
         color="error"

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import Fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 import type { PermisoInterface, RolInterface } from '@/types/admin/modulo-usuarios/types'
-import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseInterface } from '@/types/generales/types'
+import { manejaError } from '@/utils/funcionesComunes'
+import Fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-roles',
-//   middleware: 'permissions',
-//   action: 'editar roles', // Acción requerida
-//   subject: 'roles',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+  middleware: 'permissions',
+  action: 'Editar roles',
+  subject: 'Rol',
 })
 
 const { put, get } = useClienteRequest()
@@ -83,11 +83,9 @@ const getPermisosActualesRol = async (): Promise<void> => {
 }
 
 getPermisosActualesRol()
-
 </script>
 
 <template>
-
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
     <h1 v-text="'Editar Rol'"/>
     <VBtn
