@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { can } from '@layouts/plugins/casl'
+const { can } = useAbility()
 import { manejaError } from '@/utils/funcionesComunes'
 //definePageMeta({
 //  middleware: 'permissions',

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import Fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
-import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseInterface } from '@/types/generales/types'
+import { manejaError } from '@/utils/funcionesComunes'
+import Fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-usuarios',
   middleware: 'permissions',
-  action: 'Crear User',
+  action: 'Crear usuarios',
   subject: 'User',
 })
 

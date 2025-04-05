@@ -1,13 +1,13 @@
 <script setup lang="ts">
-const { can } = useAbility()
 import { manejaError } from '@/utils/funcionesComunes'
 
-//definePageMeta({
-//  middleware: 'permissions',
-//  action: 'listar usuarios', // Acción requerida
-//  subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-//});
+definePageMeta({
+  middleware: 'permissions',
+  action: 'Listar usuarios',
+  subject: 'User',
+})
 
+const { can } = useAbility()
 const { deleted } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
 const dataTable = ref<any>(null)
@@ -58,13 +58,12 @@ const deleteItem = async (id: number) => {
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Listado de usuarios'"/>
     <VBtn
-      v-if="can('crear usuarios', 'usuarios')"
+      v-if="can('Crear usuarios', 'User')"
       class="ml-auto"
-      color="success"
       to="/admin/modulo-usuarios/usuarios/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
-      Nuev@ User
+      Nuevo Usuario
     </VBtn>
   </div>
   <DataTableComponent
@@ -89,7 +88,7 @@ const deleteItem = async (id: number) => {
 
     <template #item.Acciones="{ item }">
       <VBtn
-        v-if="can('ver usuarios', 'usuarios')"
+        v-if="can('Ver usuarios', 'User')"
         icon="ri-eye-line"
         variant="tonal"
         color="info"
@@ -98,7 +97,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('editar usuarios', 'usuarios')"
+        v-if="can('Editar usuarios', 'User')"
         icon="ri-edit-box-line"
         v-tooltip="'Gestionar'"
         variant="tonal"
@@ -107,7 +106,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('eliminar usuarios', 'usuarios')"
+        v-if="can('Eliminar usuarios', 'User')"
         icon="ri-delete-bin-line"
         variant="tonal"
         v-tooltip="'Eliminar'"

@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import navItems from '@/navigation/horizontal'
-
-import { themeConfig } from '@themeConfig'
-
-// Components
 import Footer from '@/layouts/components/Footer.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
+import navItems from '@/navigation/horizontal'
 import NavBarI18n from '@core/components/I18n.vue'
 import { HorizontalNavLayout } from '@layouts'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
+import { themeConfig } from '@themeConfig'
+
+const { can } = useAbility()
 </script>
 
 <template>
@@ -46,7 +45,7 @@ import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
     </template>
 
     <!-- 👉 Customizer -->
-    <TheCustomizer />
+    <TheCustomizer v-if="can('Ver menu preferencias', 'Preferencias')" />
   </HorizontalNavLayout>
 </template>
 

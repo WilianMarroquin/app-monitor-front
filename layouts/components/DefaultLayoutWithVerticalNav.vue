@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import navItems from '@/navigation/vertical'
 import Footer from '@/layouts/components/Footer.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
 import NavBarI18n from '@core/components/I18n.vue'
 
 import { useConfigStore } from '@core/stores/config'
-import { themeConfig } from '@themeConfig'
 import { VerticalNavLayout } from '@layouts'
+import { themeConfig } from '@themeConfig'
+
+const { can } = useAbility()
 
 const configStore = useConfigStore()
 const opcionesMenu = <[]>useState('menu');
@@ -59,7 +60,7 @@ watch([
     </template>
 
     <!-- 👉 Customizer -->
-     <TheCustomizer />
+    <TheCustomizer v-if="can('Ver menu preferencias', 'Preferencias')" />
   </VerticalNavLayout>
 </template>
 

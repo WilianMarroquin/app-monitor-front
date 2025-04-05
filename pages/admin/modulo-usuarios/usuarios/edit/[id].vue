@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import Autenticacion from "@/views/pages/admin/modulo-usuarios/usuarios/SeccionAutenticacion.vue"
-import fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
-import Roles from '@/views/pages/admin/modulo-usuarios/usuarios/SeccionRoles.vue'
-import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
-import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
+import type { RolInterface, UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
+import fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
+import Autenticacion from "@/views/pages/admin/modulo-usuarios/usuarios/SeccionAutenticacion.vue"
+import Roles from '@/views/pages/admin/modulo-usuarios/usuarios/SeccionRoles.vue'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-usuarios',
-  // middleware: 'permissions',
-  // action: 'editar usuarios', // Acción requerida
-  // subject: 'usuarios',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+  middleware: 'permissions',
+  action: 'Editar usuarios', // Acción requerida
+  subject: 'User',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
 })
 
 const { put, get } = useClienteRequest()
