@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import Footer from '@/layouts/components/Footer.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
+import NavSearchBar from "@/layouts/components/NavSearchBar.vue"
 import UserProfile from '@/layouts/components/UserProfile.vue'
 import NavBarI18n from '@core/components/I18n.vue'
 
@@ -40,6 +41,8 @@ watch([
         </IconBtn>
 
         <NavbarThemeSwitcher />
+
+        <NavSearchBar/>
 
         <VSpacer />
 

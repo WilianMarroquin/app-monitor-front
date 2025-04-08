@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import type { Component } from 'vue'
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { VNodeRenderer } from './VNodeRenderer'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import { layoutConfig } from '@layouts'
 import { VerticalNavGroup, VerticalNavLink, VerticalNavSectionTitle } from '@layouts/components'
 import { useLayoutConfigStore } from '@layouts/stores/config'
 import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
-import type { NavGroup, NavLink, NavSectionTitle, VerticalNavItems } from '@layouts/types'
+import type { NavGroup, NavSectionTitle } from '@layouts/types'
+import type { Component } from 'vue'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { VNodeRenderer } from './VNodeRenderer'
 
 interface Props {
   tag?: string | Component
-  navItems: VerticalNavItems
+  navItems: MenuOpcionInterface[]
   isOverlayNavActive: boolean
   toggleIsOverlayNavActive: (value: boolean) => void
 }
@@ -27,7 +28,7 @@ provide(injectionKeyIsVerticalNavHovered, isHovered)
 
 const configStore = useLayoutConfigStore()
 
-const resolveNavItemComponent = (item: NavLink | NavSectionTitle | NavGroup): unknown => {
+const resolveNavItemComponent = (item: MenuOpcionInterface | NavSectionTitle | NavGroup): unknown => {
   if (item.titulo_seccion)
     return VerticalNavSectionTitle
   if (item.children?.length > 0)

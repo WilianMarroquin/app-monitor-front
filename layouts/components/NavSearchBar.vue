@@ -1,15 +1,7 @@
 <script setup lang="ts">
-import Shepherd from 'shepherd.js'
-import { withQuery } from 'ufo'
-import type { RouteLocationRaw } from 'vue-router'
-import type { SearchResults } from '@db/app-bar-search/types'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import { useConfigStore } from '@core/stores/config'
-
-interface Suggestion {
-  icon: string
-  title: string
-  url: RouteLocationRaw
-}
+import Shepherd from 'shepherd.js'
 
 defineOptions({
   inheritAttrs: false,
@@ -17,103 +9,54 @@ defineOptions({
 
 const configStore = useConfigStore()
 
-interface SuggestionGroup {
-  title: string
-  content: Suggestion[]
-}
+const items = useState<MenuOpcionInterface[]>('menu', () => [])
 
-// 👉 Is App Search Bar Visible
 const isAppSearchBarVisible = ref(false)
-
-// 👉 Default suggestions
-
-const suggestionGroups: SuggestionGroup[] = [
-  {
-    title: 'Popular Searches',
-    content: [
-      { icon: 'ri-bar-chart-line', title: 'Analytics', url: { name: 'dashboards-analytics' } },
-      { icon: 'ri-pie-chart-2-line', title: 'CRM', url: { name: 'dashboards-crm' } },
-      { icon: 'ri-shopping-bag-3-line', title: 'eCommerce', url: { name: 'dashboards-ecommerce' } },
-      { icon: 'ri-car-line', title: 'Logistics', url: { name: 'apps-logistics-dashboard' } },
-    ],
-  },
-  {
-    title: 'Apps & Pages',
-    content: [
-      { icon: 'ri-calendar-line', title: 'Calendar', url: { name: 'apps-calendar' } },
-      { icon: 'ri-lock-unlock-line', title: 'Roles & Permissions', url: { name: 'apps-roles' } },
-      { icon: 'ri-settings-4-line', title: 'Account Settings', url: { name: 'pages-account-settings-tab', params: { tab: 'account' } } },
-      { icon: 'ri-file-copy-line', title: 'Dialog Examples', url: { name: 'pages-dialog-examples' } },
-    ],
-  },
-  {
-    title: 'User Interface',
-    content: [
-      { icon: 'ri-text', title: 'Typography', url: { name: 'pages-typography' } },
-      { icon: 'ri-menu-line', title: 'Accordion', url: { name: 'components-expansion-panel' } },
-      { icon: 'ri-alert-line', title: 'Alerts', url: { name: 'components-alert' } },
-      { icon: 'ri-checkbox-blank-line', title: 'Cards', url: { name: 'pages-cards-card-basic' } },
-    ],
-  },
-  {
-    title: 'Forms & Tables',
-    content: [
-      { icon: 'ri-radio-button-line', title: 'Radio', url: { name: 'forms-radio' } },
-      { icon: 'ri-file-text-line', title: 'Form Layouts', url: { name: 'forms-form-layouts' } },
-      { icon: 'ri-table-line', title: 'Table', url: { name: 'tables-simple-table' } },
-      { icon: 'ri-edit-box-line', title: 'Editor', url: { name: 'forms-editors' } },
-    ],
-  },
-]
-
-// 👉 No Data suggestion
-const noDataSuggestions: Suggestion[] = [
-  {
-    title: 'Analytics',
-    icon: 'ri-bar-chart-line',
-    url: { name: 'dashboards-analytics' },
-  },
-  {
-    title: 'CRM',
-    icon: 'ri-pie-chart-2-line',
-    url: { name: 'dashboards-crm' },
-  },
-  {
-    title: 'eCommerce',
-    icon: 'ri-shopping-bag-3-line',
-    url: { name: 'dashboards-ecommerce' },
-  },
-]
-
 const searchQuery = ref('')
-
-const router = useRouter()
-const searchResult = ref<SearchResults[]>([])
 const isLoading = ref(false)
 
-const fetchResults = async () => {
-  isLoading.value = true
-
-  const { data } = await useApi<any>(withQuery('/app-bar/search', { q: searchQuery.value }))
-
-  searchResult.value = data.value
-
-  // ℹ️ simulate loading: we have used setTimeout for better user experience your can remove it
-  setTimeout(() => {
-    isLoading.value = false
-  }, 500)
-}
-
-watch(searchQuery, fetchResults)
-
-// 👉 redirect the selected page
-const redirectToSuggestedOrSearchedPage = (selected: Suggestion) => {
-  router.push(selected.url as string)
-  isAppSearchBarVisible.value = false
-  searchQuery.value = ''
-}
-
 const LazyAppBarSearch = defineAsyncComponent(() => import('@core/components/AppBarSearch.vue'))
+
+const flrattenOptions = (options: MenuOpcionInterface[]) => {
+  let flattened: MenuOpcionInterface[] = []
+  for (const option of options) {
+    const { children, ...currentOption } = option
+
+    flattened.push(currentOption as MenuOpcionInterface)
+    if (children && Array.isArray(children))
+      flattened = flattened.concat(flrattenOptions(children))
+  }
+
+  return flattened
+}
+
+const navegarHaciaRuta = async (item: MenuOpcionInterface) => {
+  if (item.ruta) {
+    const ruta = {
+      name: item.ruta,
+    }
+
+    await navigateTo(ruta)
+
+    isAppSearchBarVisible.value = false
+    searchQuery.value = ''
+  }
+}
+
+const itemsAplanadas = flrattenOptions(items.value)
+
+const itemsFiltradas = computed(() => {
+  if (searchQuery.value.length > 0) {
+    return itemsAplanadas.filter(item => {
+      const searchTerm = searchQuery.value.toLowerCase()
+
+      return item?.titulo?.toLowerCase().includes(searchTerm)
+    })
+  }
+  else {
+    return itemsAplanadas
+  }
+})
 </script>
 
 <template>
@@ -123,8 +66,6 @@ const LazyAppBarSearch = defineAsyncComponent(() => import('@core/components/App
     style="user-select: none;"
     @click="isAppSearchBarVisible = !isAppSearchBarVisible"
   >
-    <!-- 👉 Search Trigger button -->
-    <!-- close active tour while opening search bar using icon -->
     <IconBtn @click="Shepherd.activeTour?.cancel()">
       <VIcon icon="ri-search-line" />
     </IconBtn>
@@ -143,38 +84,35 @@ const LazyAppBarSearch = defineAsyncComponent(() => import('@core/components/App
     </div>
   </div>
 
-  <!-- 👉 App Bar Search -->
   <LazyAppBarSearch
     v-model:is-dialog-visible="isAppSearchBarVisible"
-    :search-results="searchResult"
+    :search-results="itemsFiltradas"
     :is-loading="isLoading"
     @search="searchQuery = $event"
   >
     <!-- suggestion -->
     <template #suggestions>
       <VCardText class="app-bar-search-suggestions pa-12">
-        <VRow v-if="suggestionGroups">
+        <VRow v-if="items.length > 0 ">
           <VCol
-            v-for="suggestion in suggestionGroups"
-            :key="suggestion.title"
             cols="12"
             sm="6"
           >
             <p class="custom-letter-spacing text-xs text-disabled text-uppercase py-2 px-4 mb-0">
-              {{ suggestion.title }}
+              listado de opciones
             </p>
             <VList class="card-list">
               <VListItem
-                v-for="item in suggestion.content"
-                :key="item.title"
+                v-for="(item, index) in items"
+                :key="index"
                 link
                 class="app-bar-search-suggestion mx-4 mt-2"
-                @click="redirectToSuggestedOrSearchedPage(item)"
+                :to="item.ruta ? item.ruta : ''"
               >
-                <VListItemTitle>{{ item.title }}</VListItemTitle>
+                <VListItemTitle>{{ item.titulo }}</VListItemTitle>
                 <template #prepend>
                   <VIcon
-                    :icon="item.icon"
+                    :icon="item.icono ? item.icono : 'ri-file-text-line'"
                     size="20"
                     class="me-n1"
                   />
@@ -186,42 +124,34 @@ const LazyAppBarSearch = defineAsyncComponent(() => import('@core/components/App
       </VCardText>
     </template>
 
-    <!-- no data suggestion -->
-    <template #noDataSuggestion>
-      <div class="mt-6">
-        <div class="text-center text-disabled py-2">
-          Try searching for
-        </div>
-        <h6
-          v-for="suggestion in noDataSuggestions"
-          :key="suggestion.title"
-          class="app-bar-search-suggestion text-h6 font-weight-regular cursor-pointer py-2 px-4"
-          @click="redirectToSuggestedOrSearchedPage(suggestion)"
-        >
-          <VIcon
-            size="20"
-            :icon="suggestion.icon"
-            class="me-2"
-          />
-          <span class="d-inline-block">{{ suggestion.title }}</span>
-        </h6>
-      </div>
-    </template>
+    <!--    &lt;!&ndash; no data suggestion &ndash;&gt; -->
+    <!-- &lt;!&ndash;    <template #noDataSuggestion>&ndash;&gt; -->
+    <!-- &lt;!&ndash;      <div class="mt-6">&ndash;&gt; -->
+    <!-- &lt;!&ndash;        <div class="text-center text-disabled py-2">&ndash;&gt; -->
+    <!-- &lt;!&ndash;          Try searching for&ndash;&gt; -->
+    <!-- &lt;!&ndash;        </div>&ndash;&gt; -->
+    <!-- &lt;!&ndash;        <h6&ndash;&gt; -->
+    <!-- &lt;!&ndash;          v-for="suggestion in noDataSuggestions"&ndash;&gt; -->
+    <!-- &lt;!&ndash;          :key="suggestion.title"&ndash;&gt; -->
+    <!-- &lt;!&ndash;          class="app-bar-search-suggestion text-h6 font-weight-regular cursor-pointer py-2 px-4"&ndash;&gt; -->
+    <!-- &lt;!&ndash;          @click="redirectToSuggestedOrSearchedPage(suggestion)"&ndash;&gt; -->
+    <!-- &lt;!&ndash;        >&ndash;&gt; -->
+    <!-- &lt;!&ndash;          <VIcon&ndash;&gt; -->
+    <!-- &lt;!&ndash;            size="20"&ndash;&gt; -->
+    <!-- &lt;!&ndash;            :icon="suggestion.icon"&ndash;&gt; -->
+    <!-- &lt;!&ndash;            class="me-2"&ndash;&gt; -->
+    <!-- &lt;!&ndash;          />&ndash;&gt; -->
+    <!-- &lt;!&ndash;          <span class="d-inline-block">{{ suggestion.title }}</span>&ndash;&gt; -->
+    <!-- &lt;!&ndash;        </h6>&ndash;&gt; -->
+    <!-- &lt;!&ndash;      </div>&ndash;&gt; -->
+    <!-- &lt;!&ndash;    </template>&ndash;&gt; -->
 
-    <!-- search result -->
     <template #searchResult="{ item }">
-      <VListSubheader class="text-disabled custom-letter-spacing font-weight-regular ps-4">
-        {{ item.title }}
-      </VListSubheader>
-      <VListItem
-        v-for="list in item.children"
-        :key="list.title"
-        @click="redirectToSuggestedOrSearchedPage(list)"
-      >
+      <VListItem @click="navegarHaciaRuta(item)">
         <template #prepend>
           <VIcon
             size="20"
-            :icon="list.icon"
+            :icon="item.icono ?? 'ri-file-text-line'"
             class="me-n1"
           />
         </template>
@@ -233,7 +163,7 @@ const LazyAppBarSearch = defineAsyncComponent(() => import('@core/components/App
           />
         </template>
         <VListItemTitle>
-          {{ list.title }}
+          {{ item.titulo }}
         </VListItemTitle>
       </VListItem>
     </template>
