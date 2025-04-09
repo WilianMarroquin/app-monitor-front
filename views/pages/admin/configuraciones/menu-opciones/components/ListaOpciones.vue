@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import Sortable from 'sortablejs'
 import Opcion from './Opcion.vue'
-import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 
 interface Props {
   opciones: MenuOpcionInterface[]

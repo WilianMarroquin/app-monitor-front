@@ -22,10 +22,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive } from 'vue'
-import Sortable from 'sortablejs'
-import OptionText from './OpcionTexto.vue'
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
+import Sortable from 'sortablejs'
+import { onMounted, reactive } from 'vue'
+import OptionText from './OpcionTexto.vue'
 
 const props = defineProps<Props>()
 
