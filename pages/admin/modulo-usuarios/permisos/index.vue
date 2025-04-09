@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { can } = useAbility()
 import { manejaError } from '@/utils/funcionesComunes'
+
 //definePageMeta({
 //  middleware: 'permissions',
 //  action: 'listar permisos', // Acción requerida
@@ -9,6 +9,8 @@ import { manejaError } from '@/utils/funcionesComunes'
 
 const { deleted } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
+const { can } = useAbility()
+
 const dataTable = ref<any>(null)
 
 const headers = [
@@ -54,7 +56,6 @@ const deleteItem = async (id: number) => {
     <VBtn
       v-if="can('crear permisos', 'permissiones')"
       class="ml-auto"
-      color="success"
       to="/admin/modulo-usuarios/permisos/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import { useConfigStore } from '@core/stores/config'
-import Shepherd from 'shepherd.js'
 
 defineOptions({
   inheritAttrs: false,
@@ -23,8 +22,9 @@ const flrattenOptions = (options: MenuOpcionInterface[]) => {
     const { children, ...currentOption } = option
 
     flattened.push(currentOption as MenuOpcionInterface)
-    if (children && Array.isArray(children))
+    if (children && Array.isArray(children)) {
       flattened = flattened.concat(flrattenOptions(children))
+    }
   }
 
   return flattened
@@ -45,42 +45,40 @@ const navegarHaciaRuta = async (item: MenuOpcionInterface) => {
 
 const itemsAplanadas = flrattenOptions(items.value)
 
+const itemsLink = itemsAplanadas.filter(item => item.ruta && item.ruta !== '')
+
 const itemsFiltradas = computed(() => {
   if (searchQuery.value.length > 0) {
-    return itemsAplanadas.filter(item => {
+    return itemsLink.filter(item => {
       const searchTerm = searchQuery.value.toLowerCase()
 
       return item?.titulo?.toLowerCase().includes(searchTerm)
     })
   }
   else {
-    return itemsAplanadas
+    return itemsLink
   }
 })
 </script>
 
 <template>
   <div
-    class="d-flex align-center cursor-pointer gap-x-2"
+    class="d-flex align-center gap-x-2 cursor-pointer px-2 py-1 rounded hover:bg-surface-hover transition-colors"
     v-bind="$attrs"
     style="user-select: none;"
     @click="isAppSearchBarVisible = !isAppSearchBarVisible"
+    aria-label="Buscar en el sistema"
   >
-    <IconBtn @click="Shepherd.activeTour?.cancel()">
+    <IconBtn>
       <VIcon icon="ri-search-line" />
     </IconBtn>
 
     <div
       v-if="configStore.appContentLayoutNav === 'vertical'"
-      class="d-none d-md-flex text-disabled text-body-1 gap-x-2"
-      @click="Shepherd.activeTour?.cancel()"
+      class="d-none d-md-flex align-center gap-x-2 text-disabled text-sm font-medium"
     >
-      <div>
-        Search
-      </div>
-      <div class="meta-key">
-        &#8984;K
-      </div>
+      <span>Buscar</span>
+      <span class="meta-key">⌘K</span>
     </div>
   </div>
 
@@ -90,33 +88,25 @@ const itemsFiltradas = computed(() => {
     :is-loading="isLoading"
     @search="searchQuery = $event"
   >
-    <!-- suggestion -->
+    <!-- Sugerencias -->
     <template #suggestions>
-      <VCardText class="app-bar-search-suggestions pa-12">
-        <VRow v-if="items.length > 0 ">
-          <VCol
-            cols="12"
-            sm="6"
-          >
-            <p class="custom-letter-spacing text-xs text-disabled text-uppercase py-2 px-4 mb-0">
-              listado de opciones
-            </p>
+      <VCardText class="app-bar-search-suggestions ">
+        <VRow v-if="itemsLink.length > 0 ">
+          <VCol cols="12">
             <VList class="card-list">
               <VListItem
-                v-for="(item, index) in items"
+                v-for="(item, index) in itemsLink"
                 :key="index"
-                link
-                class="app-bar-search-suggestion mx-4 mt-2"
-                :to="item.ruta ? item.ruta : ''"
+                @click="navegarHaciaRuta(item)"
               >
-                <VListItemTitle>{{ item.titulo }}</VListItemTitle>
                 <template #prepend>
                   <VIcon
-                    :icon="item.icono ? item.icono : 'ri-file-text-line'"
+                    :icon="item.icono ?? 'ri-file-text-line'"
                     size="20"
-                    class="me-n1"
+                    class="me-2"
                   />
                 </template>
+                <VListItemTitle class="text-body-1">{{ item.titulo }}</VListItemTitle>
               </VListItem>
             </VList>
           </VCol>
@@ -124,47 +114,47 @@ const itemsFiltradas = computed(() => {
       </VCardText>
     </template>
 
-    <!--    &lt;!&ndash; no data suggestion &ndash;&gt; -->
-    <!-- &lt;!&ndash;    <template #noDataSuggestion>&ndash;&gt; -->
-    <!-- &lt;!&ndash;      <div class="mt-6">&ndash;&gt; -->
-    <!-- &lt;!&ndash;        <div class="text-center text-disabled py-2">&ndash;&gt; -->
-    <!-- &lt;!&ndash;          Try searching for&ndash;&gt; -->
-    <!-- &lt;!&ndash;        </div>&ndash;&gt; -->
-    <!-- &lt;!&ndash;        <h6&ndash;&gt; -->
-    <!-- &lt;!&ndash;          v-for="suggestion in noDataSuggestions"&ndash;&gt; -->
-    <!-- &lt;!&ndash;          :key="suggestion.title"&ndash;&gt; -->
-    <!-- &lt;!&ndash;          class="app-bar-search-suggestion text-h6 font-weight-regular cursor-pointer py-2 px-4"&ndash;&gt; -->
-    <!-- &lt;!&ndash;          @click="redirectToSuggestedOrSearchedPage(suggestion)"&ndash;&gt; -->
-    <!-- &lt;!&ndash;        >&ndash;&gt; -->
-    <!-- &lt;!&ndash;          <VIcon&ndash;&gt; -->
-    <!-- &lt;!&ndash;            size="20"&ndash;&gt; -->
-    <!-- &lt;!&ndash;            :icon="suggestion.icon"&ndash;&gt; -->
-    <!-- &lt;!&ndash;            class="me-2"&ndash;&gt; -->
-    <!-- &lt;!&ndash;          />&ndash;&gt; -->
-    <!-- &lt;!&ndash;          <span class="d-inline-block">{{ suggestion.title }}</span>&ndash;&gt; -->
-    <!-- &lt;!&ndash;        </h6>&ndash;&gt; -->
-    <!-- &lt;!&ndash;      </div>&ndash;&gt; -->
-    <!-- &lt;!&ndash;    </template>&ndash;&gt; -->
+    <!-- No se encontró nada -->
+    <template #noDataSuggestion>
+      <div class="mt-6 text-center text-disabled">
+        <div class="py-2">No se encontraron coincidencias. Intenta con:</div>
+        <div class="flex flex-col items-center gap-1 mt-4">
+          <h6
+            v-for="suggestion in itemsLink.slice(0, 5)"
+            :key="suggestion.titulo"
+            class="app-bar-search-suggestion text-body-1 cursor-pointer py-2 px-4 rounded hover:bg-surface-hover transition-colors"
+            @click="navegarHaciaRuta(suggestion)"
+          >
+            <VIcon size="20" :icon="suggestion.icono" class="me-2" />
+            {{ suggestion.titulo }}
+          </h6>
+        </div>
+      </div>
+    </template>
 
+    <!-- Resultado de búsqueda -->
     <template #searchResult="{ item }">
-      <VListItem @click="navegarHaciaRuta(item)">
+      <VListItem
+        class="app-bar-search-suggestion"
+        @click="navegarHaciaRuta(item)"
+      >
         <template #prepend>
           <VIcon
             size="20"
             :icon="item.icono ?? 'ri-file-text-line'"
-            class="me-n1"
+            class="me-2"
           />
         </template>
-        <template #append>
-          <VIcon
-            size="20"
-            icon="ri-corner-down-left-line"
-            class="enter-icon text-medium-emphasis"
-          />
-        </template>
-        <VListItemTitle>
+        <VListItemTitle class="text-body-1">
           {{ item.titulo }}
         </VListItemTitle>
+        <template #append>
+          <VIcon
+            size="18"
+            icon="ri-corner-down-left-line"
+            class="text-disabled"
+          />
+        </template>
       </VListItem>
     </template>
   </LazyAppBarSearch>
@@ -188,6 +178,12 @@ const itemsFiltradas = computed(() => {
 
   .card-list {
     --v-card-list-gap: 8px;
+  }
+}
+.app-bar-search-suggestion {
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    background-color: rgba(var(--v-theme-on-surface), 0.04);
   }
 }
 </style>

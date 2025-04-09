@@ -143,8 +143,7 @@ watch(
           <VList
             v-show="searchQueryLocal.length && !!props.searchResults.length"
             ref="refSearchList"
-            density="compact"
-            class="app-bar-search-list py-0"
+            class="app-bar-search-suggestion"
           >
             <!-- 👉 list Item /List Sub header -->
             <template
