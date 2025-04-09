@@ -33,11 +33,11 @@ const obtenerOpcionesMenu = async (): Promise<void> => {
 const guardarOpcion = async (data: MenuOpcionInterface) => {
   paginaEspera.value = true
   try {
-    const res: SendResponseInterface<MenuOpcionInterface> = await post('api/menu-opciones', data)
+    const res: SendResponseInterface<MenuOpcionInterface> = await post('api/admin/configuraciones/menu-opciones', data)
 
     await obtenerOpcionesMenu()
     success(res.message)
-    navigateTo('/admin/menu')
+    navigateTo('/admin/configuraciones/menu')
   }
   catch (e: any) {
     manejaError(e)
@@ -82,7 +82,7 @@ const puedeMostrarDatos: ComputedRef<boolean> = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/admin/menu"
+      to="/admin/configuraciones/menu"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

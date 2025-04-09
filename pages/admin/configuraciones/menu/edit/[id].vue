@@ -28,11 +28,11 @@ const actualizarOpcion = async (opcionActualizada: MenuOpcionInterface): Promise
   try {
     paginaEspera.value = true
 
-    const response = await put(`api/menu-opciones/${id}`, opcionActualizada)
+    const response = await put(`api/admin/configuraciones/menu-opciones/${id}`, opcionActualizada)
 
     menu.value = response.data
     success(response.message)
-    navigateTo('/admin/menu')
+    navigateTo('/admin/configuraciones/menu')
   }
   catch (e: any) {
     manejaError(e)
@@ -46,7 +46,7 @@ const getOpcion = async (): Promise<void> => {
   try {
     paginaEspera.value = true
 
-    const response: SendResponseInterface<MenuOpcionInterface> = await get(`api/menu-opciones/${id}`)
+    const response: SendResponseInterface<MenuOpcionInterface> = await get(`api/admin/configuraciones/menu-opciones/${id}`)
 
     opcion.value = response.data ?? {} as MenuOpcionInterface
   }
@@ -92,7 +92,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/admin/menu"
+      to="/admin/configuraciones/menu"
       prepend-icon="ri-contract-left-fill"
     >
       Regresar

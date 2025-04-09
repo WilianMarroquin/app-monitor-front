@@ -24,7 +24,7 @@ const obtenerOpcionesMenu = async (): Promise<void> => {
   try {
     paginaEspera.value = true
 
-    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await get('api/get/menu-opciones/')
+    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await get('api/admin/configuraciones/menu-opciones/get/menu-opciones')
 
     opcionesMenu.value = respuesta.data ?? []
   }

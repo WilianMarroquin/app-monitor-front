@@ -30,11 +30,11 @@ const guardarOpcion = async (data: MenuOpcionInterface) => {
   }
 
   try {
-    const res = await post('api/menu-opciones', datos)
+    const res = await post('api/admin/configuraciones/menu-opciones', datos)
 
     success(res.message)
     menu.value = res.data
-    navigateTo('/admin/menu')
+    navigateTo('/admin/configuraciones/menu')
   }
   catch (e: any) {
     manejaError(e)
@@ -75,7 +75,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      @click="navigateTo('/admin/menu')"
+      @click="navigateTo('/admin/configuraciones/menu')"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

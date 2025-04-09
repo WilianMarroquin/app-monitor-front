@@ -61,7 +61,7 @@ function flattenOptions(options: MenuOpcionInterface[]): MenuOpcionInterface[] {
 
     <VBtn
       class="ms-auto"
-      to="/admin/menu/create"
+      to="/admin/configuraciones/menu/create"
     >
       <VIcon class="mr-2 ri-add-large-fill" />
       Nueva Opción
