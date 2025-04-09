@@ -2,11 +2,12 @@
 import type { ConfiguracionInterface } from '@/types/admin/configuraciones/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'ver configuraciones',
-//   subject: 'configuraciones',
-// })
+definePageMeta({
+  navActiveLink: 'dev-configuraciones',
+  // middleware: 'permissions',
+  // action: 'ver configuraciones',
+  // subject: 'configuraciones',
+})
 
 const { get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()
@@ -45,7 +46,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/admin/configuraciones/generales/"
+      to="/dev/configuraciones"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

@@ -3,11 +3,12 @@ import type { ConfiguracionInterface } from '@/types/admin/configuraciones/types
 import { manejaError } from '@/utils/funcionesComunes'
 import Fields from '@/views/pages/admin/configuraciones/configuraciones/fields.vue'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'editar configuraciones', // Acción requerida
-//   subject: 'configuraciones',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// });
+definePageMeta({
+  navActiveLink: 'dev-configuraciones',
+  // middleware: 'permissions',
+  // action: 'editar configuraciones', // Acción requerida
+  // subject: 'configuraciones',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+});
 
 const { put, get } = useClienteRequest();
 const { success } = useToast();
@@ -22,7 +23,7 @@ const actualizarConfiguracion = async (Configuracion: ConfiguracionInterface): P
     const respuesta = await put('api/admin/configuraciones/generales/' + id, Configuracion);
 
     success(respuesta.message);
-    navigateTo('/admin/configuraciones/generales');
+    navigateTo('/dev/configuraciones');
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
@@ -67,7 +68,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/admin/configuraciones/generales/"
+      to="/dev/configuraciones"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar

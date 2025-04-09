@@ -25,7 +25,7 @@ const actualizarOpciones = async (opciones: MenuOpcionInterface[]): Promise<void
       opciones: opcionesAplanadas,
     }
 
-    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await post('api/menu-opcions/actualizar/orden', data)
+    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await post('api/admin/configuraciones/menu-opciones/menu-opcions/actualizar/orden ', data)
 
     opcionesMenu.value = respuesta.data ?? []
 

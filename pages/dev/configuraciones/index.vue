@@ -55,7 +55,7 @@ const deleteItem = async (id: number) => {
     <VBtn
       v-if="can('crear configuraciones', 'Configuracion')"
       class="ml-auto"
-      to="/admin/configuraciones/generales/create"
+      to="/dev/configuraciones/create"
     >
       <VIcon class="mr-2 ri-add-large-fill" />
       Nueva Configuracion
@@ -75,7 +75,7 @@ const deleteItem = async (id: number) => {
         icon="ri-eye-line"
         variant="tonal"
         color="info"
-        :to="`/admin/configuraciones/generales/show/${item.id}` "
+        :to="`/dev/configuraciones/show/${item.id}` "
         class="mr-1"
       />
       <VBtn
@@ -83,7 +83,7 @@ const deleteItem = async (id: number) => {
         icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
-        :to="`/admin/configuraciones/generales/edit/${item.id}`"
+        :to="`/dev/configuraciones/edit/${item.id}`"
         class="mr-1"
       />
       <VBtn

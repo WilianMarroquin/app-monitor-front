@@ -3,11 +3,12 @@ import type { ConfiguracionInterface } from '@/types/admin/configuraciones/types
 import { manejaError } from '@/utils/funcionesComunes'
 import Fields from '@/views/pages/admin/configuraciones/configuraciones/fields.vue'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'crear configuraciones', // Acción requerida
-//   subject: 'configuraciones',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// })
+definePageMeta({
+  navActiveLink: 'dev-configuraciones',
+  // middleware: 'permissions',
+  // action: 'crear configuraciones', // Acción requerida
+  // subject: 'configuraciones',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+})
 
 const { post } = useClienteRequest()
 const { success } = useToast()
@@ -19,7 +20,7 @@ const guardarConfiguracion = async (Configuracion: ConfiguracionInterface): Prom
     const respuesta: { message: string } = await post('api/admin/configuraciones/generales', Configuracion)
 
     success(respuesta.message)
-    navigateTo('/admin/configuraciones/generales')
+    navigateTo('/dev/configuraciones');
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
@@ -36,7 +37,7 @@ const guardarConfiguracion = async (Configuracion: ConfiguracionInterface): Prom
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/admin/configuraciones/generales/"
+      to="/dev/configuraciones"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
