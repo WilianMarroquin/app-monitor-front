@@ -2,7 +2,7 @@
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
-import ListaOpciones from '@/views/pages/admin/menu-opciones/components/ListaOpciones.vue'
+import ListaOpciones from '@/views/pages/admin/configuraciones/menu-opciones/components/ListaOpciones.vue'
 
 definePageMeta({
   // middleware: 'permissions',
@@ -54,11 +54,8 @@ function flattenOptions(options: MenuOpcionInterface[]): MenuOpcionInterface[] {
 </script>
 
 <template>
-  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 ">
-    <p class="text-2xl">
-      Administrar Menu
-    </p>
-
+  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-3 ">
+    <h1>Administrar Menu</h1>
     <VBtn
       class="ms-auto"
       to="/admin/configuraciones/menu/create"

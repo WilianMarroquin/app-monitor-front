@@ -3,10 +3,10 @@ import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
-import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
+import Fields from '@/views/pages/admin/configuraciones/menu-opciones/fields.vue'
 
 definePageMeta({
-  navActiveLink: 'admin-menu',
+  navActiveLink: 'admin-configuraciones-menu',
 
   // middleware: 'permissions',
   // action: 'editar opcion menu',
@@ -84,11 +84,8 @@ const puedeMostrarDatos = computed(() => {
 </script>
 
 <template>
-  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6">
-    <p class="text-2xl">
-      Editar Menu
-    </p>
-
+  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-3">
+    <h1>Editar Menu</h1>
     <VBtn
       class="ml-auto"
       color="secondary"

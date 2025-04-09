@@ -3,13 +3,14 @@ import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
-import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
+import Fields from '@/views/pages/admin/configuraciones/menu-opciones/fields.vue'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'crear opcion menu',
-//   subject: 'menu opcion',
-// })
+definePageMeta({
+  navActiveLink: 'admin-configuraciones-menu',
+  // middleware: 'permissions',
+  // action: 'crear opcion menu',
+  // subject: 'menu opcion',
+})
 
 const { post, get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()
@@ -18,7 +19,7 @@ const menu = useState<MenuOpcionInterface[]>('menu')
 
 const obtenerOpcionesMenu = async (): Promise<void> => {
   try {
-    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await get('api/get/menu-opciones/')
+    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await get('api/admin/configuraciones/menu-opciones/get/menu-opciones')
 
     menu.value = respuesta.data ?? []
   }
@@ -73,12 +74,8 @@ const puedeMostrarDatos: ComputedRef<boolean> = computed(() => {
 </script>
 
 <template>
-  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6">
-
-    <p class="text-2xl">
-      Crear Opción Menu
-    </p>
-
+  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-3">
+    <h1>Crear Opción Menu</h1>
     <VBtn
       class="ml-auto"
       color="secondary"

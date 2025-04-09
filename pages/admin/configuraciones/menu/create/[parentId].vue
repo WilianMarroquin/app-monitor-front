@@ -3,10 +3,10 @@ import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
-import Fields from '@/views/pages/admin/menu-opciones/fields.vue'
+import Fields from '@/views/pages/admin/configuraciones/menu-opciones/fields.vue'
 
 definePageMeta({
-  navActiveLink: 'admin-menu',
+  navActiveLink: 'admin-configuraciones-menu',
   // middleware: 'permissions',
   // action: 'crear opcion menu',
   // subject: 'menu opcion',
@@ -21,6 +21,20 @@ const parentId = route.params?.parentId as number
 const menu = useState('menu')
 const permisos = ref<PermisoInterface[]>([])
 
+const obtenerOpcionesMenu = async (): Promise<void> => {
+  try {
+    const respuesta: SendResponseInterface<MenuOpcionInterface[]> = await get('api/admin/configuraciones/menu-opciones/get/menu-opciones')
+
+    menu.value = respuesta.data ?? []
+  }
+  catch (e: any) {
+    manejaError(e)
+  }
+  finally {
+    paginaEspera.value = false
+  }
+}
+
 const guardarOpcion = async (data: MenuOpcionInterface) => {
   paginaEspera.value = true
 
@@ -33,7 +47,7 @@ const guardarOpcion = async (data: MenuOpcionInterface) => {
     const res = await post('api/admin/configuraciones/menu-opciones', datos)
 
     success(res.message)
-    menu.value = res.data
+    await obtenerOpcionesMenu()
     navigateTo('/admin/configuraciones/menu')
   }
   catch (e: any) {

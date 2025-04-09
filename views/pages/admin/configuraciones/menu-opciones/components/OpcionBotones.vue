@@ -49,7 +49,7 @@ const eliminar = async (): Promise<void> => {
   if (confirmar) {
     try {
       paginaEspera.value = true;
-      let res = await deleted(`api/menu-opciones/${id}`);
+      let res = await deleted(`api/admin/configuraciones/menu-opciones/${id}`);
       await getOpcionesMenu();
       success(res.message);
     }
