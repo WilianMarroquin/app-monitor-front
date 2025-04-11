@@ -11,9 +11,9 @@ export function useAbility() {
     const { can, rules } = new AbilityBuilder(createMongoAbility)
 
     if (usuario?.roles?.includes('Super Admin')) {
-      console.log('Super Admin')
       can('manage', 'all') // El super admin tiene control total
-    } else if (usuario?.permisos) {
+    }
+    else if (usuario?.permisos) {
       usuario.permisos.forEach((permiso) => {
         can(permiso.accion, permiso.recurso)
       })

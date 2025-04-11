@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
-import svgLoader from 'vite-svg-loader'
 import vuetify from 'vite-plugin-vuetify'
+import svgLoader from 'vite-svg-loader'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -81,7 +81,7 @@ export default defineNuxtConfig({
 
     // Public keys that are exposed to the client
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || '/api',
     },
   },
 
