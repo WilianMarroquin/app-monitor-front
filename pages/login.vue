@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
-import type { ConfiguracionInterface } from '@/types/admin/configuraciones/types'
-import type { SendResponseInterface } from '@/types/generales/types'
+import { useConfiguracionStore } from '@/stores/admin/useConfiguracionStore'
 import { manejaError } from '@/utils/funcionesComunes'
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
@@ -13,62 +12,23 @@ import authV2LoginMaskLight from '@images/pages/auth-v2-login-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 
+const configuracionStore = useConfiguracionStore()
+
 definePageMeta({
   layout: 'blank',
 })
 
 const { login } = useSanctumAuth()
-const { get } = useClienteRequest()
 
 const form = ref({
   usuario: '',
   password: '',
 })
 
-const nombreAplicacion = useState<ConfiguracionInterface>('nombreAplicacion', () => ({
-  key: 'Nombre Aplicacion',
-  value: '',
-  descripcion: 'Es el nombre de la aplicación',
-}))
-
-const emailAplicacion = useState<ConfiguracionInterface>('emailAplicacion', () => ({
-  key: 'Email Aplicacion',
-  value: '',
-  descripcion: 'Es el email de la aplicación',
-}))
-
-const telefonoAplicacion = useState<ConfiguracionInterface>('telefonoAplicacion', () => ({
-  key: 'Telefono Aplicacion',
-  value: '',
-  descripcion: 'Es el telefono de la aplicación',
-}))
-
 interface LoginForm {
   usuario: string
   password: string
 }
-
-const getConfiguraciones = async (): Promise<void> => {
-  try {
-    const res = await get('api/libres/configuraciones/generales') as SendResponseInterface<ConfiguracionInterface[]>
-
-    if (res.data) {
-      nombreAplicacion.value
-        = res.data.find(item => item.key === 'Nombre Aplicacion') ?? nombreAplicacion.value
-
-      emailAplicacion.value
-        = res.data.find(item => item.key === 'Email Aplicacion') ?? emailAplicacion.value
-
-      telefonoAplicacion.value
-        = res.data.find(item => item.key === 'Telefono Aplicacion') ?? telefonoAplicacion.value
-    }
-  }
-  catch (error) {
-    manejaError(error)
-  }
-}
-
-getConfiguraciones()
 
 const onSubmit = async (): Promise<void> => {
   try {
@@ -82,6 +42,10 @@ const onSubmit = async (): Promise<void> => {
 const isPasswordVisible = ref(false)
 const authV2LoginMask = useGenerateImageVariant(authV2LoginMaskLight, authV2LoginMaskDark)
 const authV2LoginIllustration = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
+
+onMounted(() => {
+  configuracionStore.cargarGenerales()
+})
 </script>
 
 <template>
@@ -89,7 +53,7 @@ const authV2LoginIllustration = useGenerateImageVariant(authV2LoginIllustrationL
     <div class="app-logo auth-logo">
       <VNodeRenderer :nodes="themeConfig.app.logo" />
       <h1 class="app-logo-title">
-        {{ nombreAplicacion.nombre }}
+        {{ configuracionStore.configuracionesGenerales.nombre_aplicacion }}
       </h1>
     </div>
   </a>
@@ -128,11 +92,11 @@ const authV2LoginIllustration = useGenerateImageVariant(authV2LoginIllustrationL
       >
         <VCardText>
           <h4 class="text-h4 mb-1">
-            Welcome to <span class="text-capitalize">{{ themeConfig.app.title }}! 👋🏻</span>
+            Welcome to <span class="text-capitalize">{{ configuracionStore.configuracionesGenerales.nombre_aplicacion }}! 👋🏻</span>
           </h4>
 
           <p class="mb-0">
-            Please sign-in to your account and start the adventure
+            {{ configuracionStore.configuracionesGenerales.eslogan_aplicacion }}
           </p>
         </VCardText>
 

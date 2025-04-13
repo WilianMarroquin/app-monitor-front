@@ -108,6 +108,7 @@
     "postcss-scss": "4.0.9",
     "sass": "1.76.0",
     "shiki": "1.24.4",
+    "stores": "link:@/stores",
     "stylelint": "16.8.0",
     "stylelint-config-idiomatic-order": "10.0.0",
     "stylelint-config-standard-scss": "13.1.0",

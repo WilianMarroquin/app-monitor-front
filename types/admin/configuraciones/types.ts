@@ -20,3 +20,12 @@ export interface ConfiguracionInterface {
   updated_at?: string | null
   deleted_at?: string | null
 }
+
+export interface ConfiguracionGeneralInterface {
+  nombre_aplicacion: string
+  email_aplicacion: string
+  telefono_aplicacion: string
+  eslogan_aplicacion: string
+  fondoLoginOscuro: string
+  fondoLoginClaro: string
+}

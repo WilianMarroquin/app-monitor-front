@@ -1,55 +1,23 @@
 <script lang="ts" setup>
-import type { ConfiguracionInterface } from '@/types/admin/configuraciones/types'
+import { useConfiguracionStore } from '@/stores/admin/useConfiguracionStore'
+import type { ConfiguracionGeneralInterface } from '@/types/admin/configuraciones/types'
 import { manejaError } from '@/utils/funcionesComunes'
 import type { VForm } from 'vuetify/components/VForm'
 
-const { post } = useClienteRequest()
-const { success } = useToast()
-
+const store = useConfiguracionStore()
 const formOpcion = ref<InstanceType<typeof VForm>>()
-const nombreAplicacion = useState<ConfiguracionInterface>('nombreAplicacion', () => ({
-  key: 'Nombre Aplicacion',
-  value: '',
-  descripcion: 'Es el nombre de la aplicación',
-}))
-const emailAplicacion = useState<ConfiguracionInterface>('emailAplicacion', () => ({
-  key: 'Email Aplicacion',
-  value: '',
-  descripcion: 'Es el email de la aplicación',
-}))
-const telefonoAplicacion = useState<ConfiguracionInterface>('telefonoAplicacion', () => ({
-  key: 'Telefono Aplicacion',
-  value: '',
-  descripcion: 'Es el telefono de la aplicación',
-}))
-const esloganAplicacion = useState<ConfiguracionInterface>('esloganAplicacion', () => ({
-  key: 'Eslogan Aplicacion',
-  value: '',
-  descripcion: 'Es el eslogan de la aplicación',
-}))
-
-const fondoClaro = ref(null)
-const fondoOscuro = ref(null)
+const configuracionGeneral: ConfiguracionGeneralInterface = ref({
+  nombre_aplicacion: '',
+  email_aplicacion: '',
+  telefono_aplicacion: '',
+  eslogan_aplicacion: '',
+  fondoLoginOscuro: null,
+  fondoLoginClaro: null,
+})
 
 const guardarConfiguraciones = async (): Promise<void> => {
   try {
-    const configuraciones = {
-      nombreAplicacion: nombreAplicacion.value,
-      emailAplicacion: emailAplicacion.value,
-      telefonoAplicacion: telefonoAplicacion.value,
-      esloganAplicacion: esloganAplicacion.value,
-      fondoClaro: fondoClaro.value,
-      fondoOscuro: fondoOscuro.value,
-    }
-
-    const [res] = await Promise.all([post('api/admin/configuraciones/generales/guardar', configuraciones)])
-
-    success(res.message)
-    if (res.data) {
-      nombreAplicacion.value = res.data.find((item: ConfiguracionInterface) => item.key === 'Nombre Aplicacion') ?? nombreAplicacion.value
-      emailAplicacion.value = res.data.find((item: ConfiguracionInterface) => item.key === 'Email Aplicacion') ?? emailAplicacion.value
-      telefonoAplicacion.value = res.data.find((item: ConfiguracionInterface) => item.key === 'Telefono Aplicacion') ?? telefonoAplicacion.value
-    }
+    await store.guardarGenerales(configuracionGeneral.value)
   }
   catch (error) {
     manejaError(error)
@@ -85,7 +53,7 @@ const onSubmit = (): void => {
           >
             <VTextField
               :id="useId()"
-              v-model="nombreAplicacion.value"
+              v-model="configuracionGeneral.nombre_aplicacion"
               placeholder="Ingrese Nombre de la Aplicación"
               label="Título"
             />
@@ -97,7 +65,7 @@ const onSubmit = (): void => {
           >
             <VTextField
               :id="useId()"
-              v-model="emailAplicacion.value"
+              v-model="configuracionGeneral.email_aplicacion"
               placeholder="Ingrese Email de la Aplicación"
               label="Email"
             />
@@ -109,7 +77,7 @@ const onSubmit = (): void => {
           >
             <VTextField
               :id="useId()"
-              v-model="telefonoAplicacion.value"
+              v-model="configuracionGeneral.telefono_aplicacion"
               placeholder="Ingrese Telefono de la Aplicación"
               label="Teléfono"
             />
@@ -121,7 +89,7 @@ const onSubmit = (): void => {
           >
             <VTextField
               :id="useId()"
-              v-model="esloganAplicacion.value"
+              v-model="configuracionGeneral.eslogan_aplicacion"
               placeholder="Ingrese Eslogan de la Aplicación"
               label="Eslogan"
             />
@@ -133,7 +101,7 @@ const onSubmit = (): void => {
           >
             <VLabel class="mb-3">Fondo Login Claro:</VLabel>
             <FileInput
-              v-model:archivos="fondoClaro"
+              v-model:archivos="configuracionGeneral.fondoLoginClaro"
               :multiple="false"
               name="fondoClaro"
             />
@@ -145,7 +113,7 @@ const onSubmit = (): void => {
           >
             <VLabel class="mb-3">Fondo Login Oscuro:</VLabel>
             <FileInput
-              v-model:archivos="fondoOscuro"
+              v-model:archivos="configuracionGeneral.fondoLoginOscuro"
               :multiple="false"
               name="fondoClaro"
             />
