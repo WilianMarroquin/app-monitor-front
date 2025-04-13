@@ -60,7 +60,7 @@ export const useConfiguracionStore = defineStore('configuracion', () => {
       const res: SendResponseInterface<any> = await post('api/admin/configuraciones/generales/guardar', datos)
 
       if (res?.data)
-        configuracionesGenerales.value = res.data.map((c: any) => new Configuracion(c))
+        configuracionesGenerales.value = res.data
 
       success(res.message)
     }

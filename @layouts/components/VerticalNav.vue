@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { ConfiguracionInterface, MenuOpcionInterface } from '@/types/admin/configuraciones/types'
+import { useConfiguracionStore } from '@/stores/admin/useConfiguracionStore'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import { layoutConfig } from '@layouts'
 import { VerticalNavGroup, VerticalNavLink, VerticalNavSectionTitle } from '@layouts/components'
 import { useLayoutConfigStore } from '@layouts/stores/config'
@@ -8,6 +9,8 @@ import type { NavGroup, NavSectionTitle } from '@layouts/types'
 import type { Component } from 'vue'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { VNodeRenderer } from './VNodeRenderer'
+
+const configuracionStore = useConfiguracionStore()
 
 interface Props {
   tag?: string | Component
@@ -20,14 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   tag: 'aside',
 })
 
-const nombreAplicacion = useState<ConfiguracionInterface>('nombreAplicacion', () => ({
-  key: '',
-  value: '',
-  descripcion: '',
-}))
-
 const refNav = ref()
-
 const isHovered = useElementHover(refNav)
 
 provide(injectionKeyIsVerticalNavHovered, isHovered)
@@ -92,7 +88,7 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
               v-show="!hideTitleAndIcon"
               class="app-logo-title leading-normal"
             >
-              {{ nombreAplicacion.nombre }}
+              {{ configuracionStore.configuracionesGenerales.nombre_aplicacion }}
             </h1>
           </Transition>
         </NuxtLink>
