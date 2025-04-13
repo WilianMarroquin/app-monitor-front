@@ -3,6 +3,7 @@ import Footer from '@/layouts/components/Footer.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import NavSearchBar from "@/layouts/components/NavSearchBar.vue"
 import UserProfile from '@/layouts/components/UserProfile.vue'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import NavBarI18n from '@core/components/I18n.vue'
 
 import { useConfigStore } from '@core/stores/config'
@@ -12,7 +13,7 @@ import { themeConfig } from '@themeConfig'
 const { can } = useAbility()
 
 const configStore = useConfigStore()
-const opcionesMenu = <[]>useState('menu');
+const opcionesMenu = useState<MenuOpcionInterface[]>('menu', () => [])
 
 const verticalNavHeaderActionAnimationName = ref<'rotate-180' | 'rotate-back-180' | null>(null)
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
+import type { ConfiguracionInterface, MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import { layoutConfig } from '@layouts'
 import { VerticalNavGroup, VerticalNavLink, VerticalNavSectionTitle } from '@layouts/components'
 import { useLayoutConfigStore } from '@layouts/stores/config'
@@ -20,6 +20,12 @@ const props = withDefaults(defineProps<Props>(), {
   tag: 'aside',
 })
 
+const nombreAplicacion = useState<ConfiguracionInterface>('nombreAplicacion', () => ({
+  key: '',
+  value: '',
+  descripcion: '',
+}))
+
 const refNav = ref()
 
 const isHovered = useElementHover(refNav)
@@ -31,7 +37,7 @@ const configStore = useLayoutConfigStore()
 const resolveNavItemComponent = (item: MenuOpcionInterface | NavSectionTitle | NavGroup): unknown => {
   if (item.titulo_seccion)
     return VerticalNavSectionTitle
-  if (item.children?.length > 0)
+  if (item?.children?.length > 0)
     return VerticalNavGroup
 
   return VerticalNavLink
@@ -86,7 +92,7 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
               v-show="!hideTitleAndIcon"
               class="app-logo-title leading-normal"
             >
-              {{ layoutConfig.app.title }}
+              {{ nombreAplicacion.nombre }}
             </h1>
           </Transition>
         </NuxtLink>

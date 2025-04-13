@@ -1,31 +1,30 @@
 <script lang="ts" setup>
 import type { ConfiguracionInterface } from '@/types/admin/configuraciones/types'
-import type { SendResponseIndexInterface, SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 import type { VForm } from 'vuetify/components/VForm'
 
-const { post, get } = useClienteRequest()
+const { post } = useClienteRequest()
 const { success } = useToast()
 
 const formOpcion = ref<InstanceType<typeof VForm>>()
 
-const nombreAplicacion = ref<ConfiguracionInterface>({
+const nombreAplicacion = useState<ConfiguracionInterface>('nombreAplicacion', () => ({
   key: 'Nombre Aplicacion',
   value: '',
   descripcion: 'Es el nombre de la aplicación',
-})
+}))
 
-const emailAplicacion = ref<ConfiguracionInterface>({
+const emailAplicacion = useState<ConfiguracionInterface>('emailAplicacion', () => ({
   key: 'Email Aplicacion',
   value: '',
   descripcion: 'Es el email de la aplicación',
-})
+}))
 
-const telefonoAplicacion = ref<ConfiguracionInterface>({
+const telefonoAplicacion = useState<ConfiguracionInterface>('telefonoAplicacion', () => ({
   key: 'Telefono Aplicacion',
   value: '',
   descripcion: 'Es el telefono de la aplicación',
-})
+}))
 
 const guardarConfiguraciones = async (): Promise<void> => {
   try {
@@ -35,9 +34,14 @@ const guardarConfiguraciones = async (): Promise<void> => {
       telefonoAplicacion.value,
     ]
 
-    const res: SendResponseInterface<ConfiguracionInterface> = await post('api/admin/configuraciones/generales/guardar', configuraciones)
+    const [res] = await Promise.all([post('api/admin/configuraciones/generales/guardar', configuraciones)])
 
     success(res.message)
+    if (res.data) {
+      nombreAplicacion.value = res.data.find((item: ConfiguracionInterface) => item.key === 'Nombre Aplicacion') ?? nombreAplicacion.value
+      emailAplicacion.value = res.data.find((item: ConfiguracionInterface) => item.key === 'Email Aplicacion') ?? emailAplicacion.value
+      telefonoAplicacion.value = res.data.find((item: ConfiguracionInterface) => item.key === 'Telefono Aplicacion') ?? telefonoAplicacion.value
+    }
   }
   catch (error) {
     manejaError(error)
@@ -51,26 +55,6 @@ const onSubmit = (): void => {
   })
 }
 
-const getConfiguraciones = async (): Promise<void> => {
-  try {
-    const res: SendResponseIndexInterface<ConfiguracionInterface[]> = await get('api/admin/configuraciones/generales', {
-      'filter[key]': 'Nombre,Email,Telefono',
-    })
-
-    if (res.data?.data) {
-      nombreAplicacion.value = res.data.data.find((item: ConfiguracionInterface) => item.key === 'Nombre Aplicacion') ?? nombreAplicacion.value
-      emailAplicacion.value = res.data.data.find((item: ConfiguracionInterface) => item.key === 'Email Aplicacion') ?? emailAplicacion.value
-      telefonoAplicacion.value = res.data.data.find((item: ConfiguracionInterface) => item.key === 'Telefono Aplicacion') ?? telefonoAplicacion.value
-    }
-  }
-  catch (error) {
-    manejaError(error)
-  }
-}
-
-onMounted(() => {
-  getConfiguraciones()
-})
 </script>
 
 <template>

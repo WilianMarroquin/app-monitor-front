@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
+import type { ConfiguracionInterface } from '@/types/admin/configuraciones/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
@@ -16,16 +18,57 @@ definePageMeta({
 })
 
 const { login } = useSanctumAuth()
+const { get } = useClienteRequest()
 
 const form = ref({
   usuario: '',
   password: '',
 })
 
+const nombreAplicacion = useState<ConfiguracionInterface>('nombreAplicacion', () => ({
+  key: 'Nombre Aplicacion',
+  value: '',
+  descripcion: 'Es el nombre de la aplicación',
+}))
+
+const emailAplicacion = useState<ConfiguracionInterface>('emailAplicacion', () => ({
+  key: 'Email Aplicacion',
+  value: '',
+  descripcion: 'Es el email de la aplicación',
+}))
+
+const telefonoAplicacion = useState<ConfiguracionInterface>('telefonoAplicacion', () => ({
+  key: 'Telefono Aplicacion',
+  value: '',
+  descripcion: 'Es el telefono de la aplicación',
+}))
+
 interface LoginForm {
   usuario: string
   password: string
 }
+
+const getConfiguraciones = async (): Promise<void> => {
+  try {
+    const res = await get('api/libres/configuraciones/generales') as SendResponseInterface<ConfiguracionInterface[]>
+
+    if (res.data) {
+      nombreAplicacion.value
+        = res.data.find(item => item.key === 'Nombre Aplicacion') ?? nombreAplicacion.value
+
+      emailAplicacion.value
+        = res.data.find(item => item.key === 'Email Aplicacion') ?? emailAplicacion.value
+
+      telefonoAplicacion.value
+        = res.data.find(item => item.key === 'Telefono Aplicacion') ?? telefonoAplicacion.value
+    }
+  }
+  catch (error) {
+    manejaError(error)
+  }
+}
+
+getConfiguraciones()
 
 const onSubmit = async (): Promise<void> => {
   try {
@@ -46,7 +89,7 @@ const authV2LoginIllustration = useGenerateImageVariant(authV2LoginIllustrationL
     <div class="app-logo auth-logo">
       <VNodeRenderer :nodes="themeConfig.app.logo" />
       <h1 class="app-logo-title">
-        {{ themeConfig.app.title }}
+        {{ nombreAplicacion.nombre }}
       </h1>
     </div>
   </a>

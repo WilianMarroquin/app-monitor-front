@@ -11,14 +11,13 @@ const DefaultLayoutWithVerticalNav = defineAsyncComponent(() => import('./compon
 
 const { layoutAttrs, injectSkinClasses } = useSkins()
 const { paginaEspera } = useCargandoPagina()
+const { get } = useClienteRequest()
 
 const configStore = useConfigStore()
 
 injectSkinClasses()
 
 const opcionesMenu = useState<MenuOpcionInterface[]>('menu', () => [])
-
-const { get } = useClienteRequest()
 
 const obtenerOpcionesMenu = async (): Promise<void> => {
   try {
@@ -37,6 +36,7 @@ const obtenerOpcionesMenu = async (): Promise<void> => {
 }
 
 obtenerOpcionesMenu()
+
 switchToVerticalNavOnLtOverlayNavBreakpoint()
 </script>
 
