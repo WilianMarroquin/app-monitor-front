@@ -7,32 +7,40 @@ const { post } = useClienteRequest()
 const { success } = useToast()
 
 const formOpcion = ref<InstanceType<typeof VForm>>()
-
 const nombreAplicacion = useState<ConfiguracionInterface>('nombreAplicacion', () => ({
   key: 'Nombre Aplicacion',
   value: '',
   descripcion: 'Es el nombre de la aplicación',
 }))
-
 const emailAplicacion = useState<ConfiguracionInterface>('emailAplicacion', () => ({
   key: 'Email Aplicacion',
   value: '',
   descripcion: 'Es el email de la aplicación',
 }))
-
 const telefonoAplicacion = useState<ConfiguracionInterface>('telefonoAplicacion', () => ({
   key: 'Telefono Aplicacion',
   value: '',
   descripcion: 'Es el telefono de la aplicación',
 }))
+const esloganAplicacion = useState<ConfiguracionInterface>('esloganAplicacion', () => ({
+  key: 'Eslogan Aplicacion',
+  value: '',
+  descripcion: 'Es el eslogan de la aplicación',
+}))
+
+const fondoClaro = ref(null)
+const fondoOscuro = ref(null)
 
 const guardarConfiguraciones = async (): Promise<void> => {
   try {
-    const configuraciones = [
-      nombreAplicacion.value,
-      emailAplicacion.value,
-      telefonoAplicacion.value,
-    ]
+    const configuraciones = {
+      nombreAplicacion: nombreAplicacion.value,
+      emailAplicacion: emailAplicacion.value,
+      telefonoAplicacion: telefonoAplicacion.value,
+      esloganAplicacion: esloganAplicacion.value,
+      fondoClaro: fondoClaro.value,
+      fondoOscuro: fondoOscuro.value,
+    }
 
     const [res] = await Promise.all([post('api/admin/configuraciones/generales/guardar', configuraciones)])
 
@@ -54,7 +62,6 @@ const onSubmit = (): void => {
       guardarConfiguraciones()
   })
 }
-
 </script>
 
 <template>
@@ -80,8 +87,6 @@ const onSubmit = (): void => {
               :id="useId()"
               v-model="nombreAplicacion.value"
               placeholder="Ingrese Nombre de la Aplicación"
-              required
-              :rules="[requiredValidator]"
               label="Título"
             />
           </VCol>
@@ -94,8 +99,6 @@ const onSubmit = (): void => {
               :id="useId()"
               v-model="emailAplicacion.value"
               placeholder="Ingrese Email de la Aplicación"
-              required
-              :rules="[requiredValidator]"
               label="Email"
             />
           </VCol>
@@ -108,9 +111,43 @@ const onSubmit = (): void => {
               :id="useId()"
               v-model="telefonoAplicacion.value"
               placeholder="Ingrese Telefono de la Aplicación"
-              required
-              :rules="[requiredValidator]"
               label="Teléfono"
+            />
+          </VCol>
+
+          <VCol
+            cols="12"
+            md="6"
+          >
+            <VTextField
+              :id="useId()"
+              v-model="esloganAplicacion.value"
+              placeholder="Ingrese Eslogan de la Aplicación"
+              label="Eslogan"
+            />
+          </VCol>
+
+          <VCol
+            cols="12"
+            md="6"
+          >
+            <VLabel class="mb-3">Fondo Login Claro:</VLabel>
+            <FileInput
+              v-model:archivos="fondoClaro"
+              :multiple="false"
+              name="fondoClaro"
+            />
+          </VCol>
+
+          <VCol
+            cols="12"
+            md="6"
+          >
+            <VLabel class="mb-3">Fondo Login Oscuro:</VLabel>
+            <FileInput
+              v-model:archivos="fondoOscuro"
+              :multiple="false"
+              name="fondoClaro"
             />
           </VCol>
 
