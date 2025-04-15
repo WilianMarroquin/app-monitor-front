@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useConfiguracionStore } from '@/stores/admin/useConfiguracionStore'
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
@@ -14,6 +15,7 @@ const { paginaEspera } = useCargandoPagina()
 const { get } = useClienteRequest()
 
 const configStore = useConfigStore()
+const configuracionStore = useConfiguracionStore()
 
 injectSkinClasses()
 
@@ -36,6 +38,8 @@ const obtenerOpcionesMenu = async (): Promise<void> => {
 }
 
 obtenerOpcionesMenu()
+
+await configuracionStore.cargarGenerales()
 
 switchToVerticalNavOnLtOverlayNavBreakpoint()
 </script>

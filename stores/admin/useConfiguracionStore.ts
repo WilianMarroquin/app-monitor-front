@@ -12,8 +12,8 @@ export const useConfiguracionStore = defineStore('configuracion', () => {
     email_aplicacion: '',
     telefono_aplicacion: '',
     eslogan_aplicacion: '',
-    fondoLoginOscuro: '',
-    fondoLoginClaro: '',
+    fondo_login_tema_oscuro: '',
+    fondo_login_tema_claro: '',
   })
 
   const { get } = useClienteRequest()

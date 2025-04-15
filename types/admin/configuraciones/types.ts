@@ -26,6 +26,6 @@ export interface ConfiguracionGeneralInterface {
   email_aplicacion: string
   telefono_aplicacion: string
   eslogan_aplicacion: string
-  fondoLoginOscuro: string
-  fondoLoginClaro: string
+  fondo_login_tema_oscuro: string
+  fondo_login_tema_claro: string
 }

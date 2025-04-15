@@ -56,7 +56,8 @@ function appendFiles(newFiles) {
         previews.value.push({ id, file, previewUrl: e.target.result })
       }
       reader.readAsDataURL(file)
-    } else if (file.type === 'application/pdf') {
+    }
+    else if (file.type === 'application/pdf') {
       const blobUrl = URL.createObjectURL(file)
       previews.value.push({ id, file, previewUrl: blobUrl })
     }
@@ -180,10 +181,12 @@ const subirArchivo = async () => {
 
 onMounted(() => {
   if (props?.previsualizarArchivos?.length) {
-    props.previsualizarArchivos.forEach((url) => {
+    props.previsualizarArchivos.forEach((url, index) => {
+      console.log('URL:', url)
       const isPdf = url.toLowerCase().endsWith('.pdf')
 
-      const id = crypto.randomUUID()
+      // Generar ID único usando timestamp e índice
+      const id = `preview-${Date.now()}-${index}`
       const file = null
 
       previews.value.push({

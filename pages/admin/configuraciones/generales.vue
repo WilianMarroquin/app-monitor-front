@@ -4,20 +4,20 @@ import type { ConfiguracionGeneralInterface } from '@/types/admin/configuracione
 import { manejaError } from '@/utils/funcionesComunes'
 import type { VForm } from 'vuetify/components/VForm'
 
-const store = useConfiguracionStore()
+const storeConfiguracion = useConfiguracionStore()
 const formOpcion = ref<InstanceType<typeof VForm>>()
 const configuracionGeneral: ConfiguracionGeneralInterface = ref({
   nombre_aplicacion: '',
   email_aplicacion: '',
   telefono_aplicacion: '',
   eslogan_aplicacion: '',
-  fondoLoginOscuro: null,
-  fondoLoginClaro: null,
+  fondo_login_tema_claro: [],
+  fondo_login_tema_oscuro: [],
 })
 
 const guardarConfiguraciones = async (): Promise<void> => {
   try {
-    await store.guardarGenerales(configuracionGeneral.value)
+    await storeConfiguracion.guardarGenerales(configuracionGeneral.value)
   }
   catch (error) {
     manejaError(error)
@@ -30,6 +30,10 @@ const onSubmit = (): void => {
       guardarConfiguraciones()
   })
 }
+
+onMounted(() => {
+  configuracionGeneral.value = storeConfiguracion.configuracionesGenerales
+})
 </script>
 
 <template>
@@ -101,9 +105,10 @@ const onSubmit = (): void => {
           >
             <VLabel class="mb-3">Fondo Login Claro:</VLabel>
             <FileInput
-              v-model:archivos="configuracionGeneral.fondoLoginClaro"
+              v-model:archivos="configuracionGeneral.fondo_login_tema_claro"
               :multiple="false"
               name="fondoClaro"
+              :previsualizar-archivos="[storeConfiguracion.configuracionesGenerales.fondo_login_tema_claro]"
             />
           </VCol>
 
@@ -113,9 +118,10 @@ const onSubmit = (): void => {
           >
             <VLabel class="mb-3">Fondo Login Oscuro:</VLabel>
             <FileInput
-              v-model:archivos="configuracionGeneral.fondoLoginOscuro"
+              v-model:archivos="configuracionGeneral.fondo_login_tema_oscuro"
               :multiple="false"
               name="fondoClaro"
+              :previsualizar-archivos="[storeConfiguracion.configuracionesGenerales.fondo_login_tema_oscuro]"
             />
           </VCol>
 
