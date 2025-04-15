@@ -6,13 +6,15 @@ import type { VForm } from 'vuetify/components/VForm'
 
 const storeConfiguracion = useConfiguracionStore()
 const formOpcion = ref<InstanceType<typeof VForm>>()
-const configuracionGeneral: ConfiguracionGeneralInterface = ref({
+
+const configuracionGeneral = ref<ConfiguracionGeneralInterface>({
   nombre_aplicacion: '',
   email_aplicacion: '',
   telefono_aplicacion: '',
   eslogan_aplicacion: '',
   fondo_login_tema_claro: [],
   fondo_login_tema_oscuro: [],
+  logo: [],
 })
 
 const guardarConfiguraciones = async (): Promise<void> => {
@@ -122,6 +124,18 @@ onMounted(() => {
               :multiple="false"
               name="fondoClaro"
               :previsualizar-archivos="[storeConfiguracion.configuracionesGenerales.fondo_login_tema_oscuro]"
+            />
+          </VCol>
+          <VCol
+            cols="12"
+            md="6"
+          >
+            <VLabel class="mb-3">Logo:</VLabel>
+            <FileInput
+              v-model:archivos="configuracionGeneral.logo"
+              :multiple="false"
+              name="fondoClaro"
+              :previsualizar-archivos="[storeConfiguracion.configuracionesGenerales.logo]"
             />
           </VCol>
 

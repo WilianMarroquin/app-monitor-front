@@ -14,3 +14,7 @@ export function manejaError(errorCapturado: any) {
     error(errorCapturado.message || 'Ocurrió un error desconocido')
   }
 }
+
+export function validaSiExisteDato(dado: string): boolean {
+  return dado !== undefined && dado !== null && dado !== ''
+}

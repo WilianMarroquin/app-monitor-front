@@ -1,5 +1,5 @@
 <script setup>
-import { manejaError } from '@/utils/funcionesComunes'
+import { manejaError, validaSiExisteDato } from '@/utils/funcionesComunes'
 import { ref } from 'vue'
 
 const { post } = useClienteRequest()
@@ -180,9 +180,8 @@ const subirArchivo = async () => {
 }
 
 onMounted(() => {
-  if (props?.previsualizarArchivos?.length) {
+  if (props?.previsualizarArchivos?.length > 0 && validaSiExisteDato(props?.previsualizarArchivos[0])) {
     props.previsualizarArchivos.forEach((url, index) => {
-      console.log('URL:', url)
       const isPdf = url.toLowerCase().endsWith('.pdf')
 
       // Generar ID único usando timestamp e índice

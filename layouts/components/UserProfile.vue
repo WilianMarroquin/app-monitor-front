@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 import avatar1 from '@images/avatars/avatar-1.png'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 
@@ -7,7 +8,7 @@ const userProfileList = [
   {
     type: 'navItem',
     icon: 'ri-user-line',
-    title: 'Profile',
+    title: 'Perfil',
     href: '#',
   },
   {
@@ -39,6 +40,8 @@ const userProfileList = [
 ]
 
 const { logout } = useSanctumAuth()
+
+const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
 </script>
 
 <template>
@@ -73,10 +76,10 @@ const { logout } = useSanctumAuth()
 
               <div>
                 <div class="text-body-2 font-weight-medium text-high-emphasis">
-                  John Doe
+                  {{ usuarioAutenticado?.primer_nombre }} {{ usuarioAutenticado?.primer_apellido }}
                 </div>
                 <div class="text-capitalize text-caption text-disabled">
-                  Admin
+                  {{ usuarioAutenticado?.roles[0] }}
                 </div>
               </div>
             </div>

@@ -1,31 +1,31 @@
 import { useClienteRequest } from '@/composables/useClienteRequest'
-import { Configuracion } from '@/models/admin/Configuracion'
 import type { ConfiguracionGeneralInterface } from '@/types/admin/configuraciones/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 import { defineStore } from 'pinia'
 
 export const useConfiguracionStore = defineStore('configuracion', () => {
-  const configuraciones = ref<Configuracion[]>([])
   const configuracionesGenerales = ref<ConfiguracionGeneralInterface>({
     nombre_aplicacion: '',
     email_aplicacion: '',
     telefono_aplicacion: '',
     eslogan_aplicacion: '',
-    fondo_login_tema_oscuro: '',
-    fondo_login_tema_claro: '',
+    fondo_login_tema_oscuro: [],
+    fondo_login_tema_claro: [],
+    logo: [],
   })
 
   const { get } = useClienteRequest()
   const { paginaEspera } = useCargandoPagina()
   const { success } = useToast()
 
-  const cargarTodas = async () => {
+  const cargarGenerales = async (): Promise<void> => {
     paginaEspera.value = true
     try {
-      const res = await get('/api/configuraciones/generales')
+      const res: SendResponseInterface<ConfiguracionGeneralInterface> = await get('api/libres/configuraciones/generales')
 
-      configuraciones.value = res.map((c: any) => new Configuracion(c))
+      if (res.data)
+        configuracionesGenerales.value = res.data
     }
     catch (e) {
       manejaError(e)
@@ -33,31 +33,12 @@ export const useConfiguracionStore = defineStore('configuracion', () => {
     finally {
       paginaEspera.value = false
     }
-  }
-
-  const cargarGenerales = async () => {
-    paginaEspera.value = true
-    try {
-      const res = await get('api/libres/configuraciones/generales')
-
-      configuracionesGenerales.value = res.data
-    }
-    catch (e) {
-      manejaError(e)
-    }
-    finally {
-      paginaEspera.value = false
-    }
-  }
-
-  const obtener = (key: string): Configuracion | undefined => {
-    return configuraciones.value.find(c => c.key === key)
   }
 
   const guardarGenerales = async (datos: Record<string, any>): Promise<void> => {
     try {
       const { post } = useClienteRequest()
-      const res: SendResponseInterface<any> = await post('api/admin/configuraciones/generales/guardar', datos)
+      const res: SendResponseInterface<ConfiguracionGeneralInterface> = await post('api/admin/configuraciones/generales/guardar', datos)
 
       if (res?.data)
         configuracionesGenerales.value = res.data
@@ -70,10 +51,7 @@ export const useConfiguracionStore = defineStore('configuracion', () => {
   }
 
   return {
-    configuraciones,
     configuracionesGenerales,
-    cargarTodas,
-    obtener,
     cargarGenerales,
     guardarGenerales,
   }
