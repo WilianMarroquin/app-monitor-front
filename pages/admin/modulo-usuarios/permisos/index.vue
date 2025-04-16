@@ -38,7 +38,7 @@ const deleteItem = async (id: number) => {
   if (!confirm)
     return
   try {
-    const respuesta = await del(`api/admin/modulo-usuarios/permissions${id}`)
+    const respuesta = await del(`api/admin/modulo-usuarios/permissions/${id}`)
 
     success(respuesta.message)
     if (dataTable.value)

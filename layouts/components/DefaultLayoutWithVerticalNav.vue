@@ -64,7 +64,7 @@ watch([
     </template>
 
     <!-- 👉 Customizer -->
-    <TheCustomizer v-if="can('Ver menu preferencias', 'Preferencias')" />
+    <TheCustomizer v-if="can('Ver Menu Preferencias', 'Preferencias')" />
   </VerticalNavLayout>
 </template>
 

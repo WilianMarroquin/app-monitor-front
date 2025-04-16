@@ -6,7 +6,7 @@ const { can } = useAbility()
 definePageMeta({
   navActiveLink: 'dev-configuraciones',
   middleware: 'permissions',
-  action: 'Listar configuraciones',
+  action: 'Listar Configuraciones',
   subject: 'Configuracion',
 })
 
@@ -54,7 +54,7 @@ const deleteItem = async (id: number) => {
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Listado de configuraciones'" />
     <VBtn
-      v-if="can('Crear configuraciones', 'Configuracion')"
+      v-if="can('Crear Configuraciones', 'Configuracion')"
       class="ml-auto"
       to="/dev/configuraciones/create"
     >
@@ -72,7 +72,7 @@ const deleteItem = async (id: number) => {
   >
     <template #item.Acciones="{ item }">
       <VBtn
-        v-if="can('Ver configuraciones', 'Configuracion')"
+        v-if="can('Ver Configuraciones', 'Configuracion')"
         icon="ri-eye-line"
         variant="tonal"
         color="info"
@@ -80,7 +80,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('Editar configuraciones', 'Configuracion')"
+        v-if="can('Editar Configuraciones', 'Configuracion')"
         icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
@@ -88,7 +88,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('Eliminar configuraciones', 'Configuracion')"
+        v-if="can('Eliminar Configuraciones', 'Configuracion')"
         icon="ri-delete-bin-line"
         variant="tonal"
         color="error"

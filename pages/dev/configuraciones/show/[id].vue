@@ -5,7 +5,7 @@ import { manejaError } from '@/utils/funcionesComunes'
 definePageMeta({
   navActiveLink: 'dev-configuraciones',
   middleware: 'permissions',
-  action: 'Ver configuraciones',
+  action: 'Ver Configuraciones',
   subject: 'Configuracion',
 })
 
