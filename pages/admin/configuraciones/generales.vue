@@ -4,6 +4,13 @@ import type { ConfiguracionGeneralInterface } from '@/types/admin/configuracione
 import { manejaError } from '@/utils/funcionesComunes'
 import type { VForm } from 'vuetify/components/VForm'
 
+definePageMeta({
+  navActiveLink: 'dev-configuraciones-generales',
+  middleware: 'permissions',
+  action: 'Listar configuraciones generales',
+  subject: 'Configuracion',
+})
+
 const storeConfiguracion = useConfiguracionStore()
 const formOpcion = ref<InstanceType<typeof VForm>>()
 

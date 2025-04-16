@@ -8,7 +8,6 @@ import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
 import type { NavGroup, NavSectionTitle } from '@layouts/types'
 import type { Component } from 'vue'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { VNodeRenderer } from './VNodeRenderer'
 
 const configuracionStore = useConfiguracionStore()
 
@@ -81,8 +80,14 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
           to="/"
           class="app-logo app-title-wrapper"
         >
-          <VNodeRenderer :nodes="layoutConfig.app.logo" />
+<!--          <VNodeRenderer :nodes="configuracionStore.configuracionesGenerales.logo" />-->
 
+          <img
+            :src="configuracionStore.configuracionesGenerales.logo"
+            alt="Logo"
+            height="50"
+            class="mx-auto"
+          />
           <Transition name="vertical-nav-app-title">
             <h1
               v-show="!hideTitleAndIcon"
