@@ -7,9 +7,11 @@ import type { VForm } from 'vuetify/components/VForm'
 definePageMeta({
   navActiveLink: 'dev-configuraciones-generales',
   middleware: 'permissions',
-  action: 'Listar configuraciones generales',
+  action: 'Listar Configuraciones Generales',
   subject: 'Configuracion',
 })
+
+const { can } = useAbility()
 
 const storeConfiguracion = useConfiguracionStore()
 const formOpcion = ref<InstanceType<typeof VForm>>()
@@ -160,7 +162,10 @@ onMounted(() => {
               <VIcon class="mr-2 ri-filter-off-fill" />
               Limpiar
             </VBtn>
-            <VBtn type="submit">
+            <VBtn
+              v-if="can('Actualizar Configuraciones generales', 'Configuracion')"
+              type="submit"
+            >
               <VIcon class="mr-2 ri-save-3-fill" />
               Guardar
             </VBtn>

@@ -7,9 +7,9 @@ import Fields from '@/views/pages/admin/configuraciones/menu-opciones/fields.vue
 
 definePageMeta({
   navActiveLink: 'admin-configuraciones-menu',
-  // middleware: 'permissions',
-  // action: 'crear opcion menu',
-  // subject: 'menu opcion',
+  middleware: 'permissions',
+  action: 'Crear Menu Opciones',
+  subject: 'Menu Opcion',
 })
 
 const { post, get } = useClienteRequest()

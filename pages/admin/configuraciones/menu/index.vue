@@ -5,14 +5,16 @@ import { manejaError } from '@/utils/funcionesComunes'
 import ListaOpciones from '@/views/pages/admin/configuraciones/menu-opciones/components/ListaOpciones.vue'
 
 definePageMeta({
-  // middleware: 'permissions',
-  // action: 'ver opcion menu',
-  // subject: 'menu opcion',
+  navActiveLink: 'dev-configuraciones-menu',
+  middleware: 'permissions',
+  action: 'Ver Opcion Menu',
+  subject: 'Menu Opcion',
 })
 
 const { post } = useClienteRequest()
 const { success } = useToast()
 const { paginaEspera } = useCargandoPagina()
+const { can } = useAbility()
 
 const opcionesMenu = useState<MenuOpcionInterface[]>('menu', () => [])
 
@@ -57,6 +59,7 @@ function flattenOptions(options: MenuOpcionInterface[]): MenuOpcionInterface[] {
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-3 ">
     <h1>Administrar Menu</h1>
     <VBtn
+      v-if="can('Crear Menu Opciones', 'Menu Opcion')"
       class="ms-auto"
       to="/admin/configuraciones/menu/create"
     >

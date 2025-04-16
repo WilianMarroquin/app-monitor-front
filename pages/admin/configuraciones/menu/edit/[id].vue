@@ -7,10 +7,9 @@ import Fields from '@/views/pages/admin/configuraciones/menu-opciones/fields.vue
 
 definePageMeta({
   navActiveLink: 'admin-configuraciones-menu',
-
-  // middleware: 'permissions',
-  // action: 'editar opcion menu',
-  // subject: 'menu opcion',
+  middleware: 'permissions',
+  action: 'Editar Menu Opciones',
+  subject: 'Menu Opcion',
 })
 
 const { put, get } = useClienteRequest()

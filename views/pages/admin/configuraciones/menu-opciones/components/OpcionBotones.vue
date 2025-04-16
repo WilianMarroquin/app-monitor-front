@@ -2,7 +2,7 @@
   <div>
 
     <VBtn
-      v-if="!esTituloSeccion"
+      v-if="!esTituloSeccion && can('Crear Menu Opciones', 'Menu Opcion')"
       :to="`/admin/configuraciones/menu/create/${id}`"
       color="success"
       icon="ri-add-line"
@@ -11,6 +11,7 @@
     />
 
     <VBtn
+      v-if="can('Editar Menu Opciones', 'Menu Opcion')"
       :to="`/admin/configuraciones/menu/edit/${id}`"
       color="warning"
       icon="ri-edit-box-line"
@@ -19,6 +20,7 @@
     />
 
     <VBtn
+      v-if="can('Eliminar Menu Opciones', 'Menu Opcion')"
       color="error"
       icon="ri-delete-bin-line"
       size="small"
@@ -41,6 +43,7 @@ const { success, preguntaEliminar} = useToast();
 const { paginaEspera } = useCargandoPagina();
 const { id, esTituloSeccion } = defineProps<Props>();
 const { deleted, get} = useClienteRequest();
+const { can } = useAbility()
 
 const menu = <object>useState('menu');
 

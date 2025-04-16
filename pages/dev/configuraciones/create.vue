@@ -6,7 +6,7 @@ import Fields from '@/views/pages/admin/configuraciones/configuraciones/fields.v
 definePageMeta({
   navActiveLink: 'dev-configuraciones',
   middleware: 'permissions',
-  action: 'Crear configuraciones',
+  action: 'Crear Configuraciones',
   subject: 'Configuracion',
 })
 
