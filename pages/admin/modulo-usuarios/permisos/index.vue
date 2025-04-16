@@ -7,7 +7,7 @@ definePageMeta({
   subject: 'Permission',
 })
 
-const { deleted } = useClienteRequest()
+const { del } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
 const { can } = useAbility()
 
@@ -38,7 +38,7 @@ const deleteItem = async (id: number) => {
   if (!confirm)
     return
   try {
-    const respuesta = await deleted(`api/admin/modulo-usuarios/permissions${id}`)
+    const respuesta = await del(`api/admin/modulo-usuarios/permissions${id}`)
 
     success(respuesta.message)
     if (dataTable.value)
@@ -63,12 +63,12 @@ const deleteItem = async (id: number) => {
     </VBtn>
   </div>
   <DataTableComponent
+    ref="dataTable"
     :columnas="headers"
     endpoint="api/admin/modulo-usuarios/permissions"
-    :cantidadPorPagina="10"
-    :cantidadPorPaginaOpciones="[10, 20, 30]"
+    :cantidad-por-pagina="10"
+    :cantidad-por-pagina-opciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
-    ref="dataTable"
   >
     <template #item.Acciones="{ item }">
       <VBtn

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import { computed } from 'vue'
 import OptionBotones from './OpcionBotones.vue'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 
 const props = defineProps<{ item: MenuOpcionInterface }>()
 const esTituloSeccion = computed(() => props.item.titulo_seccion !== null)

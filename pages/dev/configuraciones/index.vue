@@ -10,7 +10,7 @@ definePageMeta({
   subject: 'Configuracion',
 })
 
-const { deleted } = useClienteRequest()
+const { del } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
 const dataTable = ref<any>(null)
 
@@ -38,7 +38,7 @@ const deleteItem = async (id: number) => {
   if (!confirm)
     return
   try {
-    const respuesta = await deleted(`api/admin/configuraciones/generales/${id}`)
+    const respuesta = await del(`api/admin/configuraciones/generales/${id}`)
 
     success(respuesta.message)
     if (dataTable.value)

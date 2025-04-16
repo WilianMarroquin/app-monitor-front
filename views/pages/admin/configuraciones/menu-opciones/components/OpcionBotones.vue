@@ -42,7 +42,7 @@ interface Props {
 const { success, preguntaEliminar} = useToast();
 const { paginaEspera } = useCargandoPagina();
 const { id, esTituloSeccion } = defineProps<Props>();
-const { deleted, get} = useClienteRequest();
+const { del, get} = useClienteRequest();
 const { can } = useAbility()
 
 const menu = <object>useState('menu');
@@ -52,7 +52,7 @@ const eliminar = async (): Promise<void> => {
   if (confirmar) {
     try {
       paginaEspera.value = true;
-      let res = await deleted(`api/admin/configuraciones/menu-opciones/${id}`);
+      let res = await del(`api/admin/configuraciones/menu-opciones/${id}`);
       await getOpcionesMenu();
       success(res.message);
     }

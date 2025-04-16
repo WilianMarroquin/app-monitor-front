@@ -8,7 +8,7 @@ definePageMeta({
 })
 
 const { can } = useAbility()
-const { deleted } = useClienteRequest()
+const { del } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
 const dataTable = ref<any>(null)
 
@@ -42,7 +42,7 @@ const deleteItem = async (id: number) => {
   if (!confirm)
     return
   try {
-    const respuesta = await deleted(`api/admin/modulo-usuarios/users/${id}`)
+    const respuesta = await del(`api/admin/modulo-usuarios/users/${id}`)
 
     success(respuesta.message)
     if (dataTable.value)

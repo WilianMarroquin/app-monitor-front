@@ -37,12 +37,14 @@ const onSubmit = async (): Promise<void> => {
   }
 }
 
+await configuracionStore.cargarGenerales()
+
 const isPasswordVisible = ref(false)
 const authV2LoginMask = useGenerateImageVariant(authV2LoginMaskLight, authV2LoginMaskDark)
 const authV2LoginIllustration = useGenerateImageVariant(configuracionStore.configuracionesGenerales.fondo_login_tema_claro, configuracionStore.configuracionesGenerales.fondo_login_tema_oscuro, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 
 onMounted(() => {
-  configuracionStore.cargarGenerales()
+  console.log(authV2LoginIllustration.value)
 })
 </script>
 
