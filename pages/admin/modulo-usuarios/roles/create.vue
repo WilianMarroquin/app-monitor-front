@@ -8,7 +8,7 @@ import Fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-roles',
   middleware: 'permissions',
-  action: 'Crear roles',
+  action: 'Crear Roles',
   subject: 'Rol',
 })
 

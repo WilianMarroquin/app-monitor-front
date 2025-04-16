@@ -5,7 +5,7 @@ import { manejaError } from '@/utils/funcionesComunes'
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-roles',
   middleware: 'permissions',
-  action: 'Ver roles',
+  action: 'Ver Roles',
   subject: 'Rol',
 })
 

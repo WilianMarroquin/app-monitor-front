@@ -9,8 +9,8 @@ import Roles from '@/views/pages/admin/modulo-usuarios/usuarios/SeccionRoles.vue
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-usuarios',
   middleware: 'permissions',
-  action: 'Editar usuarios', // Acción requerida
-  subject: 'User',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+  action: 'Editar Usuarios',
+  subject: 'User',
 })
 
 const { put, get } = useClienteRequest()
@@ -39,19 +39,16 @@ interface UserEdit {
   user: UsuarioInterface
 }
 
-const itemUser = ref(<UsuarioInterface>
-  {
-    primer_nombre: null,
-    segundo_nombre: null,
-    primer_apellido: null,
-    segundo_apellido: null,
-    usuario: null,
-    email: null,
-    email_verified_at: null,
-    password: null,
-    remember_token: null,
-  },
-)
+const itemUser = ref<UsuarioInterface>({
+  primer_nombre: null,
+  segundo_nombre: null,
+  primer_apellido: null,
+  segundo_apellido: null,
+  usuario: null,
+  email: null,
+  password: null,
+  remember_token: null,
+})
 
 const getUser = async () => {
   paginaEspera.value = true
@@ -98,11 +95,12 @@ const puedeMostrarDatos = computed(() => {
             Información General
           </VExpansionPanelTitle>
           <VExpansionPanelText>
-            <fields :fields="fields"
-                    class="mt-1"
-                    v-if="puedeMostrarDatos"
-                    :item="itemUser"
-                    @emitirDatos="actualizarUser"
+            <fields
+              :fields="fields"
+              class="mt-1"
+              v-if="puedeMostrarDatos"
+              :item="itemUser"
+              @emitirDatos="actualizarUser"
             />
           </VExpansionPanelText>
         </VExpansionPanel>
@@ -121,7 +119,10 @@ const puedeMostrarDatos = computed(() => {
             Roles
           </VExpansionPanelTitle>
           <VExpansionPanelText>
-            <Roles :rolesActuales="rolesAsignadosActualmente" :user_id="id"/>
+            <Roles
+              :rolesActuales="rolesAsignadosActualmente"
+              :user_id="id"
+            />
           </VExpansionPanelText>
         </VExpansionPanel>
 

@@ -6,8 +6,8 @@ import Fields from '@/views/pages/permissiones/fields.vue'
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-permisos',
   middleware: 'permissions',
-  action: 'crear permisos',
-  subject: 'permisos',
+  action: 'Crear Permisos',
+  subject: 'Permission',
 })
 
 const { post } = useClienteRequest()

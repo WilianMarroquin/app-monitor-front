@@ -3,7 +3,7 @@ import { manejaError } from '@/utils/funcionesComunes'
 
 definePageMeta({
   middleware: 'permissions',
-  action: 'Listar usuarios',
+  action: 'Listar Usuarios',
   subject: 'User',
 })
 
@@ -58,7 +58,7 @@ const deleteItem = async (id: number) => {
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Listado de usuarios'"/>
     <VBtn
-      v-if="can('Crear usuarios', 'User')"
+      v-if="can('Crear Usuarios', 'User')"
       class="ml-auto"
       to="/admin/modulo-usuarios/usuarios/create"
     >
@@ -67,12 +67,12 @@ const deleteItem = async (id: number) => {
     </VBtn>
   </div>
   <DataTableComponent
+    ref="dataTable"
     :columnas="headers"
     endpoint="api/admin/modulo-usuarios/users"
-    :cantidadPorPagina="10"
-    :cantidadPorPaginaOpciones="[10, 20, 30]"
+    :cantidad-por-pagina="10"
+    :cantidad-por-pagina-opciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
-    ref="dataTable"
     :relaciones="['roles']"
   >
     <template #item.roles="{ item }">
@@ -88,28 +88,28 @@ const deleteItem = async (id: number) => {
 
     <template #item.Acciones="{ item }">
       <VBtn
-        v-if="can('Ver usuarios', 'User')"
+        v-if="can('Ver Usuarios', 'User')"
+        v-tooltip="'Ver'"
         icon="ri-eye-line"
         variant="tonal"
         color="info"
-        v-tooltip="'Ver'"
         :to="`/admin/modulo-usuarios/usuarios/show/${item.id}` "
         class="mr-1"
       />
       <VBtn
-        v-if="can('Editar usuarios', 'User')"
-        icon="ri-edit-box-line"
+        v-if="can('Editar Usuarios', 'User')"
         v-tooltip="'Gestionar'"
+        icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
         :to="`/admin/modulo-usuarios/usuarios/edit/${item.id}`"
         class="mr-1"
       />
       <VBtn
-        v-if="can('Eliminar usuarios', 'User')"
+        v-if="can('Eliminar Usuarios', 'User')"
+        v-tooltip="'Eliminar'"
         icon="ri-delete-bin-line"
         variant="tonal"
-        v-tooltip="'Eliminar'"
         color="error"
         @click="deleteItem(item.id)"
       />

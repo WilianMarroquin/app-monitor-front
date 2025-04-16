@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { manejaError } from '@/utils/funcionesComunes'
 
-//definePageMeta({
-//  middleware: 'permissions',
-//  action: 'listar permisos', // Acción requerida
-//  subject: 'permisos',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-//});
+definePageMeta({
+  middleware: 'permissions',
+  action: 'Listar Permisos', // Acción requerida
+  subject: 'Permission',
+})
 
 const { deleted } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
@@ -54,7 +54,7 @@ const deleteItem = async (id: number) => {
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Listado de permisos'"/>
     <VBtn
-      v-if="can('crear permisos', 'permissiones')"
+      v-if="can('Crear Permisos', 'Permission')"
       class="ml-auto"
       to="/admin/modulo-usuarios/permisos/create"
     >
@@ -72,7 +72,7 @@ const deleteItem = async (id: number) => {
   >
     <template #item.Acciones="{ item }">
       <VBtn
-        v-if="can('ver permisos', 'permissiones')"
+        v-if="can('Ver Permisos', 'Permission')"
         icon="ri-eye-line"
         variant="tonal"
         color="info"
@@ -80,7 +80,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('editar permisos', 'permissiones')"
+        v-if="can('Editar Permisos', 'Permission')"
         icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
@@ -88,7 +88,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('eliminar permisos', 'permissiones')"
+        v-if="can('Eliminar Permisos', 'Permission')"
         icon="ri-delete-bin-line"
         variant="tonal"
         color="error"

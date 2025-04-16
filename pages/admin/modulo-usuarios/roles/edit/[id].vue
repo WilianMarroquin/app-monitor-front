@@ -7,7 +7,7 @@ import Fields from '@/views/pages/admin/modulo-usuarios/roles/fields.vue'
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-roles',
   middleware: 'permissions',
-  action: 'Editar roles',
+  action: 'Editar Roles',
   subject: 'Rol',
 })
 
@@ -19,9 +19,11 @@ const route = useRoute()
 const id = route.params.id
 const permisosDisponibles = ref<PermisoInterface[]>([])
 const permisosSeleccionados = ref<PermisoInterface[]>([])
+
 const itemRol = ref<RolInterface>({
   name: '',
-});
+  guard_name: '',
+})
 
 const actualizarRol = async (Rol: RolInterface): Promise<void> => {
   paginaEspera.value = true

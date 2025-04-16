@@ -3,7 +3,7 @@ import { manejaError } from '@/utils/funcionesComunes'
 
 definePageMeta({
   middleware: 'permissions',
-  action: 'Listar roles',
+  action: 'Listar Roles',
   subject: 'Rol',
 })
 

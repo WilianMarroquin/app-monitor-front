@@ -6,8 +6,8 @@ import { manejaError } from '@/utils/funcionesComunes'
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-permisos',
   middleware: 'permissions',
-  action: 'ver permisos',
-  subject: 'permisos',
+  action: 'Ver Permisos',
+  subject: 'Permission',
 })
 
 const { get } = useClienteRequest()

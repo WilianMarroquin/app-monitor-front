@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-usuarios',
   middleware: 'permissions',
-  action: 'Ver usuarios',
+  action: 'Ver Usuarios',
   subject: 'User',
 })
 
@@ -14,31 +15,34 @@ const { paginaEspera } = useCargandoPagina()
 
 const route = useRoute()
 const id = route.params.id
-const item = ref(<UsuarioInterface>
-{ primer_nombre: null,
-segundo_nombre: null,
-primer_apellido: null,
-segundo_apellido: null,
-usuario: null,
-email: null,
-email_verified_at: null,
-password: null,
-remember_token: null }
-)
+
+const item = ref<UsuarioInterface>({
+  primer_nombre: null,
+  segundo_nombre: null,
+  primer_apellido: null,
+  segundo_apellido: null,
+  usuario: null,
+  email: null,
+  password: null,
+  remember_token: null,
+})
 
 const getUser = async () => {
   try {
     paginaEspera.value = true
-    const respuesta: { data: UsuarioInterface } = await get('api/admin/modulo-usuarios/users/' + id )
+
+    const respuesta: SendResponseInterface<UsuarioInterface> = await get(`api/admin/modulo-usuarios/users/${id}`)
+
     item.value = respuesta.data
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
   }
   finally {
-      paginaEspera.value = false
-    }
+    paginaEspera.value = false
+  }
 }
+
 getUser()
 
 const puedeMostrarDatos = computed(() => {

@@ -7,7 +7,7 @@ import Fields from '@/views/pages/admin/modulo-usuarios/usuarios/fields.vue'
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-usuarios',
   middleware: 'permissions',
-  action: 'Crear usuarios',
+  action: 'Crear Usuarios',
   subject: 'User',
 })
 
@@ -48,8 +48,7 @@ const guardarUser = async (User: UsuarioInterface): Promise<void> => {
 
   <VCard>
     <VCardText>
-      <Fields @emitirDatos="guardarUser"
-      />
+      <Fields @emitir-datos="guardarUser" />
     </VCardText>
   </VCard>
 </template>

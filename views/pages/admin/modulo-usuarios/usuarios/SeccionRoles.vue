@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
-import { SendResponseInterface } from '@/types/generales/types'
 
 const props = defineProps<PropsInterface>()
 const { get, post } = useClienteRequest()
@@ -9,7 +9,7 @@ const { paginaEspera } = useCargandoPagina()
 const { success } = useToast()
 
 interface PropsInterface {
-  user_id: string
+  user_id: number
 }
 
 const rolesDisponibles = ref<RolInterface[]>([])
