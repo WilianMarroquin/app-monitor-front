@@ -3,11 +3,12 @@ import { manejaError } from '@/utils/funcionesComunes'
 
 const { can } = useAbility()
 
-// definePageMeta({
-//  middleware: 'permissions',
-//  action: 'listar configuraciones', // Acción requerida
-//  subject: 'configuraciones',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// });
+definePageMeta({
+  navActiveLink: 'dev-configuraciones',
+  middleware: 'permissions',
+  action: 'Listar configuraciones',
+  subject: 'Configuracion',
+})
 
 const { deleted } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
@@ -53,12 +54,12 @@ const deleteItem = async (id: number) => {
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Listado de configuraciones'" />
     <VBtn
-      v-if="can('crear configuraciones', 'Configuracion')"
+      v-if="can('Crear configuraciones', 'Configuracion')"
       class="ml-auto"
       to="/dev/configuraciones/create"
     >
       <VIcon class="mr-2 ri-add-large-fill" />
-      Nueva Configuracion
+      Nueva Configuración
     </VBtn>
   </div>
   <DataTableComponent
@@ -71,7 +72,7 @@ const deleteItem = async (id: number) => {
   >
     <template #item.Acciones="{ item }">
       <VBtn
-        v-if="can('ver configuraciones', 'configuraciones')"
+        v-if="can('Ver configuraciones', 'Configuracion')"
         icon="ri-eye-line"
         variant="tonal"
         color="info"
@@ -79,7 +80,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('editar configuraciones', 'configuraciones')"
+        v-if="can('Editar configuraciones', 'Configuracion')"
         icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
@@ -87,7 +88,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('eliminar configuraciones', 'configuraciones')"
+        v-if="can('Eliminar configuraciones', 'Configuracion')"
         icon="ri-delete-bin-line"
         variant="tonal"
         color="error"

@@ -13,9 +13,9 @@ export interface MenuOpcionInterface {
 
 export interface ConfiguracionInterface {
   id?: number
-  key: string
-  value: string
-  descripcion: string
+  key: string | null
+  value: string | null
+  descripcion: string | null
   created_at?: string | null
   updated_at?: string | null
   deleted_at?: string | null

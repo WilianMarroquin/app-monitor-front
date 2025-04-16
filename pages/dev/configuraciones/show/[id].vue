@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { ConfiguracionInterface } from '@/types/admin/configuraciones/generales/types'
+import type { ConfiguracionInterface } from '@/types/admin/configuraciones/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 definePageMeta({
   navActiveLink: 'dev-configuraciones',
-  // middleware: 'permissions',
-  // action: 'ver configuraciones',
-  // subject: 'configuraciones',
+  middleware: 'permissions',
+  action: 'Ver configuraciones',
+  subject: 'Configuracion',
 })
 
 const { get } = useClienteRequest()
@@ -14,11 +14,12 @@ const { paginaEspera } = useCargandoPagina()
 
 const route = useRoute()
 const id = route.params.id
-const item = ref(<ConfiguracionInterface>
-{ key: null,
-value: null,
-descripcion: null }
-)
+
+const item = ref<ConfiguracionInterface>({
+  key: null,
+  value: null,
+  descripcion: null,
+})
 
 const getConfiguracion = async () => {
   try {
@@ -30,9 +31,10 @@ const getConfiguracion = async () => {
     manejaError(errorCarpturado)
   }
   finally {
-      paginaEspera.value = false
-    }
+    paginaEspera.value = false
+  }
 }
+
 getConfiguracion()
 
 const puedeMostrarDatos = computed(() => {
@@ -56,34 +58,30 @@ const puedeMostrarDatos = computed(() => {
   <VCard>
     <VCardText>
       <VList class="card-list mt-2" v-if="puedeMostrarDatos">
-  
-              <VListItemTitle>
-                <h6 class="text-h6">
-                    Key:
-                  <div class="d-inline-block text-capitalize text-body-1">
-                    {{ item.key }}
-                  </div>
-                </h6>
-              </VListItemTitle>
-            
-              <VListItemTitle>
-                <h6 class="text-h6">
-                    Value:
-                  <div class="d-inline-block text-capitalize text-body-1">
-                    {{ item.value }}
-                  </div>
-                </h6>
-              </VListItemTitle>
-            
-              <VListItemTitle>
-                <h6 class="text-h6">
-                    Descripcion:
-                  <div class="d-inline-block text-capitalize text-body-1">
-                    {{ item.descripcion }}
-                  </div>
-                </h6>
-              </VListItemTitle>
-            
+        <VListItemTitle>
+          <h6 class="text-h6">
+              Key:
+            <div class="d-inline-block text-capitalize text-body-1">
+              {{ item.key }}
+            </div>
+          </h6>
+        </VListItemTitle>
+        <VListItemTitle>
+          <h6 class="text-h6">
+              Value:
+            <div class="d-inline-block text-capitalize text-body-1">
+              {{ item.value }}
+            </div>
+          </h6>
+        </VListItemTitle>
+        <VListItemTitle>
+          <h6 class="text-h6">
+            Descripción:
+            <div class="d-inline-block text-capitalize text-body-1">
+              {{ item.descripcion }}
+            </div>
+          </h6>
+        </VListItemTitle>
       </VList>
     </VCardText>
   </VCard>

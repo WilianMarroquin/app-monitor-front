@@ -5,9 +5,9 @@ import Fields from '@/views/pages/admin/configuraciones/configuraciones/fields.v
 
 definePageMeta({
   navActiveLink: 'dev-configuraciones',
-  // middleware: 'permissions',
-  // action: 'crear configuraciones', // Acción requerida
-  // subject: 'configuraciones',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
+  middleware: 'permissions',
+  action: 'Crear configuraciones',
+  subject: 'Configuracion',
 })
 
 const { post } = useClienteRequest()
@@ -20,7 +20,7 @@ const guardarConfiguracion = async (Configuracion: ConfiguracionInterface): Prom
     const respuesta: { message: string } = await post('api/admin/configuraciones/generales', Configuracion)
 
     success(respuesta.message)
-    navigateTo('/dev/configuraciones');
+    navigateTo('/dev/configuraciones')
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
