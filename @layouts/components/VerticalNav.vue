@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Component } from 'vue'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { useConfiguracionStore } from '@/stores/admin/useConfiguracionStore'
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import { layoutConfig } from '@layouts'
@@ -6,8 +8,6 @@ import { VerticalNavGroup, VerticalNavLink, VerticalNavSectionTitle } from '@lay
 import { useLayoutConfigStore } from '@layouts/stores/config'
 import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
 import type { NavGroup, NavSectionTitle } from '@layouts/types'
-import type { Component } from 'vue'
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 
 const configuracionStore = useConfiguracionStore()
 
@@ -56,6 +56,8 @@ const handleNavScroll = (evt: Event) => {
 }
 
 const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
+
+const logo = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.logo) ? configuracionStore.configuracionesGenerales.logo : '/img/sysbase/logo.png'
 </script>
 
 <template>
@@ -80,10 +82,8 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
           to="/"
           class="app-logo app-title-wrapper"
         >
-<!--          <VNodeRenderer :nodes="configuracionStore.configuracionesGenerales.logo" />-->
-
           <img
-            :src="configuracionStore.configuracionesGenerales.logo"
+            :src="logo"
             alt="Logo"
             height="50"
             class="mx-auto"

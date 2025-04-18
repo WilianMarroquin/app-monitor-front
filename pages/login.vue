@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
 import { useConfiguracionStore } from '@/stores/admin/useConfiguracionStore'
-import { manejaError } from '@/utils/funcionesComunes'
+import { manejaError, validaSiExisteDato } from '@/utils/funcionesComunes'
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
 import authV2LoginMaskDark from '@images/pages/auth-v2-login-mask-dark.png'
 import authV2LoginMaskLight from '@images/pages/auth-v2-login-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
 
 const configuracionStore = useConfiguracionStore()
 
@@ -39,9 +37,13 @@ const onSubmit = async (): Promise<void> => {
 
 await configuracionStore.cargarGenerales()
 
+const fondoLoginTemaClaro = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.fondo_login_tema_claro) ? configuracionStore.configuracionesGenerales.fondo_login_tema_claro : authV2LoginIllustrationBorderedLight
+const fondoLoginTemaOscuro = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.fondo_login_tema_oscuro) ? configuracionStore.configuracionesGenerales.fondo_login_tema_oscuro : authV2LoginIllustrationBorderedDark
+const logo = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.logo) ? configuracionStore.configuracionesGenerales.logo : '/img/sysbase/logo.png'
+
 const isPasswordVisible = ref(false)
 const authV2LoginMask = useGenerateImageVariant(authV2LoginMaskLight, authV2LoginMaskDark)
-const authV2LoginIllustration = useGenerateImageVariant(configuracionStore.configuracionesGenerales.fondo_login_tema_claro, configuracionStore.configuracionesGenerales.fondo_login_tema_oscuro, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
+const authV2LoginIllustration = useGenerateImageVariant(fondoLoginTemaClaro, fondoLoginTemaOscuro, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 
 onMounted(() => {
   console.log(authV2LoginIllustration.value)
@@ -51,7 +53,12 @@ onMounted(() => {
 <template>
   <a href="javascript:void(0)">
     <div class="app-logo auth-logo">
-      <VNodeRenderer :nodes="themeConfig.app.logo" />
+      <img
+        :src="logo"
+        alt="Logo"
+        height="50"
+        class="mx-auto"
+      />
       <h1 class="app-logo-title">
         {{ configuracionStore.configuracionesGenerales.nombre_aplicacion }}
       </h1>
@@ -152,29 +159,29 @@ onMounted(() => {
               </VCol>
 
               <!-- create account -->
-              <VCol
-                cols="12"
-                class="text-body-1 text-center"
-              >
-                <span class="d-inline-block">
-                  New on our platform?
-                </span>
-                <a
-                  class="text-primary ms-1 d-inline-block text-body-1"
-                  href="javascript:void(0)"
-                >
-                  Create an account
-                </a>
-              </VCol>
+<!--              <VCol-->
+<!--                cols="12"-->
+<!--                class="text-body-1 text-center"-->
+<!--              >-->
+<!--                <span class="d-inline-block">-->
+<!--                  New on our platform?-->
+<!--                </span>-->
+<!--                <a-->
+<!--                  class="text-primary ms-1 d-inline-block text-body-1"-->
+<!--                  href="javascript:void(0)"-->
+<!--                >-->
+<!--                  Create an account-->
+<!--                </a>-->
+<!--              </VCol>-->
 
-              <VCol
-                cols="12"
-                class="d-flex align-center"
-              >
-                <VDivider />
-                <span class="mx-4 text-high-emphasis">or</span>
-                <VDivider />
-              </VCol>
+<!--              <VCol-->
+<!--                cols="12"-->
+<!--                class="d-flex align-center"-->
+<!--              >-->
+<!--                <VDivider />-->
+<!--                <span class="mx-4 text-high-emphasis">or</span>-->
+<!--                <VDivider />-->
+<!--              </VCol>-->
 
               <!-- auth providers -->
               <VCol

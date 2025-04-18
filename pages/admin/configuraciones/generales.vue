@@ -114,7 +114,9 @@ onMounted(() => {
             cols="12"
             md="6"
           >
-            <VLabel class="mb-3">Fondo Login Claro:</VLabel>
+            <VLabel class="mb-3">
+              Fondo Login Claro:
+            </VLabel>
             <FileInput
               v-model:archivos="configuracionGeneral.fondo_login_tema_claro"
               :multiple="false"
@@ -127,7 +129,9 @@ onMounted(() => {
             cols="12"
             md="6"
           >
-            <VLabel class="mb-3">Fondo Login Oscuro:</VLabel>
+            <VLabel class="mb-3">
+              Fondo Login Oscuro:
+            </VLabel>
             <FileInput
               v-model:archivos="configuracionGeneral.fondo_login_tema_oscuro"
               :multiple="false"
@@ -139,7 +143,9 @@ onMounted(() => {
             cols="12"
             md="6"
           >
-            <VLabel class="mb-3">Logo:</VLabel>
+            <VLabel class="mb-3">
+              Logo:
+            </VLabel>
             <FileInput
               v-model:archivos="configuracionGeneral.logo"
               :multiple="false"
