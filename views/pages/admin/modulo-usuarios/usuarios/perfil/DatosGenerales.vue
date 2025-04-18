@@ -1,61 +1,54 @@
 <script setup lang="ts">
-import type { RolInterface } from '@/types/admin/modulo-usuarios/types'
+import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 
 interface Props {
-  userData: {
-    id: number
-    nombre_completo: string
-    roles: RolInterface[] | RolInterface
-    usuario: string
-    email: string
-    estado: string
-    avatar: string
-  }
+  userData: UsuarioInterface
 }
 
 const props = defineProps<Props>()
 
+const usuario = ref<UsuarioInterface>(props.userData ?? null)
+
 const isUserInfoEditDialogVisible = ref(false)
-const isUpgradePlanDialogVisible = ref(false)
 </script>
 
 <template>
   <VRow>
     <!-- SECTION User Details -->
     <VCol cols="12">
-      <VCard v-if="props.userData">
+      <VCard v-if="usuario">
         <VCardText class="text-center pt-12 pb-6">
           <!-- 👉 Avatar -->
           <VAvatar
             rounded="lg"
             :size="120"
-            :color="!props.userData.avatar ? 'primary' : undefined"
-            :variant="!props.userData.avatar ? 'tonal' : undefined"
+            :color="!usuario.avatar ? 'primary' : undefined"
+            :variant="!usuario.avatar ? 'tonal' : undefined"
           >
             <VImg
-              v-if="props.userData.avatar"
-              :src="props.userData.avatar"
+              v-if="usuario.avatar"
+              :src="usuario.avatar"
             />
             <span
               v-else
               class="text-5xl font-weight-medium"
             >
-              {{ avatarText(props.userData.nombre_completo) }}
+              {{ avatarText(usuario.nombre_completo) }}
             </span>
           </VAvatar>
 
           <!-- 👉 User fullName -->
           <h5 class="text-h5 mt-4">
-            {{ props.userData.nombre_completo }}
+            {{ usuario.nombre_completo }}
           </h5>
 
           <!-- 👉 Role chip -->
           <VChip
-            :color="resolveUserRoleVariant(props.userData.role).color"
+            v-for="rol in usuario.roles"
             size="small"
             class="text-capitalize mt-4"
           >
-            {{ props.userData.role }}
+            {{ rol.name }}
           </VChip>
         </VCardText>
 
@@ -77,7 +70,7 @@ const isUpgradePlanDialogVisible = ref(false)
 
             <div>
               <h5 class="text-h5">
-                {{ kFormatter(props.userData.taskDone) }}
+<!--                {{ kFormatter(usuario.taskDone) }}-->
               </h5>
               <span>Task Done</span>
             </div>
@@ -100,7 +93,7 @@ const isUpgradePlanDialogVisible = ref(false)
 
             <div>
               <h5 class="text-h5">
-                {{ kFormatter(props.userData.projectDone) }}
+<!--                {{ kFormatter(props.userData.projectDone) }}-->
               </h5>
               <span>Project Done</span>
             </div>
@@ -121,7 +114,7 @@ const isUpgradePlanDialogVisible = ref(false)
               <VListItemTitle class="text-sm">
                 <span class="font-weight-medium">Username:</span>
                 <span class="text-body-1">
-                  @{{ props.userData.username }}
+                  @{{ usuario.usuario }}
                 </span>
               </VListItemTitle>
             </VListItem>
@@ -131,7 +124,7 @@ const isUpgradePlanDialogVisible = ref(false)
                 <span class="font-weight-medium">
                   Billing Email:
                 </span>
-                <span class="text-body-1">{{ props.userData.email }}</span>
+                <span class="text-body-1">{{ usuario.email }}</span>
               </VListItemTitle>
             </VListItem>
 
@@ -140,14 +133,14 @@ const isUpgradePlanDialogVisible = ref(false)
                 <span class="font-weight-medium">
                   Status:
                 </span>
-                <span class="text-body-1 text-capitalize">{{ props.userData.status }}</span>
+                <span class="text-body-1 text-capitalize">{{ usuario.estado }}</span>
               </VListItemTitle>
             </VListItem>
 
             <VListItem>
               <VListItemTitle class="text-sm">
                 <span class="font-weight-medium">Role: </span>
-                <span class="text-capitalize text-body-1">{{ props.userData.role }}</span>
+<!--                <span class="text-capitalize text-body-1">{{ usuario.role }}</span>-->
               </VListItemTitle>
             </VListItem>
 
@@ -157,7 +150,7 @@ const isUpgradePlanDialogVisible = ref(false)
                   Tax ID:
                 </span>
                 <span class="text-body-1">
-                  {{ props.userData.taxId }}
+<!--                  {{ props.userData.taxId }}-->
                 </span>
               </VListItemTitle>
             </VListItem>
@@ -167,7 +160,7 @@ const isUpgradePlanDialogVisible = ref(false)
                 <span class="font-weight-medium">
                   Contact:
                 </span>
-                <span class="text-body-1">{{ props.userData.contact }}</span>
+<!--                <span class="text-body-1">{{ props.userData.contact }}</span>-->
               </VListItemTitle>
             </VListItem>
 
@@ -176,7 +169,7 @@ const isUpgradePlanDialogVisible = ref(false)
                 <span class="font-weight-medium">
                   Language:
                 </span>
-                <span class="text-body-1">{{ props.userData.language }}</span>
+<!--                <span class="text-body-1">{{ props.userData.language }}</span>-->
               </VListItemTitle>
             </VListItem>
 
@@ -185,7 +178,7 @@ const isUpgradePlanDialogVisible = ref(false)
                 <span class="font-weight-medium">
                   Country:
                 </span>
-                <span class="text-body-1">{{ props.userData.country }}</span>
+<!--                <span class="text-body-1">{{ props.userData.country }}</span>-->
               </VListItemTitle>
             </VListItem>
           </VList>
@@ -209,93 +202,7 @@ const isUpgradePlanDialogVisible = ref(false)
         </VCardText>
       </VCard>
     </VCol>
-    <!-- !SECTION -->
-
-    <!-- SECTION Current Plan -->
-    <VCol cols="12">
-      <VCard
-        flat
-        class="current-plan"
-      >
-        <VCardText class="d-flex">
-          <!-- 👉 Standard Chip -->
-          <VChip
-            color="primary"
-            size="small"
-          >
-            Standard
-          </VChip>
-
-          <VSpacer />
-
-          <!-- 👉 Current Price  -->
-          <div class="d-flex align-center">
-            <sup class="text-primary text-lg font-weight-medium">$</sup>
-            <h1 class="text-h1 text-primary">
-              99
-            </h1>
-            <sub class="mt-5"><h6 class="text-h6 font-weight-regular">month</h6></sub>
-          </div>
-        </VCardText>
-
-        <VCardText>
-          <!-- 👉 Price Benefits -->
-          <VList class="card-list">
-            <VListItem
-              v-for="benefit in standardPlan.benefits"
-              :key="benefit"
-            >
-              <div class="d-flex align-center">
-                <VIcon
-                  size="10"
-                  color="medium-emphasis"
-                  class="me-2"
-                  icon="ri-circle-fill"
-                />
-                <div class="text-medium-emphasis">
-                  {{ benefit }}
-                </div>
-              </div>
-            </VListItem>
-          </VList>
-
-          <!-- 👉 Days -->
-          <div class="my-6">
-            <div class="d-flex mb-1">
-              <h6 class="text-h6">
-                Days
-              </h6>
-              <VSpacer />
-              <h6 class="text-h6">
-                26 of 30 Days
-              </h6>
-            </div>
-
-            <!-- 👉 Progress -->
-            <VProgressLinear
-              rounded
-              :model-value="86"
-              color="primary"
-            />
-
-            <p class="text-sm mt-1">
-              4 days remaining
-            </p>
-          </div>
-
-          <!-- 👉 Upgrade Plan -->
-          <VBtn
-            block
-            @click="isUpgradePlanDialogVisible = true"
-          >
-            Upgrade Plan
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </VCol>
-    <!-- !SECTION -->
   </VRow>
-
 </template>
 
 <style lang="scss" scoped>

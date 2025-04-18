@@ -20,6 +20,7 @@ export interface UsuarioInterface {
   nombre_completo: string | null
   usuario: string | null
   email: string | null
+  avatar: string | null
   roles?: RolInterface[] | null
   permisos?: PermisoInterface[] | null
   password?: string | null

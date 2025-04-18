@@ -2,7 +2,7 @@
 import { manejaError } from '@/utils/funcionesComunes'
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
-import DatosGenerales from "@/views/pages/admin/modulo-usuarios/usuarios/perfil/DatosGenerales.vue"
+import DatosGenerales from '@/views/pages/admin/modulo-usuarios/usuarios/perfil/DatosGenerales.vue'
 
 interface PropInterface {
   id: number | null
@@ -44,7 +44,6 @@ getDatosUsuario()
 </script>
 
 <template>
-  <p v-text="usuario"></p>
   <VRow v-if="usuario">
     <VCol
       cols="12"
