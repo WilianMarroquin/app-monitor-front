@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import type { VForm } from 'vuetify/components/VForm'
 import { useConfiguracionStore } from '@/stores/admin/useConfiguracionStore'
 import type { ConfiguracionGeneralInterface } from '@/types/admin/configuraciones/types'
 import { manejaError } from '@/utils/funcionesComunes'
-import type { VForm } from 'vuetify/components/VForm'
 
 definePageMeta({
   navActiveLink: 'dev-configuraciones-generales',

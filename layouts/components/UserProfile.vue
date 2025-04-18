@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
-import avatar1 from '@images/avatars/avatar-1.png'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import avatar1 from '@images/avatars/avatar-1.png'
+import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
+
+const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
 
 const userProfileList = [
   { type: 'divider' },
@@ -9,7 +11,7 @@ const userProfileList = [
     type: 'navItem',
     icon: 'ri-user-line',
     title: 'Perfil',
-    href: '#',
+    href: `/admin/modulo-usuarios/usuarios/perfil/`,
   },
   {
     type: 'navItem',
@@ -17,31 +19,9 @@ const userProfileList = [
     title: 'Settings',
     href: '#',
   },
-  {
-    type: 'navItem',
-    icon: 'ri-file-text-line',
-    title: 'Billing Plan',
-    href: '#',
-    chipsProps: { color: 'error', text: '4', size: 'small' },
-  },
-  { type: 'divider' },
-  {
-    type: 'navItem',
-    icon: 'ri-money-dollar-circle-line',
-    title: 'Pricing',
-    href: '#',
-  },
-  {
-    type: 'navItem',
-    icon: 'ri-question-line',
-    title: 'FAQ',
-    href: '#',
-  },
 ]
 
 const { logout } = useSanctumAuth()
-
-const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
 </script>
 
 <template>
@@ -91,6 +71,7 @@ const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
               :key="item.title"
             >
               <VListItem
+                @click="item.href ? $router.push(item.href) : null"
                 v-if="item.type === 'navItem'"
                 class="px-4"
               >
@@ -103,15 +84,15 @@ const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
 
                 <VListItemTitle>{{ item.title }}</VListItemTitle>
 
-                <template
-                  v-if="item.chipsProps"
-                  #append
-                >
-                  <VChip
-                    v-bind="item.chipsProps"
-                    variant="elevated"
-                  />
-                </template>
+<!--                <template-->
+<!--                  v-if="item.chipsProps"-->
+<!--                  #append-->
+<!--                >-->
+<!--                  <VChip-->
+<!--                    v-bind="item.chipsProps"-->
+<!--                    variant="elevated"-->
+<!--                  />-->
+<!--                </template>-->
               </VListItem>
 
               <VDivider

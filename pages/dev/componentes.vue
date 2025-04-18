@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 
+const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
 </script>
 
 <template>
-  <h1>En Contrucción</h1>
+  <Perfil
+    v-if="usuarioAutenticado?.id"
+    :id="usuarioAutenticado?.id"
+  />
 </template>
