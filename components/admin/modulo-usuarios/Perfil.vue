@@ -33,6 +33,7 @@ const getDatosUsuario = async (): Promise<void> => {
     if (!res.data)
       return
 
+    console.log(res.data)
     usuario.value = res.data.datos_usuario
   }
   catch (error: any) {

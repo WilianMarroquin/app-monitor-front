@@ -1,6 +1,6 @@
 <script setup>
-import { manejaError, validaSiExisteDato } from '@/utils/funcionesComunes'
 import { ref } from 'vue'
+import { manejaError, validaSiExisteDato } from '@/utils/funcionesComunes'
 
 const { post } = useClienteRequest()
 const { showToastSuccess } = useToast()
@@ -24,6 +24,7 @@ const props = defineProps({
     default: null,
   },
 })
+
 const emit = defineEmits(['update:archivos'])
 const files = ref([])
 const previews = ref([])

@@ -1,15 +1,60 @@
 <script setup lang="ts">
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
+import type { SendResponseInterface } from '@/types/generales/types'
+import { manejaError } from '@/utils/funcionesComunes'
 
 interface Props {
   userData: UsuarioInterface
 }
+interface response {
+  data: string
+  message: string
+}
 
 const props = defineProps<Props>()
 
-const usuario = ref<UsuarioInterface>(props.userData ?? null)
+const { error, success } = useToast()
+const { post } = useClienteRequest()
 
+const usuario = ref<UsuarioInterface>(props.userData ?? null)
 const isUserInfoEditDialogVisible = ref(false)
+const input = ref(null)
+const fotoTemporal = ref<File | null>(null)
+
+const nuevaFotoPerfil = (archivo: File[]) => {
+  if (archivo)
+    fotoTemporal.value = archivo
+  else
+    error('No se ha podido cargar la imagen')
+}
+
+const guardarFotoPerfil = async () => {
+  if (!fotoTemporal.value)
+    return
+
+  const formData = new FormData()
+  formData.append('avatar', fotoTemporal.value)
+
+  try {
+    const res = await post<SendResponseInterface<response>>(`api/admin/modulo-usuarios/users/actualizar/foto/perfil/${usuario.value.id}`, formData)
+
+    usuario.value.avatar = res.data
+    fotoTemporal.value = null
+
+    success(res.message)
+  }
+  catch (error: any) {
+    manejaError(error)
+  }
+}
+
+const fotoTemporalBlob = computed(() => {
+  if (fotoTemporal.value) {
+    const blob = new Blob([fotoTemporal.value], { type: 'image/jpeg' })
+    return URL.createObjectURL(blob)
+  }
+  return null
+})
 </script>
 
 <template>
@@ -26,8 +71,8 @@ const isUserInfoEditDialogVisible = ref(false)
             :variant="!usuario.avatar ? 'tonal' : undefined"
           >
             <VImg
-              v-if="usuario.avatar"
-              :src="usuario.avatar"
+              v-if="fotoTemporalBlob || usuario.avatar"
+              :src="fotoTemporalBlob || usuario.avatar"
             />
             <span
               v-else
@@ -35,8 +80,32 @@ const isUserInfoEditDialogVisible = ref(false)
             >
               {{ avatarText(usuario.nombre_completo) }}
             </span>
-          </VAvatar>
 
+          </VAvatar>
+          <p></p>
+          <VBtn
+            v-if="!fotoTemporal"
+            size="small"
+            variant="outlined"
+            @click="input?.click()"
+          >
+            Subir Foto
+          </VBtn>
+          <VBtn
+            v-if="fotoTemporal"
+            size="small"
+            @click="guardarFotoPerfil"
+          >
+            Guardar
+          </VBtn>
+          <VFileInput
+            ref="input"
+            :multiple="false"
+            accept="image/*"
+            hide-input
+            prepend-icon="mdi-paperclip"
+            @update:model-value="nuevaFotoPerfil"
+          />
           <!-- 👉 User fullName -->
           <h5 class="text-h5 mt-4">
             {{ usuario.nombre_completo }}
@@ -70,7 +139,7 @@ const isUserInfoEditDialogVisible = ref(false)
 
             <div>
               <h5 class="text-h5">
-<!--                {{ kFormatter(usuario.taskDone) }}-->
+                <!--                {{ kFormatter(usuario.taskDone) }}-->
               </h5>
               <span>Task Done</span>
             </div>
@@ -93,7 +162,7 @@ const isUserInfoEditDialogVisible = ref(false)
 
             <div>
               <h5 class="text-h5">
-<!--                {{ kFormatter(props.userData.projectDone) }}-->
+                <!--                {{ kFormatter(props.userData.projectDone) }}-->
               </h5>
               <span>Project Done</span>
             </div>
@@ -103,16 +172,16 @@ const isUserInfoEditDialogVisible = ref(false)
         <!-- 👉 Details -->
         <VCardText class="pb-6">
           <h5 class="text-h5">
-            Details
+            Detalles
           </h5>
 
-          <VDivider class="my-4" />
+          <VDivider class="my-4"/>
 
           <!-- 👉 User Details list -->
           <VList class="card-list">
             <VListItem>
               <VListItemTitle class="text-sm">
-                <span class="font-weight-medium">Username:</span>
+                <span class="font-weight-medium">Nombre de usuario:</span>
                 <span class="text-body-1">
                   @{{ usuario.usuario }}
                 </span>
@@ -122,7 +191,7 @@ const isUserInfoEditDialogVisible = ref(false)
             <VListItem>
               <VListItemTitle class="text-sm">
                 <span class="font-weight-medium">
-                  Billing Email:
+                  Email:
                 </span>
                 <span class="text-body-1">{{ usuario.email }}</span>
               </VListItemTitle>
@@ -131,56 +200,56 @@ const isUserInfoEditDialogVisible = ref(false)
             <VListItem>
               <VListItemTitle class="text-sm">
                 <span class="font-weight-medium">
-                  Status:
+                  Estado:
                 </span>
                 <span class="text-body-1 text-capitalize">{{ usuario.estado }}</span>
               </VListItemTitle>
             </VListItem>
 
-            <VListItem>
-              <VListItemTitle class="text-sm">
-                <span class="font-weight-medium">Role: </span>
-<!--                <span class="text-capitalize text-body-1">{{ usuario.role }}</span>-->
-              </VListItemTitle>
-            </VListItem>
+            <!--            <VListItem>-->
+            <!--              <VListItemTitle class="text-sm">-->
+            <!--                <span class="font-weight-medium">Roles: </span>-->
+            <!--                <span class="text-capitalize text-body-1">{{ usuario.role }}</span>-->
+            <!--              </VListItemTitle>-->
+            <!--            </VListItem>-->
 
-            <VListItem>
-              <VListItemTitle class="text-sm">
-                <span class="font-weight-medium">
-                  Tax ID:
-                </span>
-                <span class="text-body-1">
-<!--                  {{ props.userData.taxId }}-->
-                </span>
-              </VListItemTitle>
-            </VListItem>
+            <!--            <VListItem>-->
+            <!--              <VListItemTitle class="text-sm">-->
+            <!--                <span class="font-weight-medium">-->
+            <!--                  Tax ID:-->
+            <!--                </span>-->
+            <!--                <span class="text-body-1">-->
+            <!--&lt;!&ndash;                  {{ props.userData.taxId }}&ndash;&gt;-->
+            <!--                </span>-->
+            <!--              </VListItemTitle>-->
+            <!--            </VListItem>-->
 
-            <VListItem>
-              <VListItemTitle class="text-sm">
-                <span class="font-weight-medium">
-                  Contact:
-                </span>
-<!--                <span class="text-body-1">{{ props.userData.contact }}</span>-->
-              </VListItemTitle>
-            </VListItem>
+            <!--            <VListItem>-->
+            <!--              <VListItemTitle class="text-sm">-->
+            <!--                <span class="font-weight-medium">-->
+            <!--                  Contact:-->
+            <!--                </span>-->
+            <!--&lt;!&ndash;                <span class="text-body-1">{{ props.userData.contact }}</span>&ndash;&gt;-->
+            <!--              </VListItemTitle>-->
+            <!--            </VListItem>-->
 
-            <VListItem>
-              <VListItemTitle class="text-sm">
-                <span class="font-weight-medium">
-                  Language:
-                </span>
-<!--                <span class="text-body-1">{{ props.userData.language }}</span>-->
-              </VListItemTitle>
-            </VListItem>
+            <!--            <VListItem>-->
+            <!--              <VListItemTitle class="text-sm">-->
+            <!--                <span class="font-weight-medium">-->
+            <!--                  Language:-->
+            <!--                </span>-->
+            <!--&lt;!&ndash;                <span class="text-body-1">{{ props.userData.language }}</span>&ndash;&gt;-->
+            <!--              </VListItemTitle>-->
+            <!--            </VListItem>-->
 
-            <VListItem>
-              <VListItemTitle class="text-sm">
-                <span class="font-weight-medium">
-                  Country:
-                </span>
-<!--                <span class="text-body-1">{{ props.userData.country }}</span>-->
-              </VListItemTitle>
-            </VListItem>
+            <!--            <VListItem>-->
+            <!--              <VListItemTitle class="text-sm">-->
+            <!--                <span class="font-weight-medium">-->
+            <!--                  Country:-->
+            <!--                </span>-->
+            <!--&lt;!&ndash;                <span class="text-body-1">{{ props.userData.country }}</span>&ndash;&gt;-->
+            <!--              </VListItemTitle>-->
+            <!--            </VListItem>-->
           </VList>
         </VCardText>
 
