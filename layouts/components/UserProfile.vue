@@ -11,7 +11,7 @@ const userProfileList = [
     type: 'navItem',
     icon: 'ri-user-line',
     title: 'Perfil',
-    href: '/admin/modulo-usuarios/usuarios/perfil/',
+    href: '/admin/modulo-usuarios/perfil',
   },
   {
     type: 'navItem',
@@ -38,7 +38,7 @@ const { logout } = useSanctumAuth()
       class="cursor-pointer"
       size="38"
     >
-      <VImg :src="usuarioAutenticado?.avatar ?? avatar1" />
+      <VImg :src="usuarioAutenticado?.avatar_thumb24 ?? avatar1" />
 
       <!-- SECTION Menu -->
       <VMenu
@@ -51,7 +51,7 @@ const { logout } = useSanctumAuth()
           <VListItem class="px-4">
             <div class="d-flex gap-x-2 align-center">
               <VAvatar>
-                <VImg :src="usuarioAutenticado?.avatar ?? avatar1" />
+                <VImg :src="usuarioAutenticado?.avatar_thumb24 ?? avatar1" />
               </VAvatar>
 
               <div>

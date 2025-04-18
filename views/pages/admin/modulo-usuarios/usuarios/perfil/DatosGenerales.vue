@@ -15,6 +15,7 @@ const props = defineProps<Props>()
 
 const { error, success } = useToast()
 const { post } = useClienteRequest()
+const { refreshIdentity } = useSanctumAuth()
 
 const usuario = ref<UsuarioInterface>(props.userData ?? null)
 const isUserInfoEditDialogVisible = ref(false)
@@ -40,6 +41,7 @@ const guardarFotoPerfil = async () => {
 
     usuario.value.avatar = res.data
     fotoTemporal.value = null
+    await refreshIdentity()
 
     success(res.message)
   }
@@ -89,7 +91,7 @@ const fotoTemporalBlob = computed(() => {
             variant="outlined"
             @click="input?.click()"
           >
-            Subir Foto
+            Cambiar Foto
           </VBtn>
           <VBtn
             v-if="fotoTemporal"
@@ -107,11 +109,10 @@ const fotoTemporalBlob = computed(() => {
             @update:model-value="nuevaFotoPerfil"
           />
           <!-- 👉 User fullName -->
-          <h5 class="text-h5 mt-4">
+          <h5 class="text-h5 mt-1">
             {{ usuario.nombre_completo }}
           </h5>
 
-          <!-- 👉 Role chip -->
           <VChip
             v-for="rol in usuario.roles"
             size="small"
@@ -119,54 +120,6 @@ const fotoTemporalBlob = computed(() => {
           >
             {{ rol.name }}
           </VChip>
-        </VCardText>
-
-        <VCardText class="d-flex justify-center flex-wrap gap-6 pb-6">
-          <!-- 👉 Done task -->
-          <div class="d-flex align-center me-8">
-            <VAvatar
-              :size="40"
-              rounded
-              color="primary"
-              variant="tonal"
-              class="me-4"
-            >
-              <VIcon
-                size="24"
-                icon="ri-check-line"
-              />
-            </VAvatar>
-
-            <div>
-              <h5 class="text-h5">
-                <!--                {{ kFormatter(usuario.taskDone) }}-->
-              </h5>
-              <span>Task Done</span>
-            </div>
-          </div>
-
-          <!-- 👉 Done Project -->
-          <div class="d-flex align-center me-4">
-            <VAvatar
-              :size="44"
-              rounded
-              color="primary"
-              variant="tonal"
-              class="me-4"
-            >
-              <VIcon
-                size="24"
-                icon="ri-briefcase-line"
-              />
-            </VAvatar>
-
-            <div>
-              <h5 class="text-h5">
-                <!--                {{ kFormatter(props.userData.projectDone) }}-->
-              </h5>
-              <span>Project Done</span>
-            </div>
-          </div>
         </VCardText>
 
         <!-- 👉 Details -->
@@ -254,21 +207,21 @@ const fotoTemporalBlob = computed(() => {
         </VCardText>
 
         <!-- 👉 Edit and Suspend button -->
-        <VCardText class="d-flex justify-center">
-          <VBtn
-            variant="elevated"
-            class="me-4"
-            @click="isUserInfoEditDialogVisible = true"
-          >
-            Edit
-          </VBtn>
-          <VBtn
-            variant="outlined"
-            color="error"
-          >
-            Suspend
-          </VBtn>
-        </VCardText>
+<!--        <VCardText class="d-flex justify-center">-->
+<!--          <VBtn-->
+<!--            variant="elevated"-->
+<!--            class="me-4"-->
+<!--            @click="isUserInfoEditDialogVisible = true"-->
+<!--          >-->
+<!--            Edit-->
+<!--          </VBtn>-->
+<!--          <VBtn-->
+<!--            variant="outlined"-->
+<!--            color="error"-->
+<!--          >-->
+<!--            Suspend-->
+<!--          </VBtn>-->
+<!--        </VCardText>-->
       </VCard>
     </VCol>
   </VRow>

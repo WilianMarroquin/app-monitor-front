@@ -21,6 +21,7 @@ export interface UsuarioInterface {
   usuario: string | null
   email: string | null
   avatar: string | null
+  avatar_thumb24: string | null
   roles?: RolInterface[] | null
   permisos?: PermisoInterface[] | null
   password?: string | null
