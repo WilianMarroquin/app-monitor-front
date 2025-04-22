@@ -3,11 +3,11 @@ import { layoutConfig } from '@layouts'
 import { HorizontalNavLink, HorizontalNavPopper } from '@layouts/components'
 import { canViewNavMenuGroup } from '@layouts/plugins/casl'
 import { useLayoutConfigStore } from '@layouts/stores/config'
-import type { NavGroup } from '@layouts/types'
 import { getDynamicI18nProps, isNavGroupActive } from '@layouts/utils'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 
 interface Props {
-  item: NavGroup
+  item: MenuOpcionInterface
   childrenAtEnd?: boolean
 
   // ℹ️ We haven't added this prop in vertical nav because we don't need such differentiation in vertical nav for styling
@@ -60,14 +60,14 @@ watch(() => route.path, () => {
       <Component
         :is="layoutConfig.app.iconRenderer || 'div'"
         class="nav-item-icon"
-        v-bind="item.icon || layoutConfig.verticalNav.defaultNavItemIconProps"
+        v-bind="item.icono || layoutConfig.verticalNav.defaultNavItemIconProps"
       />
       <Component
         :is="layoutConfig.app.i18n.enable ? 'i18n-t' : 'span'"
-        v-bind="getDynamicI18nProps(item.title, 'span')"
+        v-bind="getDynamicI18nProps(item.titulo_seccion, 'span')"
         class="nav-item-title"
       >
-        {{ item.title }}
+        {{ item.titulo_seccion }}
       </Component>
       <Component
         v-bind="layoutConfig.icons.chevronDown"
@@ -80,7 +80,7 @@ watch(() => route.path, () => {
       <Component
         :is="'children' in child ? 'HorizontalNavGroup' : HorizontalNavLink"
         v-for="child in item.children"
-        :key="child.title"
+        :key="child.titulo_seccion"
         :item="child"
         children-at-end
         is-sub-item

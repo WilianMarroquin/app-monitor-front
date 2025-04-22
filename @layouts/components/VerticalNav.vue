@@ -7,7 +7,6 @@ import { layoutConfig } from '@layouts'
 import { VerticalNavGroup, VerticalNavLink, VerticalNavSectionTitle } from '@layouts/components'
 import { useLayoutConfigStore } from '@layouts/stores/config'
 import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
-import type { NavGroup, NavSectionTitle } from '@layouts/types'
 
 const configuracionStore = useConfiguracionStore()
 
@@ -29,7 +28,7 @@ provide(injectionKeyIsVerticalNavHovered, isHovered)
 
 const configStore = useLayoutConfigStore()
 
-const resolveNavItemComponent = (item: MenuOpcionInterface | NavSectionTitle | NavGroup): unknown => {
+const resolveNavItemComponent = (item: MenuOpcionInterface): unknown => {
   if (item.titulo_seccion)
     return VerticalNavSectionTitle
   if (item?.children?.length > 0)

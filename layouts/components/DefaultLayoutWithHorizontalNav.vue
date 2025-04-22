@@ -2,17 +2,19 @@
 import Footer from '@/layouts/components/Footer.vue'
 import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
-import navItems from '@/navigation/horizontal'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import NavBarI18n from '@core/components/I18n.vue'
 import { HorizontalNavLayout } from '@layouts'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 
 const { can } = useAbility()
+
+const opcionesMenu = useState<MenuOpcionInterface[]>('menu', () => [])
 </script>
 
 <template>
-  <HorizontalNavLayout :nav-items="navItems">
+  <HorizontalNavLayout :nav-items="opcionesMenu">
     <!-- 👉 navbar -->
     <template #navbar>
       <NuxtLink

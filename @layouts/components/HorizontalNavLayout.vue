@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { HorizontalNav } from '@layouts/components'
-import type { HorizontalNavItems } from '@layouts/types'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 
 // ℹ️ Using import from `@layouts` causing build to hangup
 // import { useLayouts } from '@layouts'
 import { useLayoutConfigStore } from '@layouts/stores/config'
 
 defineProps<{
-  navItems: HorizontalNavItems
+  navItems: MenuOpcionInterface[]
 }>()
 
 const configStore = useLayoutConfigStore()
