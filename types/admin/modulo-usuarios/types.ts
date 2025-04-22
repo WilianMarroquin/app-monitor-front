@@ -27,3 +27,7 @@ export interface UsuarioInterface {
   password?: string | null
   password_confirmation?: string | null
 }
+
+export interface UserEstadoInterface {
+  nombre: string
+}
