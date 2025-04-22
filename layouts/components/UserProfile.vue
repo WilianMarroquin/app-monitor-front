@@ -11,7 +11,7 @@ const userProfileList = [
     type: 'navItem',
     icon: 'ri-user-line',
     title: 'Perfil',
-    href: '/admin/modulo-usuarios/perfil',
+    href: '/admin/modulo-usuarios/usuarios/perfil',
   },
   {
     type: 'navItem',
