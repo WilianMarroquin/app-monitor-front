@@ -57,7 +57,9 @@ const handleNavScroll = (evt: Event) => {
 
 const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
 
-const logo = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.logo) ? configuracionStore.configuracionesGenerales.logo : '/img/sysbase/logo.png'
+const logo = computed(() => {
+  return configuracionStore.configuracionesGenerales?.logo || '/img/sysbase/logo.png'
+})
 </script>
 
 <template>
