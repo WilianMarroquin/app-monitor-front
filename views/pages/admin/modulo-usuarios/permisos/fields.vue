@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import type { VForm } from 'vuetify/lib/components/VForm'
-import type { UserEstadoInterface } from '@/types/admin/modulo-usuarios/types'
+import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 
 const isFormValid = ref(false)
 const refForm = ref<VForm>()
-
-const data = ref<UserEstadoInterface>({
-  nombre: null,
+const data = ref<PermisoInterface>({
+  name: null,
+  subject: null,
+  guard_name: null,
 })
 
 interface Emit {
-  (e: 'emitirDatos', value: UserEstadoInterface): void
+  (e: 'emitirDatos', value: PermisoInterface): void
 }
 
 const props = defineProps({
@@ -20,7 +21,6 @@ const props = defineProps({
     },
   },
 )
-
 const emit = defineEmits<Emit>()
 
 if (props.item) {
@@ -37,6 +37,7 @@ const onSubmit = () => {
 </script>
 
 <template>
+
   <VForm
     ref="refForm"
     v-model="isFormValid"
@@ -47,14 +48,24 @@ const onSubmit = () => {
       <VCol cols="12" md="6">
         <VTextField
           :id="useId()"
-          v-model="data.nombre"
+          v-model="data.name"
           :rules="[requiredValidator]"
-          label="Nombre"
-          placeholder="Ingrese Nombre"
+          label="Name"
+          placeholder="Ingrese Name"
           required
         />
       </VCol>
 
+      <VCol cols="12" md="6">
+        <VTextField
+          :id="useId()"
+          v-model="data.subject"
+          :rules="[requiredValidator]"
+          label="Subject"
+          placeholder="Ingrese Subject"
+          required
+        />
+      </VCol>
       <VCol cols="12" class="text-end">
         <VBtn
           type="reset"
@@ -75,7 +86,9 @@ const onSubmit = () => {
         </VBtn>
       </VCol>
     </VRow>
+
   </VForm>
+
 </template>
 
 <style scoped lang="scss">

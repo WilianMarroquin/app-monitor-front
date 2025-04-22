@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import Fields from '@/views/pages/admin/modulo-usuarios/permisos/fields.vue'
+import { manejaError } from '@/utils/funcionesComunes'
 import type { PermisoInterface } from '@/types/admin/modulo-usuarios/types'
 import type { SendResponseInterface } from '@/types/generales/types'
-import { manejaError } from '@/utils/funcionesComunes'
-import Fields from '@/views/pages/permissiones/fields.vue'
 
 definePageMeta({
   navActiveLink: 'admin-modulo-usuarios-permisos',
