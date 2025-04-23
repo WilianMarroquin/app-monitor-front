@@ -214,7 +214,7 @@ onMounted(() => {
     :class="{ 'preview-dropzone': true, dragging: isDragging }"
   >
     <div class="dropzone-message" v-if="!previews?.length > 0">
-      <VIcon size="48" class="tabler-cloud-upload" color="primary"/>
+      <VIcon size="48" class="ri-upload-cloud-2-line" color="primary"/>
       <p class="drop-text">Arrastra y suelta tus archivos aquí</p>
     </div>
     <div

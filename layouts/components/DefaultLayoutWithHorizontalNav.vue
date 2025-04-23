@@ -5,17 +5,22 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import NavBarI18n from '@core/components/I18n.vue'
 import { HorizontalNavLayout } from '@layouts'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { useConfiguracionStore } from '@/stores/admin/useConfiguracionStore'
 
 const { can } = useAbility()
 
 const opcionesMenu = useState<MenuOpcionInterface[]>('menu', () => [])
+const configuracionStore = useConfiguracionStore()
 
 const opcionesMenuFiltradas = computed(() => {
   return opcionesMenu.value.filter((opcion: MenuOpcionInterface) => {
     return !opcion?.titulo_seccion
   })
+})
+
+const logo = computed(() => {
+  return configuracionStore.configuracionesGenerales?.logo || '/img/sysbase/logo.png'
 })
 </script>
 
@@ -27,10 +32,15 @@ const opcionesMenuFiltradas = computed(() => {
         to="/"
         class="app-logo"
       >
-        <VNodeRenderer :nodes="themeConfig.app.logo"/>
+        <img
+          :src="logo"
+          alt="Logo"
+          height="50"
+          class="mx-auto"
+        />
 
         <h1 class="app-logo-title leading-normal">
-          {{ themeConfig.app.title }}
+          {{ configuracionStore.configuracionesGenerales?.nombre_aplicacion }}
         </h1>
       </NuxtLink>
       <VSpacer/>

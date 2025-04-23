@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
-
-const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
+const archivos = ref<File[]>([])
 </script>
 
 <template>
-  <Perfil
-    v-if="usuarioAutenticado?.id"
-    :id="usuarioAutenticado?.id"
-  />
+  <VCard title="Ejemplo de componente de input de archivo: " class="mb-1">
+    <VCardText>
+      <FileInput
+        multiple
+        v-model:archivos="archivos"
+      />
+    </VCardText>
+  </VCard>
 </template>

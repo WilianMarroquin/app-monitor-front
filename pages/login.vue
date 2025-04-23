@@ -99,7 +99,7 @@ onMounted(() => {
       >
         <VCardText>
           <h4 class="text-h4 mb-1">
-            Welcome to <span class="text-capitalize">{{ configuracionStore.configuracionesGenerales.nombre_aplicacion }}! 👋🏻</span>
+            Bienvenid@ a <span class="text-capitalize">{{ configuracionStore.configuracionesGenerales.nombre_aplicacion }}! 👋🏻</span>
           </h4>
 
           <p class="mb-0">
