@@ -1,15 +1,12 @@
 <script lang="ts" setup>
 import { NuxtLink } from '#components'
-
 import { layoutConfig } from '@layouts'
 import { can } from '@layouts/plugins/casl'
-import type { NavLink } from '@layouts/types'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 import { getComputedNavLinkToProp, getDynamicI18nProps, isNavLinkActive } from '@layouts/utils'
 
 interface Props {
-  item: NavLink
-
-  // ℹ️ We haven't added this prop in vertical nav because we don't need such differentiation in vertical nav for styling
+  item: MenuOpcionInterface
   isSubItem?: boolean
 }
 
@@ -28,21 +25,17 @@ const props = withDefaults(defineProps<Props>(), {
     }]"
   >
     <Component
-      :is="item.to ? NuxtLink : 'a'"
+      :is="item.ruta ? NuxtLink : 'a'"
       v-bind="getComputedNavLinkToProp(item)"
       :class="{ 'router-link-active router-link-exact-active': isNavLinkActive(item, $router) }"
     >
-      <Component
-        :is="layoutConfig.app.iconRenderer || 'div'"
-        class="nav-item-icon"
-        v-bind="item.icon || layoutConfig.verticalNav.defaultNavItemIconProps"
-      />
+      <VIcon :icon="item.icono ?? 'ri-circle-line'"/>
       <Component
         :is="layoutConfig.app.i18n.enable ? 'i18n-t' : 'span'"
         class="nav-item-title"
-        v-bind="getDynamicI18nProps(item.title, 'span')"
+        v-bind="getDynamicI18nProps(item.titulo, 'span')"
       >
-        {{ item.title }}
+        {{ item.titulo }}
       </Component>
     </Component>
   </li>

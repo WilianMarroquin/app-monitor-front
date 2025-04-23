@@ -3,6 +3,7 @@ import { layoutConfig } from '@layouts/config'
 import { AppContentLayoutNav } from '@layouts/enums'
 import { useLayoutConfigStore } from '@layouts/stores/config'
 import type { NavGroup, NavLink, NavLinkProps } from '@layouts/types'
+import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
 
 export const openGroups = ref<string[]>([])
 

@@ -52,22 +52,17 @@ watch(() => route.path, () => {
       'active': isGroupActive,
       'children-at-end': childrenAtEnd,
       'sub-item': isSubItem,
-      'disabled': item.disable,
     }]"
     :popper-inline-end="childrenAtEnd"
   >
     <div class="nav-group-label">
-      <Component
-        :is="layoutConfig.app.iconRenderer || 'div'"
-        class="nav-item-icon"
-        v-bind="item.icono || layoutConfig.verticalNav.defaultNavItemIconProps"
-      />
+      <VIcon :icon="item.icono ?? 'ri-circle-line'"/>
       <Component
         :is="layoutConfig.app.i18n.enable ? 'i18n-t' : 'span'"
-        v-bind="getDynamicI18nProps(item.titulo_seccion, 'span')"
+        v-bind="getDynamicI18nProps(item.titulo, 'span')"
         class="nav-item-title"
       >
-        {{ item.titulo_seccion }}
+        {{ item.titulo }}
       </Component>
       <Component
         v-bind="layoutConfig.icons.chevronDown"
@@ -78,9 +73,9 @@ watch(() => route.path, () => {
 
     <template #content>
       <Component
-        :is="'children' in child ? 'HorizontalNavGroup' : HorizontalNavLink"
+        :is="child.children?.length > 0 ? 'HorizontalNavGroup' : HorizontalNavLink"
         v-for="child in item.children"
-        :key="child.titulo_seccion"
+        :key="child.titulo"
         :item="child"
         children-at-end
         is-sub-item
