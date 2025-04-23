@@ -59,7 +59,7 @@ const deleteItem = async (id: number) => {
       to="/admin/modulo-usuarios/permisos/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
-      Nuev@ Permission
+      Nuevo Permiso
     </VBtn>
   </div>
   <DataTableComponent

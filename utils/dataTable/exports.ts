@@ -1,6 +1,6 @@
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx'
 
-import {useCargandoPagina} from "@/composables/useCargandoPagina";
+import { useCargandoPagina } from '@/composables/useCargandoPagina'
 
 /**
  * Exporta un array de objetos a un archivo CSV
@@ -10,35 +10,30 @@ import {useCargandoPagina} from "@/composables/useCargandoPagina";
  */
 export function exportarDataFormatoCSV(data, filename = 'archivo.csv', headers) {
 
-  const {paginaEspera} = useCargandoPagina();
+  const { paginaEspera } = useCargandoPagina()
 
-  paginaEspera.value = true;
+  paginaEspera.value = true
 
   if (Array.isArray(data) || data.length > 0) {
+    const dataExportable = filtrarDataExportable(data, headers)
 
-    const dataExportable = filtrarDataExportable(data, headers);
+    const worksheet = XLSX.utils.json_to_sheet(dataExportable)
 
-    const worksheet = XLSX.utils.json_to_sheet(dataExportable);
+    const csvData = XLSX.utils.sheet_to_csv(worksheet)
 
-    const csvData = XLSX.utils.sheet_to_csv(worksheet);
+    const blob = new Blob([csvData], { type: 'text/csvcharset=utf-8' })
+    const link = document.createElement('a')
 
-    const blob = new Blob([csvData], {type: 'text/csv;charset=utf-8;'});
-    const link = document.createElement('a');
-
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-  } else {
-
-    console.error('El array de datos está vacío o no es válido.');
-
+    link.href = URL.createObjectURL(blob)
+    link.setAttribute('download', filename)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
-
-  paginaEspera.value = false;
-
+  else {
+    console.error('El array de datos está vacío o no es válido.')
+  }
+  paginaEspera.value = false
 }
 
 /**
@@ -48,34 +43,25 @@ export function exportarDataFormatoCSV(data, filename = 'archivo.csv', headers) 
  * @param {Array} headers - Array con los nombres de las columnas (e.g., ['Nombre', 'Edad'])
  */
 export function exportarDataFormatoXLSX(data, filename = 'archivo.xlsx', headers = []) {
+  const { paginaEspera } = useCargandoPagina()
 
-  const {paginaEspera} = useCargandoPagina();
-
-  paginaEspera.value = true;
+  paginaEspera.value = true
 
   if (Array.isArray(data) || data.length > 0) {
+    const dataExportable = filtrarDataExportable(data, headers)
+    const worksheet = XLSX.utils.json_to_sheet(dataExportable)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos')
 
-    const dataExportable = filtrarDataExportable(data, headers);
+    if (filename.indexOf('.xlsx') === -1)
+      filename += '.xlsx'
 
-    const worksheet = XLSX.utils.json_to_sheet(dataExportable);
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
-
-    if (filename.indexOf('.xlsx') === -1) {
-      filename += '.xlsx';
-    }
-
-    XLSX.writeFile(workbook, filename);
-
-  } else {
-
-    console.error('El array de datos está vacío o no es válido.');
-
+    XLSX.writeFile(workbook, filename)
   }
-
-  paginaEspera.value = false;
-
+  else {
+    console.error('El array de datos está vacío o no es válido.')
+  }
+  paginaEspera.value = false
 }
 
 /**
@@ -86,11 +72,11 @@ export function exportarDataFormatoXLSX(data, filename = 'archivo.xlsx', headers
  */
 // export async function exportarDataFormatoPDF(data, filename = 'archivo.pdf', headers) {
 //
-//   const {paginaEspera} = useCargandoPagina();
+//   const {paginaEspera} = useCargandoPagina()
 //
-//   paginaEspera.value = true;
+//   paginaEspera.value = true
 //
-//   const dataExportable = filtrarDataExportable(data, headers);
+//   const dataExportable = filtrarDataExportable(data, headers)
 //
 //   try {
 //
@@ -100,32 +86,32 @@ export function exportarDataFormatoXLSX(data, filename = 'archivo.xlsx', headers
 //         'Content-Type': 'application/json',
 //       },
 //       body: JSON.stringify({dataExportable}),
-//     });
+//     })
 //
 //     if (!response.ok) {
-//       throw new Error('Error al generar el PDF');
+//       throw new Error('Error al generar el PDF')
 //     }
 //
 //     if (filename.indexOf('.pdf') === -1) {
-//       filename += '.pdf';
+//       filename += '.pdf'
 //     }
 //
-//     const blob = await response.blob();
-//     const url = URL.createObjectURL(blob);
-//     const link = document.createElement('a');
+//     const blob = await response.blob()
+//     const url = URL.createObjectURL(blob)
+//     const link = document.createElement('a')
 //
-//     link.href = url;
-//     link.download = filename;
-//     link.click();
-//     URL.revokeObjectURL(url);
+//     link.href = url
+//     link.download = filename
+//     link.click()
+//     URL.revokeObjectURL(url)
 //
 //   } catch (error) {
 //
-//     console.error('Error al generar el PDF:', error);
+//     console.error('Error al generar el PDF:', error)
 //
 //   } finally {
 //
-//     paginaEspera.value = false;
+//     paginaEspera.value = false
 //   }
 //
 // }
@@ -136,16 +122,13 @@ export function exportarDataFormatoXLSX(data, filename = 'archivo.xlsx', headers
  * @param {Array} headers - Array con los nombres de las columnas (e.g., ['Nombre', 'Edad'])
  */
 function filtrarDataExportable(data, headers) {
-
-  const columnasAExportar = headers.filter(header => header?.exportable === true || header?.exportable === undefined);
+  const columnasAExportar = headers.filter(header => header?.exportable === true || header?.exportable === undefined)
 
   return data.map(item => {
-    const newItem = {};
+    const newItem = {}
     columnasAExportar.forEach(columna => {
-      newItem[columna.key] = item[columna.key];
-    });
-    return newItem;
-  });
-
+      newItem[columna.key] = item[columna.key]
+    })
+    return newItem
+  })
 }
-

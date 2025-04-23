@@ -11,43 +11,49 @@ import { themeConfig } from '@themeConfig'
 const { can } = useAbility()
 
 const opcionesMenu = useState<MenuOpcionInterface[]>('menu', () => [])
+
+const opcionesMenuFiltradas = computed(() => {
+  return opcionesMenu.value.filter((opcion: MenuOpcionInterface) => {
+    return !opcion?.titulo_seccion
+  })
+})
 </script>
 
 <template>
-  <HorizontalNavLayout :nav-items="opcionesMenu">
+  <HorizontalNavLayout :nav-items="opcionesMenuFiltradas">
     <!-- 👉 navbar -->
     <template #navbar>
       <NuxtLink
         to="/"
         class="app-logo"
       >
-        <VNodeRenderer :nodes="themeConfig.app.logo" />
+        <VNodeRenderer :nodes="themeConfig.app.logo"/>
 
         <h1 class="app-logo-title leading-normal">
           {{ themeConfig.app.title }}
         </h1>
       </NuxtLink>
-      <VSpacer />
+      <VSpacer/>
 
       <NavBarI18n
         v-if="themeConfig.app.i18n.enable && themeConfig.app.i18n.langConfig?.length"
         :languages="themeConfig.app.i18n.langConfig"
       />
 
-      <NavbarThemeSwitcher class="me-2" />
-      <UserProfile />
+      <NavbarThemeSwitcher class="me-2"/>
+      <UserProfile/>
     </template>
 
     <!-- 👉 Pages -->
-    <slot />
+    <slot/>
 
     <!-- 👉 Footer -->
     <template #footer>
-      <Footer />
+      <Footer/>
     </template>
 
     <!-- 👉 Customizer -->
-    <TheCustomizer v-if="can('Ver menu preferencias', 'Preferencias')" />
+    <TheCustomizer v-if="can('Ver menu preferencias', 'Preferencias')"/>
   </HorizontalNavLayout>
 </template>
 
