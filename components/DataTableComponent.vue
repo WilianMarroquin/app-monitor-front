@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { exportarDataFormatoCSV, exportarDataFormatoXLSX } from '@/utils/dataTable/exports'
+import {
+  exportarDataFormatoCSV,
+  exportarDataFormatoPDF,
+  exportarDataFormatoXLSX,
+} from '@/utils/dataTable/exports'
 import { manejaError } from '@/utils/funcionesComunes'
 
 interface Columna {
@@ -162,16 +166,19 @@ defineExpose({
               Excel
             </VBtn>
 
-            <!--              <VBtn-->
-            <!--                v-if="botones.includes('pdf')"-->
-            <!--                class="mb-1"-->
-            <!--                variant="tonal"-->
-            <!--                block-->
-            <!--                @click="exportarDataFormatoPDF(items, nombreArchivoExport, columnas)"-->
-            <!--              >-->
-            <!--                <VIcon icon="tabler-file-type-pdf" start/>-->
-            <!--                PDF-->
-            <!--              </VBtn>-->
+            <VBtn
+              v-if="botones.includes('pdf')"
+              class="mb-1"
+              variant="tonal"
+              block
+              @click="exportarDataFormatoPDF(items, nombreArchivoExport, columnas)"
+            >
+              <VIcon
+                icon="ri-file-pdf-2-line"
+                start
+              />
+              PDF
+            </VBtn>
           </VList>
         </VMenu>
         <VBtn

@@ -70,51 +70,42 @@ export function exportarDataFormatoXLSX(data, filename = 'archivo.xlsx', headers
  * @param {string} filename - Nombre del archivo de salida (e.g., 'datos.csv')
  * @param {Array} headers - Array con los nombres de las columnas (e.g., ['Nombre', 'Edad'])
  */
-// export async function exportarDataFormatoPDF(data, filename = 'archivo.pdf', headers) {
-//
-//   const {paginaEspera} = useCargandoPagina()
-//
-//   paginaEspera.value = true
-//
-//   const dataExportable = filtrarDataExportable(data, headers)
-//
-//   try {
-//
-//     const response = await fetch('/api/generaPdf/dataTable/export', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({dataExportable}),
-//     })
-//
-//     if (!response.ok) {
-//       throw new Error('Error al generar el PDF')
-//     }
-//
-//     if (filename.indexOf('.pdf') === -1) {
-//       filename += '.pdf'
-//     }
-//
-//     const blob = await response.blob()
-//     const url = URL.createObjectURL(blob)
-//     const link = document.createElement('a')
-//
-//     link.href = url
-//     link.download = filename
-//     link.click()
-//     URL.revokeObjectURL(url)
-//
-//   } catch (error) {
-//
-//     console.error('Error al generar el PDF:', error)
-//
-//   } finally {
-//
-//     paginaEspera.value = false
-//   }
-//
-// }
+export async function exportarDataFormatoPDF(data, filename = 'archivo.pdf', headers) {
+  const { paginaEspera } = useCargandoPagina()
+
+  paginaEspera.value = true
+  const dataExportable = filtrarDataExportable(data, headers)
+  try {
+    const response = await fetch('/api/DataTable/GenerarPdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: dataExportable.length > 0 ? JSON.stringify(dataExportable) : JSON.stringify([]),
+    })
+
+    if (!response.ok)
+      throw new Error('Error al generar el PDF')
+
+    if (filename.indexOf('.pdf') === -1)
+      filename += '.pdf'
+
+    const blob = await response.blob()
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+
+    link.href = url
+    link.download = filename
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+  catch (error) {
+    console.error('Error al generar el PDF:', error)
+  }
+  finally {
+    paginaEspera.value = false
+  }
+}
 
 /**
  * Filtra un array de objetos según las columnas exportables
@@ -131,4 +122,23 @@ function filtrarDataExportable(data, headers) {
     })
     return newItem
   })
+}
+
+/**
+ * Genera una tabla HTML a partir de un array de objetos
+ * @param {Array} data - Array de objetos (e.g., [{ nombre: 'Juan', edad: 25 }, ...])
+ * @param {Array} headers - Array con los nombres de las columnas (e.g., ['Nombre', 'Edad'])
+ */
+export function generarTablaHTML(data: any[], headers: string[]): string {
+  const head = headers.map(header => `<th>${header}</th>`).join('')
+  const body = data.map(row => {
+    return '<tr>' + headers.map(header => `<td>${row[header] ?? ''}</td>`).join('') + '</tr>'
+  }).join('')
+
+  return `
+    <table>
+      <thead><tr>${head}</tr></thead>
+      <tbody>${body}</tbody>
+    </table>
+  `
 }
