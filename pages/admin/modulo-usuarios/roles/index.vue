@@ -51,7 +51,7 @@ const deleteItem = async (id: number) => {
 
 <template>
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
-    <h1 v-text="'Listado de roles'"/>
+    <h1 v-text="'Listado de Roles'"/>
     <VBtn
       v-if="can('Crear roles', 'Rol')"
       class="ml-auto"

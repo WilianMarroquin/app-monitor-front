@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MenuOpcionInterface } from '@/types/admin/configuraciones/types'
+import { validaSiExisteDato } from '@/utils/funcionesComunes'
 import { useConfigStore } from '@core/stores/config'
 
 defineOptions({
@@ -9,7 +10,6 @@ defineOptions({
 const configStore = useConfigStore()
 
 const items = useState<MenuOpcionInterface[]>('menu', () => [])
-
 const isAppSearchBarVisible = ref(false)
 const searchQuery = ref('')
 const isLoading = ref(false)
@@ -42,10 +42,8 @@ const navegarHaciaRuta = async (item: MenuOpcionInterface) => {
     searchQuery.value = ''
   }
 }
-
 const itemsAplanadas = flrattenOptions(items.value)
-
-const itemsLink = itemsAplanadas.filter(item => item.ruta && item.ruta !== '')
+const itemsLink = itemsAplanadas.filter(item => validaSiExisteDato(item.ruta))
 
 const itemsFiltradas = computed(() => {
   if (searchQuery.value.length > 0) {
@@ -90,28 +88,24 @@ const itemsFiltradas = computed(() => {
   >
     <!-- Sugerencias -->
     <template #suggestions>
-      <VCardText class="app-bar-search-suggestions ">
-        <VRow v-if="itemsLink.length > 0 ">
-          <VCol cols="12">
-            <VList class="card-list">
-              <VListItem
-                v-for="(item, index) in itemsLink"
-                :key="index"
-                @click="navegarHaciaRuta(item)"
-              >
-                <template #prepend>
-                  <VIcon
-                    :icon="item.icono ?? 'ri-file-text-line'"
-                    size="20"
-                    class="me-2"
-                  />
-                </template>
-                <VListItemTitle class="text-body-1">{{ item.titulo }}</VListItemTitle>
-              </VListItem>
-            </VList>
-          </VCol>
-        </VRow>
-      </VCardText>
+      <VList v-if="itemsLink.length > 0 ">
+        <VListItem
+          v-for="item in itemsLink"
+          :key="item"
+          tabindex="0"
+          class="item-hover"
+          @click="navegarHaciaRuta(item)"
+        >
+          <template #prepend>
+            <VIcon
+              :icon="item.icono ?? 'ri-file-text-line'"
+              size="20"
+              class="me-2"
+            />
+          </template>
+          <VListItemTitle class="text-body-1">{{ item.titulo }}</VListItemTitle>
+        </VListItem>
+      </VList>
     </template>
 
     <!-- No se encontró nada -->
@@ -135,7 +129,7 @@ const itemsFiltradas = computed(() => {
     <!-- Resultado de búsqueda -->
     <template #searchResult="{ item }">
       <VListItem
-        class="app-bar-search-suggestion"
+        class="item-hover"
         @click="navegarHaciaRuta(item)"
       >
         <template #prepend>
@@ -185,5 +179,11 @@ const itemsFiltradas = computed(() => {
   &:hover {
     background-color: rgba(var(--v-theme-on-surface), 0.04);
   }
+}
+.item-hover:focus{
+  background-color: rgba(var(--v-theme-primary), 0.5);;
+}
+.item-hover:hover{
+  background-color: rgba(var(--v-theme-primary), 0.5);;
 }
 </style>

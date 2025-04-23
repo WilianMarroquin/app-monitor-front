@@ -44,7 +44,7 @@ const puedeMostrarDatos = computed(() => {
 </script>
 
 <template>
-  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
+  <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
     <h1 v-text="'Visualizar Rol'"/>
     <VBtn
       class="ml-auto"

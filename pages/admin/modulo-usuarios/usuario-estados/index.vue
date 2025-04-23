@@ -21,6 +21,7 @@ const headers = [
   {
     title: 'Acciones',
     key: 'Acciones',
+    sortable: false,
   },
 ]
 
