@@ -5,7 +5,7 @@ const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
 </script>
 
 <template>
-  <Perfil
+  <PerfilUsuario
     v-if="usuarioAutenticado?.id"
     :id="usuarioAutenticado?.id"
   />

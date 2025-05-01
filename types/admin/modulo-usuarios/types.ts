@@ -21,6 +21,7 @@ export interface UsuarioInterface {
   usuario: string | null
   email: string | null
   avatar: string | null
+  estado: UserEstadoInterface
   avatar_thumb24: string | null
   roles?: RolInterface[] | null
   permisos?: PermisoInterface[] | null
@@ -29,5 +30,6 @@ export interface UsuarioInterface {
 }
 
 export interface UserEstadoInterface {
+  id?: number
   nombre: string
 }

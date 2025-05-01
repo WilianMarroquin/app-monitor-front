@@ -18,7 +18,6 @@ const { post } = useClienteRequest()
 const { refreshIdentity } = useSanctumAuth()
 
 const usuario = ref<UsuarioInterface>(props.userData ?? null)
-const isUserInfoEditDialogVisible = ref(false)
 const input = ref(null)
 const fotoTemporal = ref<File | null>(null)
 
@@ -155,7 +154,7 @@ const fotoTemporalBlob = computed(() => {
                 <span class="font-weight-medium">
                   Estado:
                 </span>
-                <span class="text-body-1 text-capitalize">{{ usuario.estado }}</span>
+                <span class="text-body-1 text-capitalize">{{ usuario.estado?.nombre }}</span>
               </VListItemTitle>
             </VListItem>
 
