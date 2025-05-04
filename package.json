@@ -1,5 +1,5 @@
 {
-  "name": "materialize-nuxtjs-admin-template",
+  "name": "sysbase",
   "version": "1.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,8 @@
     "postinstall": "nuxt prepare && npm run build:icons ",
     "generate": "nuxt generate",
     "generarCrud": "node commands/GeneradorCrud.js",
-    "generarCrudV2": "node commands/GeneradorCrudv2.js"
+    "generarCrudV2": "node commands/GeneradorCrudv2.js",
+    "crud:v3": "tsx commands/GeneradorCrudV3.ts"
   },
   "dependencies": {
     "@casl/ability": "6.7.2",
