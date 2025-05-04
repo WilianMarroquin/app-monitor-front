@@ -3,11 +3,11 @@ import Fields from '@/views/pages/{{ modelPlural }}/fields.vue'
 import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'crear {{ modelPlural }}', // Acción requerida
-//   subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// })
+definePageMeta({
+  middleware: 'permissions',
+  action: 'Crear {{ modeloTitleCase }}',
+  subject: '{{ model }}',
+})
 
 const { post } = useClienteRequest()
 const { success } = useToast()
@@ -36,19 +36,16 @@ const guardar{{ model }} = async ({{ model }}: {{ model }}Interface): Promise<vo
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/{{ directory }}/"
+      to="/{{ directory }}"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
     </VBtn>
-
   </div>
 
   <VCard>
     <VCardText>
-      <Fields :fields="fields"
-              @emitirDatos="guardar{{ model }}"
-      />
+      <Fields @emitir-datos="guardar{{ model }}" />
     </VCardText>
   </VCard>
 </template>

@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { can } from '@layouts/plugins/casl'
 import { manejaError } from '@/utils/funcionesComunes'
-//definePageMeta({
-//  middleware: 'permissions',
-//  action: 'listar {{ modelPlural }}', // Acción requerida
-//  subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-//});
 
+definePageMeta({
+  middleware: 'permissions',
+  action: 'Listar {{ modeloTitleCase }}',
+  subject: '{{ model }}',
+})
+
+const { can } = useAbility()
 const { del } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
 const dataTable = ref<any>(null)
@@ -18,7 +19,7 @@ const deleteItem = async (id: number) => {
   if (!confirm)
     return
   try {
-    const respuesta = await deleted(`{{ url }}/${id}`)
+    const respuesta = await del(`{{ url }}/${id}`)
 
     success(respuesta.message)
     if (dataTable.value)
@@ -32,9 +33,9 @@ const deleteItem = async (id: number) => {
 
 <template>
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
-    <h1 v-text="'Listado de {{ modelPlural }}'"/>
+    <h1 v-text="'Listado de {{ modeloTitleCase }}'"/>
     <VBtn
-      v-if="can('crear {{ modelPlural }}', '{{ modelPlural }}')"
+      v-if="can('Crear {{ modeloTitleCase }}', '{{ model }}')"
       class="ml-auto"
       color="success"
       to="/{{ directory }}/create"
@@ -44,16 +45,16 @@ const deleteItem = async (id: number) => {
     </VBtn>
   </div>
   <DataTableComponent
+    ref="dataTable"
     :columnas="headers"
     endpoint="{{ url }}"
-    :cantidadPorPagina="10"
-    :cantidadPorPaginaOpciones="[10, 20, 30]"
+    :cantidad-por-pagina="10"
+    :cantidad-por-pagina-opciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
-    ref="dataTable"
   >
     <template #item.Acciones="{ item }">
       <VBtn
-        v-if="can('ver {{ modelPlural }}', '{{ modelPlural }}')"
+        v-if="can('Ver {{ modeloTitleCase }}', '{{ model }}')"
         icon="ri-eye-line"
         variant="tonal"
         color="info"
@@ -61,7 +62,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('editar {{ modelPlural }}', '{{ modelPlural }}')"
+        v-if="can('Editar {{ modeloTitleCase }}', '{{ model }}')"
         icon="ri-edit-box-line"
         variant="tonal"
         color="warning"
@@ -69,7 +70,7 @@ const deleteItem = async (id: number) => {
         class="mr-1"
       />
       <VBtn
-        v-if="can('eliminar {{ modelPlural }}', '{{ modelPlural }}')"
+        v-if="can('Eliminar {{ modeloTitleCase }}', '{{ model }}')"
         icon="ri-delete-bin-line"
         variant="tonal"
         color="error"

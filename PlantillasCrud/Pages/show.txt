@@ -2,34 +2,35 @@
 import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'ver {{ modelPlural }}',
-//   subject: '{{ modelPlural }}',
-// })
+definePageMeta({
+  middleware: 'permissions',
+  action: 'Ver {{ modeloTitleCase }}',
+  subject: '{{ model }}',
+})
 
 const { get } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()
 
 const route = useRoute()
 const id = route.params.id
-const item = ref(<{{ model }}Interface>
+const item = ref<{{ model }}Interface>(
 {{ camposFormCreate }}
 )
 
 const get{{ model }} = async () => {
   try {
     paginaEspera.value = true
-    const respuesta: { data: {{ model }}Interface } = await get('{{ url }}/' + id )
+    const respuesta: { data: {{ model }}Interface } = await get(`{{ url }}/${id}/`)
     item.value = respuesta.data
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
   }
   finally {
-      paginaEspera.value = false
-    }
+    paginaEspera.value = false
+  }
 }
+
 get{{ model }}()
 
 const puedeMostrarDatos = computed(() => {
@@ -43,7 +44,7 @@ const puedeMostrarDatos = computed(() => {
     <VBtn
       class="ml-auto"
       color="secondary"
-      to="/{{ directory }}/"
+      to="/{{ directory }}"
     >
       <VIcon class="mr-2 ri-contract-left-fill"/>
       Regresar
@@ -52,7 +53,10 @@ const puedeMostrarDatos = computed(() => {
 
   <VCard>
     <VCardText>
-      <VList class="card-list mt-2" v-if="puedeMostrarDatos">
+      <VList
+        v-if="puedeMostrarDatos"
+        class="card-list mt-2"
+      >
   {{ camposForm }}
       </VList>
     </VCardText>

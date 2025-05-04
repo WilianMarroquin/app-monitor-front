@@ -9,3 +9,4 @@ const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
     <h2>Bienvenido, {{ usuarioAutenticado?.primer_nombre }} {{ usuarioAutenticado?.primer_apellido }}</h2>
   </div>
 </template>
+

@@ -1,61 +1,61 @@
 <script setup lang="ts">
-import fields from '@/views/pages/{{ modelPlural }}/fields.vue'
-import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types';
+import Fields from '@/views/pages/{{ modelPlural }}/fields.vue'
+import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
-// definePageMeta({
-//   middleware: 'permissions',
-//   action: 'editar {{ modelPlural }}', // Acción requerida
-//   subject: '{{ modelPlural }}',  // Sujeto requerido (esto puede ser el nombre de un recurso o algo más específico)
-// });
+definePageMeta({
+  middleware: 'permissions',
+  action: 'Editar {{ modeloTitleCase }}',
+  subject: '{{ model }}',
+})
 
-const { put, get } = useClienteRequest();
-const { success } = useToast();
-const { paginaEspera } = useCargandoPagina();
+const { put, get } = useClienteRequest()
+const { success } = useToast()
+const { paginaEspera } = useCargandoPagina()
 
-const route = useRoute();
-const id = route.params.id;
+const route = useRoute()
+const id = route.params.id
 
 const actualizar{{ model }} = async ({{ model }}: {{ model }}Interface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta = await put('{{ url }}/' + id, {{ model }});
+    const respuesta = await put(`{{ url }}/${id}/`, {{ model }})
 
-    success(respuesta.message);
-    navigateTo('/{{ directory }}');
+    success(respuesta.message)
+    navigateTo('/{{ directory }}')
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
   }
   finally {
-    paginaEspera.value = false;
+    paginaEspera.value = false
   }
 }
 
-const item{{ model }} = ref(<{{ model }}Interface>
+const item{{ model }} = ref<{{ model }}Interface>(
 {{ camposFormCreate }}
 )
 
 const get{{ model }} = async () => {
-  paginaEspera.value = true;
+  paginaEspera.value = true
   try {
-    const respuesta: {data: {{ model }}Interface } = await get(`{{ url }}/${id}/`);
-    item{{ model }}.value = respuesta.data;
+    const respuesta: {data: {{ model }}Interface } = await get(`{{ url }}/${id}/`)
+    item{{ model }}.value = respuesta.data
 
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)
   }
   finally {
-      paginaEspera.value = false
+    paginaEspera.value = false
   }
 }
 
-get{{ model }}();
+get{{ model }}()
 
 const puedeMostrarDatos = computed(() => {
-  return Object.values(item{{ model }} .value).some(valor => valor !== null && valor !== undefined);
-});
+  return Object.values(item{{ model }} .value).some(valor => valor !== null && valor !== undefined)
+})
 </script>
 
 <template>
@@ -74,19 +74,14 @@ const puedeMostrarDatos = computed(() => {
   </div>
 
   <VCard>
-
-      <VCardText>
-
-        <fields :fields="fields"
-                v-if="puedeMostrarDatos"
-                :item="item{{ model }}"
-                @emitirDatos="actualizar{{ model }}"
-        />
-
-      </VCardText>
-
+    <VCardText>
+      <Fields
+        v-if="puedeMostrarDatos"
+        :item="item{{ model }}"
+        @emitir-datos="actualizar{{ model }}"
+      />
+    </VCardText>
   </VCard>
-
 </template>
 
 <style scoped lang="scss">

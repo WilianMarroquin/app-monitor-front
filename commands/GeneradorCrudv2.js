@@ -87,6 +87,7 @@ const askQuestions = async () => {
 
         const listTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'index.txt'), 'utf-8')
             .replace(/{{ modelPlural }}/g, modelPlurar)
+            .replace(/{{ modeloTitleCase }}/g, formatearTitleCase(modelPlurar))
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ headers }}/g, columnasJSON)
             .replace(/{{ url }}/g, url)
@@ -103,6 +104,7 @@ const askQuestions = async () => {
 
         const createTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'create.txt'), 'utf-8')
             .replace(/{{ modelPlural }}/g, modelPlurar)
+            .replace(/{{ modeloTitleCase }}/g, formatearTitleCase(modelPlurar))
             .replace(/{{ model }}/g, modelo)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
             .replace(/{{ url }}/g, url)
@@ -114,6 +116,7 @@ const askQuestions = async () => {
 
         const editTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'edit.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
+            .replace(/{{ modeloTitleCase }}/g, formatearTitleCase(modelPlurar))
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ url }}/g, url)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
@@ -123,6 +126,7 @@ const askQuestions = async () => {
 
         const showTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'show.txt'), 'utf-8')
             .replace(/{{ model }}/g, modelo)
+            .replace(/{{ modeloTitleCase }}/g, formatearTitleCase(modelPlurar))
             .replace(/{{ modelPlural }}/g, modelPlurar)
             .replace(/{{ camposFormCreate }}/g, camposFormCreate)
             .replace(/{{ fields }}/g, columnasJSON)
@@ -231,7 +235,6 @@ const formatoHtmlInputsFormulario = (campos) => {
     return inputs.join('');
 };
 
-
 const formatoShowInputs = (campos) => {
 
     let obj = Object.keys(campos);
@@ -253,5 +256,13 @@ const formatoShowInputs = (campos) => {
 
     return camposInterfaz.join('');
 };
+
+function formatearTitleCase(texto) {
+    return texto
+        .toLowerCase()
+        .split(' ')
+        .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+        .join(' ');
+}
 
 askQuestions();
