@@ -3,16 +3,12 @@ import path from 'node:path'
 import readline from 'node:readline'
 import chalk from 'chalk'
 import clipboardy from 'clipboardy'
+import { traducirTipoATipoTypeScript } from '@/utils/funcionesPocoComunes'
 
 interface DatosBackend {
   Modelo: string
   Ruta: string
-  columnas: Record<string, unknown>
-}
-
-interface ColumnaTabla {
-  title: string
-  value: string
+  columnas: Record<string, string>
 }
 
 const __dirname = path.resolve()
@@ -50,11 +46,20 @@ function formatearLabel(campo: string): string {
 }
 
 function convertirATitleCase(texto: string): string {
-  return texto
-    .toLowerCase()
-    .split(' ')
-    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
-    .join(' ')
+  const palabras = texto
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .split(/[\s/_-]+/)
+
+  if (palabras.length === 0)
+    return texto
+
+  const ultima = palabras[palabras.length - 1]
+
+  palabras[palabras.length - 1] = pluralizar(ultima)
+
+  return palabras.map(word =>
+    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+  ).join(' ')
 }
 
 function generarEstadoInicial(campos: string[]): string {
@@ -65,11 +70,15 @@ function generarEstadoInicial(campos: string[]): string {
   return `{ ${Object.entries(estado).map(([k, v]) => `${k}: ${v}`).join(',\n')} }`
 }
 
-function generarColumnas(campos: string[]): ColumnaTabla[] {
-  return campos.map(campo => ({
+function generarColumnasCodigo(campos: string[]): string {
+  const columnas = campos.map(campo => ({
     title: formatearLabel(campo),
-    value: campo,
+    key: campo,
   }))
+
+  return `[\n${columnas.map(col => {
+    return `  {\n    title: '${col.title}',\n    key: '${col.key}',\n  }`
+  }).join(',\n')}\n]`
 }
 
 function generarInputsHTML(campos: string[]): string {
@@ -119,6 +128,16 @@ async function preguntarUrlPersonalizada(): Promise<string> {
   })
 }
 
+function generarInterfazTypeScript(nombre: string, campos: Record<string, string>): string {
+  const propiedades = Object.entries(campos).map(([campo, tipo]) => {
+    const tsTipo = traducirTipoATipoTypeScript(tipo)
+
+    return `  ${campo}: ${tsTipo}`
+  }).join('\n')
+
+  return `export interface ${nombre} {\n${propiedades}\n}`
+}
+
 async function ejecutarGenerador(): Promise<void> {
   try {
     const directorioPersonalizado = await preguntarDirectorioPersonalizado()
@@ -145,23 +164,22 @@ async function ejecutarGenerador(): Promise<void> {
         fs.mkdirSync(dir, { recursive: true })
     }
 
-    const columnasJSON = JSON.stringify(generarColumnas([...campos, 'Acciones']), null, 2)
+    const columnasJS = generarColumnasCodigo([...campos, 'Acciones']);
     const estadoFormulario = generarEstadoInicial(campos)
     const inputsFormulario = generarInputsHTML(campos)
     const camposVista = generarCamposVista(campos)
 
     const reemplazos: Record<string, string> = {
       '{{ modelPlural }}': modeloPlural,
-      '{{ modeloTitleCase }}': convertirATitleCase(modeloPlural),
+      '{{ modeloTitleCase }}': convertirATitleCase(modelo),
       '{{ model }}': modelo,
-      '{{ headers }}': columnasJSON,
+      '{{ headers }}': columnasJS,
       '{{ camposFormCreate }}': estadoFormulario,
       '{{ url }}': ruta,
       '{{ directory }}': directorio,
       '{{ inputsFormulario }}': inputsFormulario,
-      '{{ fields }}': columnasJSON,
       '{{ camposForm }}': camposVista,
-      '{{ fieldsInterfaz }}': JSON.stringify(datos.columnas, null, 2),
+      '{{ fieldsInterfaz }}': generarInterfazTypeScript(`${modelo}Interface`, datos.columnas),
     }
 
     const generarArchivo = (rutaPlantilla: string, destino: string) => {
