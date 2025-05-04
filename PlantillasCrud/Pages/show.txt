@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
+import type { {{ model }}Interface } from '@/types/{{ directory }}/types'
 import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 

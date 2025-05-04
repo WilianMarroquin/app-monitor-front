@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Fields from '@/views/pages/{{ modelPlural }}/fields.vue'
-import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
+import Fields from '@/views/pages/{{ directory }}/fields.vue'
+import type { {{ model }}Interface } from '@/types/{{ directory }}/types'
 import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseInterface } from '@/types/generales/types'
 

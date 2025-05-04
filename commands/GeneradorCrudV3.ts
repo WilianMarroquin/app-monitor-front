@@ -1,268 +1,197 @@
-import fs from 'fs'
-import path from 'path'
-import readline from 'readline'
+import fs from 'node:fs'
+import path from 'node:path'
+import readline from 'node:readline'
 import chalk from 'chalk'
 import clipboardy from 'clipboardy'
 
+interface DatosBackend {
+  Modelo: string
+  Ruta: string
+  columnas: Record<string, unknown>
+}
+
+interface ColumnaTabla {
+  title: string
+  value: string
+}
+
 const __dirname = path.resolve()
 
-const rl = readline.createInterface({
+const lector = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 })
 
-const formatoCamposFormCreate = (campos) => {
-
-  let state = {}
-
-  campos.forEach(campo => {
-    state[campo] = null
-  })
-
-  const stateText = `{ ${Object.entries(state).map(([key, value]) => `${key}: ${value}`).join(',\n')} }`
-
-  return stateText
-
-}
-
-const formatearCamposTable = (campos) => {
-
-  return campos.map(campo => {
-    return {
-      title: formatearCampoLabel(campo),
-      value: campo,
-    }
-  })
-}
-
-const askQuestions = async () => {
-  try {
-
-    let datosBackend = clipboardy.readSync() // Leer del portapapeles
-
-    datosBackend = datosBackend.replace(/\u0000/g, "").trim()
-
-    const datosJSON = JSON.parse(datosBackend)
-
-    if( !datosJSON ) {
-
-      throw new Error('El contenido del portapapeles no es un JSON válido')
-
-    }
-
-    const modelo = datosJSON.Modelo
-    const url = datosJSON.Ruta
-    const camposInput = Object.keys(datosJSON.columnas)
-
-    const campos = camposInput.filter(campo => campo !== '')
-
-    const modeloMinusculas = modelo.toLowerCase()
-
-    const directory = `./pages/${pluralizar(modeloMinusculas)}`
-
-    const directoryViews = `./views/pages/${pluralizar(modeloMinusculas)}`
-
-    const directoryTypes = `./types/${pluralizar(modeloMinusculas)}`
-
-    if (!fs.existsSync(directory)) {
-      fs.mkdirSync(directory, {recursive: true})
-    }
-
-    if (!fs.existsSync(directoryViews)) {
-      fs.mkdirSync(directoryViews, {recursive: true})
-    }
-
-    if (!fs.existsSync(directoryTypes)) {
-      fs.mkdirSync(directoryTypes, {recursive: true})
-    }
-
-    const columnas = formatearCamposTable([...campos, 'Acciones'])
-    const columnasJSON = JSON.stringify(columnas, null, 2)
-
-
-    const camposFormCreate = formatoCamposFormCreate(campos)
-
-
-    const modelPlurar = pluralizar(modeloMinusculas)
-
-    const listTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'index.txt'), 'utf-8')
-      .replace(/{{ modelPlural }}/g, modelPlurar)
-      .replace(/{{ modeloTitleCase }}/g, formatearTitleCase(modelPlurar))
-      .replace(/{{ model }}/g, modelo)
-      .replace(/{{ headers }}/g, columnasJSON)
-      .replace(/{{ url }}/g, url)
-      .replace(/{{ directory }}/g, directory.split('pages/')[1])
-
-    const inputsFormulario = formatoHtmlInputsFormulario(campos)
-
-    const Viewfields = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Views', 'fields.txt'), 'utf-8')
-      .replace(/{{ model }}/g, modelo)
-      .replace(/{{ modelPlural }}/g, modelPlurar)
-      .replace(/{{ camposFormCreate }}/g, camposFormCreate)
-      .replace(/{{ directory }}/g, directory.split('pages/')[1])
-      .replace(/{{ inputsFormulario }}/g, inputsFormulario)
-
-    const createTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'create.txt'), 'utf-8')
-      .replace(/{{ modelPlural }}/g, modelPlurar)
-      .replace(/{{ modeloTitleCase }}/g, formatearTitleCase(modelPlurar))
-      .replace(/{{ model }}/g, modelo)
-      .replace(/{{ camposFormCreate }}/g, camposFormCreate)
-      .replace(/{{ url }}/g, url)
-      .replace(/{{ directory }}/g, directory.split('pages/')[1])
-
-    const interfazTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Types', 'types.txt'), 'utf-8')
-      .replace(/{{ model }}/g, modelo)
-      .replace(/{{ fieldsInterfaz }}/g, JSON.stringify(datosJSON.columnas, null, 2))
-
-    const editTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'edit.txt'), 'utf-8')
-      .replace(/{{ model }}/g, modelo)
-      .replace(/{{ modeloTitleCase }}/g, formatearTitleCase(modelPlurar))
-      .replace(/{{ modelPlural }}/g, modelPlurar)
-      .replace(/{{ url }}/g, url)
-      .replace(/{{ camposFormCreate }}/g, camposFormCreate)
-      .replace(/{{ directory }}/g, directory.split('pages/')[1])
-
-    const camposFormShow = formatoShowInputs(campos)
-
-    const showTemplate = fs.readFileSync(path.join(__dirname + '/PlantillasCrud/', 'Pages', 'show.txt'), 'utf-8')
-      .replace(/{{ model }}/g, modelo)
-      .replace(/{{ modeloTitleCase }}/g, formatearTitleCase(modelPlurar))
-      .replace(/{{ modelPlural }}/g, modelPlurar)
-      .replace(/{{ camposFormCreate }}/g, camposFormCreate)
-      .replace(/{{ fields }}/g, columnasJSON)
-      .replace(/{{ directory }}/g, directory.split('pages/')[1])
-      .replace(/{{ url }}/g, url)
-      .replace(/{{ camposForm }}/g, camposFormShow)
-
-    fs.writeFileSync(path.join(directory, 'index.vue'), listTemplate)
-
-    fs.writeFileSync(path.join(directory, 'create.vue'), createTemplate)
-
-    fs.writeFileSync(path.join(directoryViews, 'fields.vue'), Viewfields)
-
-    fs.writeFileSync(path.join(directoryTypes, 'types.ts'), interfazTemplate)
-
-    const editDir = path.join(directory, 'edit')
-    if (!fs.existsSync(editDir)) {
-      fs.mkdirSync(editDir, {recursive: true})
-    }
-    fs.writeFileSync(path.join(editDir, '[id].vue'), editTemplate)
-
-
-    const showDir = path.join(directory, 'show')
-    if (!fs.existsSync(showDir)) {
-      fs.mkdirSync(showDir, {recursive: true})
-    }
-    fs.writeFileSync(path.join(showDir, '[id].vue'), showTemplate)
-
-    console.log(chalk.greenBright('\n✅ Archivos generados correctamente:\n'))
-
-    console.log(chalk.blue('📂 Páginas:'))
-    console.log(chalk.cyanBright('  └── 📌 ' + directory))
-    console.log(chalk.cyan('       ├── 📄 index.vue'))
-    console.log(chalk.magentaBright('       ├── 📄 create.vue'))
-    console.log(chalk.yellowBright('       ├── 📄 edit/[id].vue'))
-    console.log(chalk.greenBright('       └── 📄️ show/[id].vue'))
-
-    console.log(chalk.blue('📂 Interfaces:'))
-    console.log(chalk.cyanBright('    └── 📌 ' + directoryTypes))
-    console.log(chalk.cyan('        └── 📄 types.ts'))
-
-    console.log(chalk.blue('📂 Vistas:'))
-    console.log(chalk.cyanBright('    └── 📌 ' + directoryViews))
-    console.log(chalk.cyan('        └── 📄 fields.vue'))
-
-    console.log(chalk.greenBright('\n ¡Generación de CRUD completada!\n'))
-
-
-  } catch (error) {
-    console.error(`Error: ${error.message}`)
-  } finally {
-    rl.close()
-  }
-}
-
-function pluralizar(palabra) {
-  if (!palabra) return ""
-
+function pluralizar(palabra: string): string {
+  if (!palabra)
+    return ''
   const vocales = ['a', 'e', 'i', 'o', 'u']
-  const ultimaLetra = palabra.slice(-1).toLowerCase()
-  const penultimaLetra = palabra.slice(-2, -1).toLowerCase()
+  const ultima = palabra.slice(-1).toLowerCase()
+  const penultima = palabra.slice(-2, -1).toLowerCase()
 
-  if (vocales.includes(ultimaLetra)) {
-    return palabra + 's'
-  } else if (ultimaLetra === 'z') {
-    return palabra.slice(0, -1) + 'ces'
-  } else if (ultimaLetra === 'n' || ultimaLetra === 'r') {
-    return palabra + 'es'
-  } else if (ultimaLetra === 'l' && penultimaLetra === 'e') {
-    return palabra + 'es'
-  } else {
-    return palabra + 'es'
-  }
+  if (vocales.includes(ultima))
+    return `${palabra}s`
+  if (ultima === 'z')
+    return `${palabra.slice(0, -1)}ces`
+  if (ultima === 'n' || ultima === 'r')
+    return `${palabra}es`
+  if (ultima === 'l' && penultima === 'e')
+    return `${palabra}es`
+
+  return `${palabra}es`
 }
 
-function formatearCampoLabel(str) {
-
-  return str
+function formatearLabel(campo: string): string {
+  return campo
     .split('_')
-    .filter(word => word.toLowerCase() !== 'id')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .filter(p => p.toLowerCase() !== 'id')
+    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
     .join(' ')
-
 }
 
-const formatoHtmlInputsFormulario = (campos) => {
-  let obj = Object.keys(campos)
-
-  let inputs = []
-
-  obj.forEach(key => {
-    inputs.push(`
-            <VCol cols="12" md="6">
-                <VTextField
-                    :id="useId()"
-                    v-model="data.${campos[key]}"
-                    :rules="[requiredValidator]"
-                    label="${formatearCampoLabel(campos[key])}"
-                    placeholder="Ingrese ${formatearCampoLabel(campos[key])}"
-                    required
-                />
-            </VCol>
-        `)
-  })
-
-  return inputs.join('')
-}
-
-const formatoShowInputs = (campos) => {
-
-  let obj = Object.keys(campos)
-
-  let camposInterfaz = []
-
-  obj.forEach(key => {
-    camposInterfaz.push(`
-              <VListItemTitle>
-                <h6 class="text-h6">
-                    ${formatearCampoLabel(campos[key])}:
-                  <div class="d-inline-block text-capitalize text-body-1">
-                    {{ item.${campos[key]} }}
-                  </div>
-                </h6>
-              </VListItemTitle>
-            `)
-  })
-
-  return camposInterfaz.join('')
-}
-
-function formatearTitleCase(texto) {
+function convertirATitleCase(texto: string): string {
   return texto
     .toLowerCase()
     .split(' ')
-    .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
     .join(' ')
 }
 
-askQuestions()
+function generarEstadoInicial(campos: string[]): string {
+  const estado: Record<string, null> = {}
+
+  campos.forEach(campo => (estado[campo] = null))
+
+  return `{ ${Object.entries(estado).map(([k, v]) => `${k}: ${v}`).join(',\n')} }`
+}
+
+function generarColumnas(campos: string[]): ColumnaTabla[] {
+  return campos.map(campo => ({
+    title: formatearLabel(campo),
+    value: campo,
+  }))
+}
+
+function generarInputsHTML(campos: string[]): string {
+  return campos.map(campo => `
+    <VCol cols="12" md="6">
+      <VTextField
+        :id="useId()"
+        v-model="data.${campo}"
+        :rules="[requiredValidator]"
+        label="${formatearLabel(campo)}"
+        placeholder="Ingrese ${formatearLabel(campo)}"
+        required
+      />
+    </VCol>
+  `).join('')
+}
+
+function generarCamposVista(campos: string[]): string {
+  return campos.map(campo => `
+    <VListItemTitle>
+      <h6 class="text-h6">
+        ${formatearLabel(campo)}:
+        <div class="d-inline-block text-capitalize text-body-1">
+          {{ item.${campo} }}
+        </div>
+      </h6>
+    </VListItemTitle>
+  `).join('')
+}
+
+function leerPlantilla(ruta: string): string {
+  return fs.readFileSync(path.join(__dirname, 'PlantillasCrud', ...ruta.split('/')), 'utf-8')
+}
+
+async function preguntarRutaPersonalizada(): Promise<string> {
+  return new Promise(resolve => {
+    lector.question('¿Desea generar el CRUD en una ruta específica? (ej: /admin/usuarios) (ENTER para usar ruta por defecto): ', respuesta => {
+      resolve(respuesta.trim())
+    })
+  })
+}
+
+async function ejecutarGenerador(): Promise<void> {
+  try {
+    const rutaPersonalizada = await preguntarRutaPersonalizada()
+    const textoPortapapeles = clipboardy.readSync().replace(/\u0000/g, '').trim()
+    const datos: DatosBackend = JSON.parse(textoPortapapeles)
+
+    if (!datos || !datos.Modelo || !datos.Ruta || !datos.columnas)
+      throw new Error('El contenido del portapapeles no es un JSON válido o está incompleto.')
+
+    const modelo = datos.Modelo
+    const ruta = datos.Ruta
+    const campos = Object.keys(datos.columnas).filter(Boolean)
+
+    const modeloPlural = pluralizar(modelo.toLowerCase())
+    const directorio = rutaPersonalizada !== '' ? rutaPersonalizada.replace(/^\/|\/$/g, '') : modeloPlural
+
+    const dirPaginas = `./pages/${directorio}`
+    const dirVistas = `./views/pages/${directorio}`
+    const dirTipos = `./types/${directorio}`
+
+    for (const dir of [dirPaginas, dirVistas, dirTipos]) {
+      if (!fs.existsSync(dir))
+        fs.mkdirSync(dir, { recursive: true })
+    }
+
+    const columnasJSON = JSON.stringify(generarColumnas([...campos, 'Acciones']), null, 2)
+    const estadoFormulario = generarEstadoInicial(campos)
+    const inputsFormulario = generarInputsHTML(campos)
+    const camposVista = generarCamposVista(campos)
+
+    const reemplazos: Record<string, string> = {
+      '{{ modelPlural }}': modeloPlural,
+      '{{ modeloTitleCase }}': convertirATitleCase(modeloPlural),
+      '{{ model }}': modelo,
+      '{{ headers }}': columnasJSON,
+      '{{ camposFormCreate }}': estadoFormulario,
+      '{{ url }}': ruta,
+      '{{ directory }}': directorio,
+      '{{ inputsFormulario }}': inputsFormulario,
+      '{{ fields }}': columnasJSON,
+      '{{ camposForm }}': camposVista,
+      '{{ fieldsInterfaz }}': JSON.stringify(datos.columnas, null, 2),
+    }
+
+    const generarArchivo = (rutaPlantilla: string, destino: string) => {
+      let contenido = leerPlantilla(rutaPlantilla)
+      for (const clave in reemplazos)
+        contenido = contenido.replace(new RegExp(clave, 'g'), reemplazos[clave])
+
+      fs.writeFileSync(destino, contenido)
+    }
+
+    const rutaEdit = path.join(dirPaginas, 'edit')
+    const rutaShow = path.join(dirPaginas, 'show')
+
+    if (!fs.existsSync(rutaEdit))
+      fs.mkdirSync(rutaEdit, { recursive: true })
+    if (!fs.existsSync(rutaShow))
+      fs.mkdirSync(rutaShow, { recursive: true })
+
+    generarArchivo('Pages/index.txt', path.join(dirPaginas, 'index.vue'))
+    generarArchivo('Pages/create.txt', path.join(dirPaginas, 'create.vue'))
+    generarArchivo('Pages/edit.txt', path.join(rutaEdit, '[id].vue'))
+    generarArchivo('Pages/show.txt', path.join(rutaShow, '[id].vue'))
+    generarArchivo('Views/fields.txt', path.join(dirVistas, 'fields.vue'))
+    generarArchivo('Types/types.txt', path.join(dirTipos, 'types.ts'))
+
+    console.log(chalk.greenBright('\n✅ Archivos generados correctamente:\n'))
+    console.log(chalk.blue(`📂 ${dirPaginas}`))
+    console.log(chalk.cyan(' ├─ index.vue\n ├─ create.vue\n ├─ edit/[id].vue\n └─ show/[id].vue'))
+    console.log(chalk.blue(`📂 ${dirVistas}\n └─ fields.vue`))
+    console.log(chalk.blue(`📂 ${dirTipos}\n └─ types.ts`))
+    console.log(chalk.greenBright('\n ¡Generación de CRUD completada!\n'))
+  }
+  catch (error: any) {
+    console.error(chalk.red(`\n❌ Error: ${error.message}\n`))
+  }
+  finally {
+    lector.close()
+  }
+}
+
+ejecutarGenerador()
