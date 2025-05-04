@@ -104,9 +104,16 @@ function leerPlantilla(ruta: string): string {
   return fs.readFileSync(path.join(__dirname, 'PlantillasCrud', ...ruta.split('/')), 'utf-8')
 }
 
-async function preguntarRutaPersonalizada(): Promise<string> {
+async function preguntarDirectorioPersonalizado(): Promise<string> {
   return new Promise(resolve => {
     lector.question('¿Desea generar el CRUD en una ruta específica? (ej: /admin/usuarios) (ENTER para usar ruta por defecto): ', respuesta => {
+      resolve(respuesta.trim())
+    })
+  })
+}
+async function preguntarUrlPersonalizada(): Promise<string> {
+  return new Promise(resolve => {
+    lector.question('¿Desea agregar una URL específica? (ej: /api/ejemplo/usuarios) (ENTER para usar url por defecto): ', respuesta => {
       resolve(respuesta.trim())
     })
   })
@@ -114,7 +121,8 @@ async function preguntarRutaPersonalizada(): Promise<string> {
 
 async function ejecutarGenerador(): Promise<void> {
   try {
-    const rutaPersonalizada = await preguntarRutaPersonalizada()
+    const directorioPersonalizado = await preguntarDirectorioPersonalizado()
+    const urlPersonalizada = await preguntarUrlPersonalizada()
     const textoPortapapeles = clipboardy.readSync().replace(/\u0000/g, '').trim()
     const datos: DatosBackend = JSON.parse(textoPortapapeles)
 
@@ -122,11 +130,11 @@ async function ejecutarGenerador(): Promise<void> {
       throw new Error('El contenido del portapapeles no es un JSON válido o está incompleto.')
 
     const modelo = datos.Modelo
-    const ruta = datos.Ruta
+    const ruta = urlPersonalizada || datos.Ruta
     const campos = Object.keys(datos.columnas).filter(Boolean)
 
     const modeloPlural = pluralizar(modelo.toLowerCase())
-    const directorio = rutaPersonalizada !== '' ? rutaPersonalizada.replace(/^\/|\/$/g, '') : modeloPlural
+    const directorio = directorioPersonalizado !== '' ? directorioPersonalizado.replace(/^\/|\/$/g, '') : modeloPlural
 
     const dirPaginas = `./pages/${directorio}`
     const dirVistas = `./views/pages/${directorio}`
