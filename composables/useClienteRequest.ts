@@ -74,6 +74,14 @@ export const useClienteRequest = () => {
     if (process.server && event?.node?.req?.headers?.cookie) {
       opts.headers.cookie = event.node.req.headers.cookie
     }
+
+    // 👉 Agrega el XSRF-TOKEN desde cookie
+    if (process.client) {
+      const token = useCookie('XSRF-TOKEN').value
+      if (token) {
+        opts.headers['X-XSRF-TOKEN'] = decodeURIComponent(token)
+      }
+    }
     try {
       return await $fetch<T>(url, opts)
     }
