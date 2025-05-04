@@ -2,6 +2,7 @@
 import Fields from '@/views/pages/{{ modelPlural }}/fields.vue'
 import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
 import { manejaError } from '@/utils/funcionesComunes'
+import type { SendResponseInterface } from '@/types/generales/types'
 
 definePageMeta({
   middleware: 'permissions',
@@ -19,7 +20,7 @@ const id = route.params.id
 const actualizar{{ model }} = async ({{ model }}: {{ model }}Interface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta = await put(`{{ url }}/${id}/`, {{ model }})
+    const respuesta = await put<SendResponseInterface<{{ model }}Interface>>(`{{ url }}/${id}/`, {{ model }})
 
     success(respuesta.message)
     navigateTo('/{{ directory }}')
@@ -39,9 +40,8 @@ const item{{ model }} = ref<{{ model }}Interface>(
 const get{{ model }} = async () => {
   paginaEspera.value = true
   try {
-    const respuesta: {data: {{ model }}Interface } = await get(`{{ url }}/${id}/`)
+    const respuesta = await get<SendResponseInterface<{{ model }}Interface>>(`{{ url }}/${id}/`)
     item{{ model }}.value = respuesta.data
-
   }
   catch (errorCarpturado: any) {
     manejaError(errorCarpturado)

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { manejaError } from '@/utils/funcionesComunes'
+import type { SendResponseSuccessInterface } from '@/types/generales/types'
 
 definePageMeta({
   middleware: 'permissions',
@@ -19,7 +20,7 @@ const deleteItem = async (id: number) => {
   if (!confirm)
     return
   try {
-    const respuesta = await del(`{{ url }}/${id}`)
+    const respuesta = await del<SendResponseSuccessInterface>(`{{ url }}/${id}`)
 
     success(respuesta.message)
     if (dataTable.value)

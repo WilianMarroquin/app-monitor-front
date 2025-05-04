@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Fields from '@/views/pages/{{ modelPlural }}/fields.vue'
 import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 definePageMeta({
@@ -16,7 +17,7 @@ const { paginaEspera } = useCargandoPagina()
 const guardar{{ model }} = async ({{ model }}: {{ model }}Interface): Promise<void> => {
   paginaEspera.value = true
   try {
-    const respuesta: { message: string } = await post('{{ url }}', {{ model }})
+    const respuesta = await post<SendResponseInterface<{{ model }}Interface>>('{{ url }}', {{ model }})
 
     success(respuesta.message)
     navigateTo('/{{ directory }}')

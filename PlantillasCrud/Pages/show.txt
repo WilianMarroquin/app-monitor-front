@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { {{ model }}Interface } from '@/types/{{ modelPlural }}/types'
+import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 definePageMeta({
@@ -20,7 +21,7 @@ const item = ref<{{ model }}Interface>(
 const get{{ model }} = async () => {
   try {
     paginaEspera.value = true
-    const respuesta: { data: {{ model }}Interface } = await get(`{{ url }}/${id}/`)
+    const respuesta = await get<SendResponseInterface<{{ model }}Interface>>(`{{ url }}/${id}/`)
     item.value = respuesta.data
   }
   catch (errorCarpturado: any) {

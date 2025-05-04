@@ -4,6 +4,11 @@ export interface SendResponseInterface<t> {
   data?: t
 }
 
+export interface SendResponseSuccessInterface {
+  status: number
+  message: string
+}
+
 export interface SendResponseIndexInterface<T> {
   status: number
   message: string
