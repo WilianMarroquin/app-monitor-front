@@ -120,12 +120,20 @@ async function preguntarDirectorioPersonalizado(): Promise<string> {
     })
   })
 }
+
 async function preguntarUrlPersonalizada(): Promise<string> {
   return new Promise(resolve => {
     lector.question('¿Desea agregar una URL específica? (ej: /api/ejemplo/usuarios) (ENTER para usar url por defecto): ', respuesta => {
       resolve(respuesta.trim())
     })
   })
+}
+
+function escribirInterfazEnTypes(ruta: string, interfaz: string): void {
+  if (fs.existsSync(ruta))
+    fs.appendFileSync(ruta, '\n\n' + interfaz)
+  else
+    fs.writeFileSync(ruta, interfaz)
 }
 
 function generarInterfazTypeScript(nombre: string, campos: Record<string, string>): string {
@@ -203,7 +211,11 @@ async function ejecutarGenerador(): Promise<void> {
     generarArchivo('Pages/edit.txt', path.join(rutaEdit, '[id].vue'))
     generarArchivo('Pages/show.txt', path.join(rutaShow, '[id].vue'))
     generarArchivo('Views/fields.txt', path.join(dirVistas, 'fields.vue'))
-    generarArchivo('Types/types.txt', path.join(dirTipos, 'types.ts'))
+
+    const rutaTypes = path.join(dirTipos, 'types.ts')
+    const interfazTS = generarInterfazTypeScript(`${modelo}Interface`, datos.columnas)
+
+    escribirInterfazEnTypes(rutaTypes, interfazTS)
 
     console.log(chalk.greenBright('\n✅ Archivos generados correctamente:\n'))
     console.log(chalk.blue(`📂 ${dirPaginas}`))
