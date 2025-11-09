@@ -135,6 +135,23 @@ function escribirInterfazEnTypes(ruta: string, interfaz: string): void {
     fs.writeFileSync(ruta, interfaz)
 }
 
+function convertirATitleCase(texto: string): string {
+  const palabras = texto
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .split(/[\s/_-]+/)
+
+  if (palabras.length === 0)
+    return texto
+
+  const ultima = palabras[palabras.length - 1]
+
+  palabras[palabras.length - 1] = pluralizar(ultima)
+
+  return palabras.map(word =>
+    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+  ).join(' ')
+}
+
 function generarInterfazTypeScript(nombre: string, campos: Record<string, string>): string {
   const propiedades = Object.entries(campos).map(([campo, tipo]) => {
     const tsTipo = traducirTipoATipoTypeScript(tipo)
@@ -211,7 +228,7 @@ async function ejecutarGenerador(): Promise<void> {
 
     const reemplazos: Record<string, string> = {
       '{{ modelPlural }}': modeloPlural,
-      '{{ nombreModeloPermiso }}': camelCaseAFraseMinusculaConPlural(modelo),
+      '{{ modeloTitleCase }}': convertirATitleCase(modelo),
       '{{ model }}': modelo,
       '{{ headers }}': columnasJS,
       '{{ camposFormCreate }}': estadoFormulario,

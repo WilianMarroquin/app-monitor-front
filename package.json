@@ -10,9 +10,7 @@
     "build:icons": "tsx plugins/iconify/build-icons.ts",
     "postinstall": "nuxt prepare && npm run build:icons ",
     "generate": "nuxt generate",
-    "generarCrud": "node commands/GeneradorCrud.js",
-    "generarCrudV2": "node commands/GeneradorCrudv2.js",
-    "crud:v3": "tsx commands/GeneradorCrudV3.ts"
+    "generar:crud": "tsx commands/GeneradorCrud.ts"
   },
   "dependencies": {
     "@casl/ability": "6.7.2",
@@ -39,6 +37,7 @@
     "cookie-es": "1.2.2",
     "destr": "2.0.3",
     "eslint-plugin-regexp": "2.7.0",
+    "inquirer": "^12.9.6",
     "jwt-decode": "4.0.0",
     "mapbox-gl": "3.5.2",
     "npm": "^11.1.0",
