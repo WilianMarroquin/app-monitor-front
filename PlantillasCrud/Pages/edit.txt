@@ -5,6 +5,7 @@ import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseInterface } from '@/types/generales/types'
 
 definePageMeta({
+  navActiveLink: '{{ navActiveLink }}',
   middleware: 'permissions',
   action: 'Editar {{ modeloTitleCase }}',
   subject: '{{ model }}',

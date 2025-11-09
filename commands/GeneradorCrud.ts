@@ -3,12 +3,16 @@ import path from 'node:path'
 import readline from 'node:readline'
 import chalk from 'chalk'
 import clipboardy from 'clipboardy'
+import inquirer from 'inquirer'
 import { traducirTipoATipoTypeScript } from '@/utils/funcionesPocoComunes'
 
+const propiedadesRequeridas = ['Modelo', 'Ruta', 'Columnas', 'Directorio']
 interface DatosBackend {
   Modelo: string
   Ruta: string
-  columnas: Record<string, string>
+  Columnas: Record<string, string>
+  Directorio: string
+  Api: string
 }
 
 const __dirname = path.resolve()
@@ -45,21 +49,30 @@ function formatearLabel(campo: string): string {
     .join(' ')
 }
 
-function convertirATitleCase(texto: string): string {
-  const palabras = texto
+function camelCaseAFraseMinusculaConPlural(texto: string): string {
+  const palabras: string[] = texto
     .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .split(/[\s/_-]+/)
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+    .split(' ')
+    .map(p => p.toLowerCase())
 
-  if (palabras.length === 0)
-    return texto
+  // Pluralizar la última palabra
+  const ultima: string = palabras.pop() || ''
+  let plural: string = ultima
 
-  const ultima = palabras[palabras.length - 1]
+  if (ultima.endsWith('z'))
+    plural = ultima.slice(0, -1) + 'ces'
+  else if (ultima.endsWith('ión'))
+    plural = ultima.replace(/ión$/, 'iones')
+  else if (ultima.endsWith('s'))
+    plural = ultima
+  else if (/[aeo]$/.test(ultima))
+    plural = ultima + 's'
+  else
+    plural = ultima + 'es'
+  palabras.push(plural)
 
-  palabras[palabras.length - 1] = pluralizar(ultima)
-
-  return palabras.map(word =>
-    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-  ).join(' ')
+  return palabras.join(' ')
 }
 
 function generarEstadoInicial(campos: string[]): string {
@@ -85,48 +98,34 @@ function generarInputsHTML(campos: string[]): string {
   return campos.map(campo => `
     <VCol cols="12" md="6">
       <VTextField
-        :id="useId()"
         v-model="data.${campo}"
         :rules="[requiredValidator]"
         label="${formatearLabel(campo)}"
         placeholder="Ingrese ${formatearLabel(campo)}"
-        required
       />
     </VCol>
   `).join('')
 }
 
-function generarCamposVista(campos: string[]): string {
-  return campos.map(campo => `
-    <VListItemTitle>
-      <h6 class="text-h6">
-        ${formatearLabel(campo)}:
-        <div class="d-inline-block text-capitalize text-body-1">
-          {{ item.${campo} }}
-        </div>
-      </h6>
-    </VListItemTitle>
-  `).join('')
+function generarCamposVista(campos: Record<string, string>): string {
+  return Object.keys(campos).map(key => {
+    const campo = campos[key]
+
+    return `
+      <VListItemTitle>
+        <h6 class="text-h6">
+          ${formatearLabel(campo)}:
+          <div class="d-inline-block text-capitalize text-body-1">
+            {{ item.${campo} }}
+          </div>
+        </h6>
+      </VListItemTitle>
+    `
+  }).join('')
 }
 
 function leerPlantilla(ruta: string): string {
   return fs.readFileSync(path.join(__dirname, 'PlantillasCrud', ...ruta.split('/')), 'utf-8')
-}
-
-async function preguntarDirectorioPersonalizado(): Promise<string> {
-  return new Promise(resolve => {
-    lector.question('¿Desea generar el CRUD en una ruta específica? (ej: /admin/usuarios) (ENTER para usar ruta por defecto): ', respuesta => {
-      resolve(respuesta.trim())
-    })
-  })
-}
-
-async function preguntarUrlPersonalizada(): Promise<string> {
-  return new Promise(resolve => {
-    lector.question('¿Desea agregar una URL específica? (ej: /api/ejemplo/usuarios) (ENTER para usar url por defecto): ', respuesta => {
-      resolve(respuesta.trim())
-    })
-  })
 }
 
 function escribirInterfazEnTypes(ruta: string, interfaz: string): void {
@@ -148,21 +147,52 @@ function generarInterfazTypeScript(nombre: string, campos: Record<string, string
 
 async function ejecutarGenerador(): Promise<void> {
   try {
-    const directorioPersonalizado = await preguntarDirectorioPersonalizado()
-    const urlPersonalizada = await preguntarUrlPersonalizada()
-    const textoPortapapeles = clipboardy.readSync().replace(/\u0000/g, '').trim()
-    const datos: DatosBackend = JSON.parse(textoPortapapeles)
+    const respuesta = await preguntarSiIngresarJsonManualmenteODesdePortapapeles()
+    let datos: DatosBackend | null = null
 
-    if (!datos || !datos.Modelo || !datos.Ruta || !datos.columnas)
+    if (respuesta === 'manual') {
+      datos = await solicitarIngresoJsonManualmente()
+    }
+    else {
+      datos = await leerJsonDesdePortapapeles()
+
+      if (!datos) {
+        const { opcion } = await inquirer.prompt([
+          {
+            type: 'list',
+            name: 'opcion',
+            message: '¿Qué desea hacer?',
+            choices: [
+              { name: '🔁 Intentar leer el portapapeles de nuevo', value: 'reintentar' },
+              { name: '📝 Ingresar el JSON manualmente', value: 'manual' },
+              { name: '❌ Cancelar', value: 'cancelar' },
+            ],
+          },
+        ])
+
+        if (opcion === 'reintentar')
+          return await ejecutarGenerador()
+
+        if (opcion === 'manual')
+          datos = await solicitarIngresoJsonManualmente()
+
+        if (opcion === 'cancelar') {
+          console.log('🚫 Operación cancelada.')
+
+          return
+        }
+      }
+    }
+
+    if (!datos || !datos.Modelo || !datos.Ruta || !datos.Columnas || !datos.Directorio)
       throw new Error('El contenido del portapapeles no es un JSON válido o está incompleto.')
 
     const modelo = datos.Modelo
-    const ruta = urlPersonalizada || datos.Ruta
-    const campos = Object.keys(datos.columnas).filter(Boolean)
+    const ruta = datos.Ruta
+    const campos = Object.keys(datos.Columnas).filter(Boolean)
 
     const modeloPlural = pluralizar(modelo.toLowerCase())
-    const directorio = directorioPersonalizado !== '' ? directorioPersonalizado.replace(/^\/|\/$/g, '') : modeloPlural
-
+    const directorio = datos.Directorio.replace(/^\/|\/$/g, '')
     const dirPaginas = `./pages/${directorio}`
     const dirVistas = `./views/pages/${directorio}`
     const dirTipos = `./types/${directorio}`
@@ -172,14 +202,16 @@ async function ejecutarGenerador(): Promise<void> {
         fs.mkdirSync(dir, { recursive: true })
     }
 
-    const columnasJS = generarColumnasCodigo([...campos, 'Acciones']);
+    const navActiveLink = directorio.replace(/\//g, "-");
+
+    const columnasJS = generarColumnasCodigo([...campos, 'Acciones'])
     const estadoFormulario = generarEstadoInicial(campos)
     const inputsFormulario = generarInputsHTML(campos)
     const camposVista = generarCamposVista(campos)
 
     const reemplazos: Record<string, string> = {
       '{{ modelPlural }}': modeloPlural,
-      '{{ modeloTitleCase }}': convertirATitleCase(modelo),
+      '{{ nombreModeloPermiso }}': camelCaseAFraseMinusculaConPlural(modelo),
       '{{ model }}': modelo,
       '{{ headers }}': columnasJS,
       '{{ camposFormCreate }}': estadoFormulario,
@@ -187,7 +219,8 @@ async function ejecutarGenerador(): Promise<void> {
       '{{ directory }}': directorio,
       '{{ inputsFormulario }}': inputsFormulario,
       '{{ camposForm }}': camposVista,
-      '{{ fieldsInterfaz }}': generarInterfazTypeScript(`${modelo}Interface`, datos.columnas),
+      '{{ fieldsInterfaz }}': generarInterfazTypeScript(`${modelo}Interface`, datos.Columnas),
+      '{{ navActiveLink }}': navActiveLink,
     }
 
     const generarArchivo = (rutaPlantilla: string, destino: string) => {
@@ -213,7 +246,7 @@ async function ejecutarGenerador(): Promise<void> {
     generarArchivo('Views/fields.txt', path.join(dirVistas, 'fields.vue'))
 
     const rutaTypes = path.join(dirTipos, 'types.ts')
-    const interfazTS = generarInterfazTypeScript(`${modelo}Interface`, datos.columnas)
+    const interfazTS = generarInterfazTypeScript(`${modelo}Interface`, datos.Columnas)
 
     escribirInterfazEnTypes(rutaTypes, interfazTS)
 
@@ -229,6 +262,74 @@ async function ejecutarGenerador(): Promise<void> {
   }
   finally {
     lector.close()
+  }
+}
+
+async function preguntarSiIngresarJsonManualmenteODesdePortapapeles(): Promise<string> {
+  const respuesta = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'opcion',
+      message: '¿Cómo desea ingresar el JSON?',
+      choices: [
+        { name: '📝 Ingresar manualmente', value: 'manual' },
+        { name: '📋 Obtener desde el portapapeles', value: 'portapapeles' },
+      ],
+    },
+  ])
+
+  return respuesta.opcion
+}
+
+export const solicitarIngresoJsonManualmente = async (): Promise<any> => {
+  while (true) {
+    const { json } = await inquirer.prompt([
+      {
+        type: 'editor',
+        name: 'json',
+        message: 'Ingrese el JSON:',
+      },
+    ])
+
+    let parsed: any
+
+    try {
+      parsed = JSON.parse(json)
+    }
+    catch {
+      console.log('❌ El texto ingresado no es un JSON válido. Intente nuevamente.\n')
+      continue
+    }
+
+    const faltantes = propiedadesRequeridas.filter(prop => !(prop in parsed))
+
+    if (faltantes.length > 0) {
+      console.log(`❌ Faltan las siguientes propiedades requeridas: ${faltantes.join(', ')}\n`)
+      continue
+    }
+
+    return parsed
+  }
+}
+
+export async function leerJsonDesdePortapapeles(): Promise<DatosBackend | null> {
+  try {
+    const texto = clipboardy.readSync().replace(/\u0000/g, '').trim()
+    const datos = JSON.parse(texto)
+
+    const faltantes = propiedadesRequeridas.filter(prop => !(prop in datos))
+    if (faltantes.length > 0) {
+      console.error(`❌ Faltan propiedades requeridas: ${faltantes.join(', ')}`)
+
+      return null
+    }
+
+    return datos
+  }
+  catch {
+    console.error('❌ El contenido del portapapeles no es un JSON válido.')
+
+    return null
   }
 }
 

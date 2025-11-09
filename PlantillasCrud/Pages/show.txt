@@ -4,6 +4,7 @@ import type { SendResponseInterface } from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 
 definePageMeta({
+  navActiveLink: '{{ navActiveLink }}',
   middleware: 'permissions',
   action: 'Ver {{ modeloTitleCase }}',
   subject: '{{ model }}',
