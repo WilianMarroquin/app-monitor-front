@@ -23,6 +23,10 @@ const headers = [
     key: 'description',
   },
   {
+    title: 'Contactos Asignados',
+    key: 'contactos_asignados',
+  },
+  {
     title: 'Acciones',
     key: 'Acciones',
   }
@@ -65,7 +69,25 @@ const deleteItem = async (id: number) => {
     :cantidad-por-pagina="10"
     :cantidad-por-pagina-opciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
+    :relaciones="['contactosAsignados']"
   >
+    <template #item.contactos_asignados="{ item }">
+      <div class="d-flex flex-wrap">
+        <VChip
+          v-if="item.contactos_asignados.length > 0"
+          v-for="contacto in item.contactos_asignados"
+          :key="contacto.id"
+          size="small"
+          color="primary"
+          variant="tonal"
+          class="ma-1"
+        >
+          <VIcon start icon="ri-user-smile-line" size="small" />
+          {{ contacto.nombre_completo }}
+        </VChip>
+        <span v-else class="text-grey">Sin contactos asignados</span>
+      </div>
+    </template>
     <template #item.Acciones="{ item }">
       <VBtn
         v-if="can('Ver Areas', 'Area')"
