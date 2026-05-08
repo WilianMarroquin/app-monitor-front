@@ -34,7 +34,7 @@ const guardarNotificationContact = async (NotificationContact: NotificationConta
 
 <template>
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-6">
-    <h1 v-text="'Crear NotificationContact'"/>
+    <h1 v-text="'Crear Contacto'"/>
     <VBtn
       class="ml-auto"
       color="secondary"

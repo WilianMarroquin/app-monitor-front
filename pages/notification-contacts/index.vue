@@ -29,6 +29,7 @@ const headers = [
   {
     title: 'Acciones',
     key: 'Acciones',
+    sortable: false,
   }
 ]
 
@@ -51,15 +52,14 @@ const deleteItem = async (id: number) => {
 
 <template>
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
-    <h1 v-text="'Listado de Notification Contactes'"/>
+    <h1 v-text="'Listado de Contactos'"/>
     <VBtn
       v-if="can('Crear Notification Contactes', 'NotificationContact')"
       class="ml-auto"
-      color="success"
       to="/notification-contacts/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
-      Nuev@ NotificationContact
+      Nuevo Contacto
     </VBtn>
   </div>
   <DataTableComponent

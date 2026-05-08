@@ -37,6 +37,7 @@ const headers = [
   {
     title: 'Acciones',
     key: 'Acciones',
+    sortable: false,
   }
 ]
 
@@ -59,15 +60,14 @@ const deleteItem = async (id: number) => {
 
 <template>
   <div class="d-flex flex-wrap justify-end justify-sm-space-between gap-y-4 gap-x-6 mb-4">
-    <h1 v-text="'Listado de Serveres'"/>
+    <h1 v-text="'Listado de Servidores'"/>
     <VBtn
       v-if="can('Crear Serveres', 'Server')"
       class="ml-auto"
-      color="success"
       to="/servers/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
-      Nuev@ Server
+      Nuevo Server
     </VBtn>
   </div>
   <DataTableComponent

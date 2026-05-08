@@ -29,6 +29,7 @@ const headers = [
   {
     title: 'Acciones',
     key: 'Acciones',
+    sortable: false,
   }
 ]
 
@@ -55,11 +56,10 @@ const deleteItem = async (id: number) => {
     <VBtn
       v-if="can('Crear Areas', 'Area')"
       class="ml-auto"
-      color="success"
       to="/areas/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
-      Nuev@ Area
+      Nueva Area
     </VBtn>
   </div>
   <DataTableComponent
