@@ -27,12 +27,8 @@ const headers = [
     key: 'type',
   },
   {
-    title: 'Is Active',
+    title: 'Estado',
     key: 'is_active',
-  },
-  {
-    title: 'TestMethod',
-    key: 'testMethod',
   },
   {
     title: 'HttpMethod',
@@ -41,6 +37,7 @@ const headers = [
   {
     title: 'Acciones',
     key: 'Acciones',
+    sortable: false,
   }
 ]
 
@@ -67,11 +64,10 @@ const deleteItem = async (id: number) => {
     <VBtn
       v-if="can('Crear Services', 'Service')"
       class="ml-auto"
-      color="success"
       to="/services/create"
     >
       <VIcon class="mr-2 ri-add-large-fill"/>
-      Nuev@ Service
+      Nuevo Servicio
     </VBtn>
   </div>
   <DataTableComponent
@@ -82,6 +78,14 @@ const deleteItem = async (id: number) => {
     :cantidad-por-pagina-opciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
   >
+    <template #item.is_active="{ item }">
+      <VChip
+        :color="item.is_active ? 'success' : 'error'"
+        variant="tonal"
+      >
+        {{ item.is_active ? 'Activo' : 'Inactivo' }}
+      </VChip>
+    </template>
     <template #item.Acciones="{ item }">
       <VBtn
         v-if="can('Ver Services', 'Service')"
