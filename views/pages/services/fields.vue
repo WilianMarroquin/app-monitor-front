@@ -106,7 +106,6 @@ const onSubmit = () => {
       <VCol cols="12" md="6">
         <VTextField
           v-model="data.description"
-          :rules="[requiredValidator]"
           label="Descripción"
           placeholder="¿Qué hace este servicio?"
         />
