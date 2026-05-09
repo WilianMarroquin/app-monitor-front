@@ -14,6 +14,9 @@ const data = ref<any>({
   is_active: true,
   testMethod: 'ping',
   httpMethod: 'GET',
+  tiempo_espera: 60,
+  port: null,
+  entorno: null,
 
   // 👇 NUEVO: Arreglo para almacenar múltiples IDs de áreas
   area_ids: [],
@@ -50,7 +53,7 @@ const props = defineProps({
     default: null
   }
 })
-
+const entornos = ['Desarrollo', 'Producción']
 const emit = defineEmits<Emit>()
 
 // === MODO EDICIÓN ===
@@ -146,6 +149,31 @@ const onSubmit = () => {
           inset
         />
       </VCol>
+      <VCol cols="12" md="4" class="d-flex align-center">
+        <VTextField
+          v-model="data.port"
+          label="Puerto (si aplica)"
+          placeholder="Ej: 80, 443, 1433"
+        />
+      </VCol>
+        <VCol cols="12" md="4" class="d-flex align-center">
+          <VTextField
+            v-model="data.tiempo_espera"
+            label="Tiempo de Espera (segundos)"
+            placeholder="Ej: 60"
+            type="number"
+          />
+        </VCol>
+
+      <VCol cols="12" md="4">
+        <VSelect
+          v-model="data.entorno"
+          :items="entornos"
+          :rules="[requiredValidator]"
+          label="Entorno"
+          placeholder="Seleccione el entorno"
+        />
+      </VCol>
     </VRow>
 
     <VDivider class="my-6" />
@@ -218,7 +246,7 @@ const onSubmit = () => {
         Configuración de Base de Datos
       </h3>
       <VRow>
-        <VCol cols="12" md="3">
+        <VCol cols="12" md="6">
           <VSelect
             v-model="data.service_database.db_type"
             :items="tiposBd"
@@ -238,15 +266,6 @@ const onSubmit = () => {
           />
         </VCol>
 
-        <VCol cols="12" md="3">
-          <VTextField
-            v-model="data.service_database.port"
-            :rules="[requiredValidator]"
-            label="Puerto"
-            type="number"
-            placeholder="Ej: 1433"
-          />
-        </VCol>
 
         <VCol cols="12" md="6">
           <VTextField
