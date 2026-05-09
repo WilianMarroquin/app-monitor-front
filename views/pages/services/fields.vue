@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { VForm } from "vuetify/lib/components/VForm";
-// Asegúrate de que tu ServiceInterface soporte 'service_web' y 'service_database'
 import type { ServiceInterface } from '@/types/services/types.ts';
 
 const isFormValid = ref(false)
@@ -12,17 +11,18 @@ const data = ref<any>({
   name: null,
   description: null,
   type: null,
-  is_active: true, // Mejor que sea true por defecto
-  testMethod: 'ping', // Un valor por defecto lógico
-  httpMethod: 'GET',  // Valor por defecto para webs
+  is_active: true,
+  testMethod: 'ping',
+  httpMethod: 'GET',
 
-  // Sub-estructura para Webs
+  // 👇 NUEVO: Arreglo para almacenar múltiples IDs de áreas
+  area_ids: [],
+
   service_web: {
     url: null,
     server_id: null
   },
 
-  // Sub-estructura para Bases de Datos
   service_database: {
     db_type: null,
     host_ip: null,
@@ -55,9 +55,10 @@ const emit = defineEmits<Emit>()
 
 // === MODO EDICIÓN ===
 if (props.item) {
-  data.value.service_web.server_id = 1
   data.value = {
     ...props.item,
+    // 👇 NUEVO: Si el backend manda las áreas completas, extraemos solo los IDs para el selector
+    area_ids: props.item.areas?.map((area: any) => area.id) || [],
     service_web: props.item.detalle_web || { url: null, server_id: null },
     service_database: props.item.detalle_data_base || { db_type: null, host_ip: null, port: null, username: null, password: null }
   }
@@ -69,15 +70,14 @@ const isPasswordVisible = ref(false)
 const onSubmit = () => {
   refForm.value?.validate().then(({valid}) => {
     if (valid) {
-
-      // Limpieza antes de enviar (Opcional pero muy Senior)
-      // Si el tipo es web, borramos la data de DB para no mandar basura al API, y viceversa.
       const payload = JSON.parse(JSON.stringify(data.value));
+
+      // Limpieza antes de enviar (Payload Shaping)
       if (payload.type === 'web') {
         delete payload.service_database;
       } else if (payload.type === 'database') {
         delete payload.service_web;
-        payload.httpMethod = null; // Las BD no usan httpMethod
+        payload.httpMethod = null;
       }
 
       emit('emitirDatos', payload)
@@ -92,7 +92,13 @@ const onSubmit = () => {
     v-model="isFormValid"
     @submit.prevent="onSubmit"
   >
-    <h3 class="text-h6 mb-3">Datos Generales</h3>
+    <h3 class="text-h6 mb-3 d-flex align-center text-success">
+      <VIcon
+        icon="ri-service-line"
+        class="mr-2"
+      />
+      Datos Genrales
+    </h3>
     <VRow>
       <VCol cols="12" md="6">
         <VTextField
@@ -143,9 +149,36 @@ const onSubmit = () => {
     </VRow>
 
     <VDivider class="my-6" />
+    <h3 class="text-h6 mb-3 d-flex align-center text-warning">
+      <VIcon icon="ri-notification-3-line" class="mr-2" />
+      Enrutamiento de Alertas
+    </h3>
+    <p class="text-caption text-medium-emphasis mb-3">
+      Seleccione las áreas responsables. Los contactos asociados a estas áreas recibirán notificaciones si este servicio presenta interrupciones.
+    </p>
+    <VRow>
+      <VCol cols="12">
+        <SelectorPro
+          v-model:item-selected="data.area_ids"
+          multiple
+          chips
+          clearable
+          item-title="name"
+          item-value="id"
+          label="Áreas a notificar"
+          url="api/areas"
+          :campos-a-filtrar="['name']"
+        />
+      </VCol>
+    </VRow>
+
+    <VDivider class="my-6" />
 
     <template v-if="data.type === 'web'">
-      <h3 class="text-h6 mb-3 text-primary">Configuración Web</h3>
+      <h3 class="text-h6 mb-3 text-primary">
+        <VIcon icon="ri-global-line" class="mr-2" />
+        Configuración Web
+      </h3>
       <VRow>
         <VCol cols="12" md="6">
           <VTextField
@@ -180,7 +213,10 @@ const onSubmit = () => {
     </template>
 
     <template v-if="data.type === 'database'">
-      <h3 class="text-h6 mb-3 text-info">Configuración de Base de Datos</h3>
+      <h3 class="text-h6 mb-3 text-info">
+        <VIcon icon="ri-database-2-line" class="mr-2" />
+        Configuración de Base de Datos
+      </h3>
       <VRow>
         <VCol cols="12" md="3">
           <VSelect
