@@ -3,9 +3,6 @@ import { ref, computed, onMounted } from 'vue'
 import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseInterface } from '@/types/generales/types'
 
-// IMPORTANTE: Importamos el componente de gráficos
-import VueApexCharts from 'vue3-apexcharts'
-
 definePageMeta({
   action: 'Ver Dashboards',
   subject: 'Dashboard',

@@ -117,8 +117,8 @@ const headers = [
   { title: 'Estado', key: 'status' },
   { title: 'Apertura', key: 'opened_at' },
   { title: 'Cierre', key: 'resolved_at' },
-  { title: 'Servicio', key: 'service_id' },
-  { title: 'Acciones', key: 'Acciones', sortable: false,},
+  { title: 'Servicio', key: 'service.name' },
+  { title: 'Acciones', key: 'Acciones', sortable: false},
 ]
 
 const formatDateTime = (timestamp: number | null) => {
@@ -235,6 +235,7 @@ const formatDateTime = (timestamp: number | null) => {
     :cantidad-por-pagina-opciones="[10, 20, 30]"
     :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
     :filtros="filtrosTabla"
+    :relaciones="['service']"
   >
     <template #item.opened_at="{ item }">
       <div class="text-caption font-weight-medium">
