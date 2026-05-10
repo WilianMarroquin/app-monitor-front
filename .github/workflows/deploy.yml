@@ -1,0 +1,65 @@
+name: 🚀 Deploy Nuxt App a AWS S3 (FINAL)
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  S3_BUCKET: ${{ secrets.S3_BUCKET }}
+  NODE_VERSION: '20'
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: ⬇️ Checkout del Código
+        uses: actions/checkout@v4
+
+      # 1. BUILD
+      - name: ⚙️ Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: 📦 Configurar e Instalar PNPM 
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8 
+          run_install: false
+
+      - name: 📦 Instalar Dependencias
+        run: pnpm install
+
+      - name: 🏗 Construir la Aplicación Nuxt
+        run: pnpm run generate
+        env: 
+          NUXT_PUBLIC_API_BASE_URL: https://api.monitor.mrqn-labs.com
+
+      # 2. DEPLOY
+      - name: 🔑 Configurar Credenciales de AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: 📤 Sincronizar 'dist' con S3
+        # Aquí está la magia del --sse AES256 para que CloudFront no llore
+        run: |
+          aws s3 sync ./dist s3://${{ env.S3_BUCKET }} \
+            --delete \
+            --cache-control max-age=300,public,immutable \
+            --sse AES256 
+      
+      # 3. INVALIDACIÓN DE CACHÉ (Solo una vez es suficiente)
+      - name: 🗑️ Invalidar Caché de CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+      - name: ✅ Despliegue Completado
+        run: echo "¡Despliegue exitoso! La caché se está purgando. ¡El varo está a salvo y tu puesto asegurado!"
