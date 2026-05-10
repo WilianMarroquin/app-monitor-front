@@ -11,7 +11,7 @@ const data = ref<any>({
   description: null,
   type: null,
   is_active: true,
-  testMethod: 'HTTP',
+  testMethod: null,
   httpMethod: 'GET',
   tiempo_espera: 60,
   port: null,
@@ -55,6 +55,15 @@ const props = defineProps({
   }
 })
 const entornos = ['Desarrollo', 'Producción']
+
+const tiposDePrueba = computed(() => {
+  if (data.value.type === 'web') {
+    return ['HTTP']
+  } else if (data.value.type === 'database') {
+    return ['CONNECTION', 'QUERY']
+  }
+  return []
+})
 const emit = defineEmits<Emit>()
 
 // === MODO EDICIÓN ===
@@ -126,11 +135,12 @@ const onSubmit = () => {
       </VCol>
 
       <VCol cols="12" md="3">
-        <VTextField
+       <VSelect
           v-model="data.testMethod"
+          :items="tiposDePrueba"
           :rules="[requiredValidator]"
           label="Método de Prueba"
-          placeholder="Ej: ping, tcp, http"
+          placeholder="Seleccione el método"
         />
       </VCol>
       <VCol cols="12" md="4" class="d-flex align-center">
