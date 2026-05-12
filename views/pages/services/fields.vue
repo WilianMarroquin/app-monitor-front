@@ -54,7 +54,7 @@ const props = defineProps({
     default: null
   }
 })
-const entornos = ['Desarrollo', 'Producción']
+const entornos = ['Desarrollo', 'Produccion']
 
 const tiposDePrueba = computed(() => {
   if (data.value.type === 'web') {
