@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { VForm } from "vuetify/lib/components/VForm";
-import type { ServiceInterface } from '@/types/services/types.ts';
 
 const isFormValid = ref(false)
 const refForm = ref<VForm>()
@@ -12,15 +11,19 @@ const data = ref<any>({
   description: null,
   type: null,
   is_active: true,
-  testMethod: 'ping',
+  testMethod: null,
   httpMethod: 'GET',
+  tiempo_espera: 60,
+  port: null,
+  entorno: null,
+  server_id: null,
 
   // 👇 NUEVO: Arreglo para almacenar múltiples IDs de áreas
   area_ids: [],
 
   service_web: {
     url: null,
-    server_id: null
+
   },
 
   service_database: {
@@ -28,7 +31,8 @@ const data = ref<any>({
     host_ip: null,
     port: null,
     username: null,
-    password: null
+    password: null,
+    name: null,
   }
 })
 
@@ -50,7 +54,16 @@ const props = defineProps({
     default: null
   }
 })
+const entornos = ['Desarrollo', 'Producción']
 
+const tiposDePrueba = computed(() => {
+  if (data.value.type === 'web') {
+    return ['HTTP']
+  } else if (data.value.type === 'database') {
+    return ['CONNECTION', 'QUERY']
+  }
+  return []
+})
 const emit = defineEmits<Emit>()
 
 // === MODO EDICIÓN ===
@@ -109,15 +122,7 @@ const onSubmit = () => {
         />
       </VCol>
 
-      <VCol cols="12" md="6">
-        <VTextField
-          v-model="data.description"
-          label="Descripción"
-          placeholder="¿Qué hace este servicio?"
-        />
-      </VCol>
-
-      <VCol cols="12" md="6">
+      <VCol cols="12" md="3">
         <VSelect
           v-model="data.type"
           :items="tiposServicio"
@@ -130,11 +135,27 @@ const onSubmit = () => {
       </VCol>
 
       <VCol cols="12" md="3">
-        <VTextField
+       <VSelect
           v-model="data.testMethod"
+          :items="tiposDePrueba"
           :rules="[requiredValidator]"
           label="Método de Prueba"
-          placeholder="Ej: ping, tcp, http"
+          placeholder="Seleccione el método"
+        />
+      </VCol>
+      <VCol cols="12" md="4" class="d-flex align-center">
+        <VTextField
+          v-model="data.tiempo_espera"
+          label="Tiempo de Espera (segundos)"
+          placeholder="Ej: 60"
+          type="number"
+        />
+      </VCol>
+      <VCol cols="12" md="4" class="d-flex align-center">
+        <VTextField
+          v-model="data.port"
+          label="Puerto (si aplica)"
+          placeholder="Ej: 80, 443, 1433"
         />
       </VCol>
 
@@ -144,6 +165,36 @@ const onSubmit = () => {
           color="success"
           :label="data.is_active ? 'Servicio Activo' : 'Servicio Inactivo'"
           inset
+        />
+      </VCol>
+
+
+      <VCol cols="12" md="6">
+        <VSelect
+          v-model="data.entorno"
+          :items="entornos"
+          :rules="[requiredValidator]"
+          label="Entorno"
+          placeholder="Seleccione el entorno"
+        />
+      </VCol>
+
+      <VCol cols="12" md="6">
+        <SelectorPro
+          v-model:item-selected="data.server_id"
+          item-title="name"
+          item-value="id"
+          label="Servidor de Alojamiento"
+          url="api/servers"
+          :campos-a-filtrar="['name']"
+        />
+      </VCol>
+
+      <VCol cols="12" md="121.1.1.1">
+        <VTextarea
+          v-model="data.description"
+          label="Descripción"
+          placeholder="¿Qué hace este servicio?"
         />
       </VCol>
     </VRow>
@@ -198,17 +249,6 @@ const onSubmit = () => {
             label="Método HTTP"
           />
         </VCol>
-
-        <VCol cols="12" md="3">
-          <SelectorPro
-            v-model:item-selected="data.service_web.server_id"
-            item-title="name"
-            item-value="id"
-            label="Servidor de Alojamiento"
-            url="api/servers"
-            :campos-a-filtrar="['name']"
-          />
-        </VCol>
       </VRow>
     </template>
 
@@ -218,7 +258,7 @@ const onSubmit = () => {
         Configuración de Base de Datos
       </h3>
       <VRow>
-        <VCol cols="12" md="3">
+        <VCol cols="12" md="6">
           <VSelect
             v-model="data.service_database.db_type"
             :items="tiposBd"
@@ -238,13 +278,14 @@ const onSubmit = () => {
           />
         </VCol>
 
-        <VCol cols="12" md="3">
+
+        <VCol cols="12" md="6">
           <VTextField
-            v-model="data.service_database.port"
+            v-model="data.service_database.name"
             :rules="[requiredValidator]"
-            label="Puerto"
-            type="number"
-            placeholder="Ej: 1433"
+            label="Nombre de la Base de Datos"
+            placeholder="Ej: inventarios, recursos_humanos"
+            prepend-inner-icon="ri-database-2-line"
           />
         </VCol>
 

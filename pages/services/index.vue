@@ -15,12 +15,16 @@ const dataTable = ref<any>(null)
 
 const headers = [
   {
+    title: 'Id',
+    key: 'id',
+  },
+  {
     title: 'Name',
     key: 'name',
   },
   {
-    title: 'Description',
-    key: 'description',
+    title: 'Puerto',
+    key: 'port',
   },
   {
     title: 'Type',
@@ -31,8 +35,8 @@ const headers = [
     key: 'is_active',
   },
   {
-    title: 'HttpMethod',
-    key: 'httpMethod',
+    title: 'Entorno',
+    key: 'entorno',
   },
   {
     title: 'Acciones',

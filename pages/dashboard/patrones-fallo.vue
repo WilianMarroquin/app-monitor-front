@@ -2,7 +2,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseInterface } from '@/types/generales/types'
-import VueApexCharts from 'vue3-apexcharts'
 import { useTheme } from 'vuetify'
 
 definePageMeta({
