@@ -82,11 +82,22 @@ export const useClienteRequest = () => {
         opts.headers['X-XSRF-TOKEN'] = decodeURIComponent(token)
       }
     }
+
     try {
       return await $fetch<T>(url, opts)
     }
     catch (error: any) {
       console.error('❌ Error en petición HTTP:', error?.data || error)
+      const statusCode = error?.status || error?.response?.status || error?.statusCode
+
+      if (statusCode === 401 || statusCode === 419) {
+        const { user } = useSanctumAuth()
+        user.value = null
+        if (process.client) {
+          navigateTo('/login')
+        }
+      }
+
       throw error?.data || error
     }
   }

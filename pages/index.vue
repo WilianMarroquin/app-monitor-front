@@ -17,15 +17,17 @@ const isDark = computed(() => theme.global.current.value.dark)
 const isLoading = ref(true)
 let pollingInterval: ReturnType<typeof setInterval> | null = null
 
-// Estructura inicial alineada con el Payload del Backend
+// Estructura inicial alineada con el Payload del Backend refactorizado
 const dashboardData = ref({
   kpis: {
     global_uptime: '0%',
-    active_services: 0,
+    registered_services: 0,
+    operational_services: 0,
     critical_incidents: 0,
     avg_latency: '0ms'
   },
   hot_zone: [],
+  system_health: [],
   telemetry: {
     heatmap: [],
     slowest_services: []
@@ -140,9 +142,9 @@ const slowestOptions = computed(() => ({
     </div>
 
     <VRow class="mb-4">
-      <VCol cols="12" sm="6" md="3">
-        <VCard class="border elevation-0" :loading="isLoading">
-          <VCardText class="d-flex align-center justify-space-between">
+      <VCol cols="12" sm="6" lg>
+        <VCard class="border elevation-0 h-100" :loading="isLoading">
+          <VCardText class="d-flex align-center justify-space-between h-100">
             <div>
               <div class="text-overline text-medium-emphasis">Global Uptime</div>
               <div class="text-h4 font-weight-black text-primary">{{ dashboardData.kpis.global_uptime }}</div>
@@ -154,25 +156,39 @@ const slowestOptions = computed(() => ({
         </VCard>
       </VCol>
 
-      <VCol cols="12" sm="6" md="3">
-        <VCard class="border elevation-0" :loading="isLoading">
-          <VCardText class="d-flex align-center justify-space-between">
+      <VCol cols="12" sm="6" lg>
+        <VCard class="border elevation-0 h-100" :loading="isLoading">
+          <VCardText class="d-flex align-center justify-space-between h-100">
             <div>
-              <div class="text-overline text-medium-emphasis">Servicios Activos</div>
-              <div class="text-h4 font-weight-black text-info">{{ dashboardData.kpis.active_services }}</div>
+              <div class="text-overline text-medium-emphasis">Registrados</div>
+              <div class="text-h4 font-weight-black text-grey-darken-2">{{ dashboardData.kpis.registered_services }}</div>
             </div>
-            <VAvatar color="info" variant="tonal" rounded size="54">
+            <VAvatar color="grey" variant="tonal" rounded size="54">
               <VIcon icon="ri-server-line" size="32" />
             </VAvatar>
           </VCardText>
         </VCard>
       </VCol>
 
-      <VCol cols="12" sm="6" md="3">
-        <VCard class="border elevation-0" :loading="isLoading" :color="dashboardData.kpis.critical_incidents > 0 ? 'error' : ''" :variant="dashboardData.kpis.critical_incidents > 0 ? 'tonal' : 'elevated'">
-          <VCardText class="d-flex align-center justify-space-between">
+      <VCol cols="12" sm="6" lg>
+        <VCard class="border elevation-0 h-100" :loading="isLoading">
+          <VCardText class="d-flex align-center justify-space-between h-100">
             <div>
-              <div class="text-overline" :class="dashboardData.kpis.critical_incidents > 0 ? 'text-error' : 'text-medium-emphasis'">Caídas Actuales</div>
+              <div class="text-overline text-medium-emphasis">Activos</div>
+              <div class="text-h4 font-weight-black text-success">{{ dashboardData.kpis.operational_services }}</div>
+            </div>
+            <VAvatar color="success" variant="tonal" rounded size="54">
+              <VIcon icon="ri-check-line" size="32" />
+            </VAvatar>
+          </VCardText>
+        </VCard>
+      </VCol>
+
+      <VCol cols="12" sm="6" lg>
+        <VCard class="border elevation-0 h-100" :loading="isLoading" :color="dashboardData.kpis.critical_incidents > 0 ? 'error' : ''" :variant="dashboardData.kpis.critical_incidents > 0 ? 'tonal' : 'elevated'">
+          <VCardText class="d-flex align-center justify-space-between h-100">
+            <div>
+              <div class="text-overline" :class="dashboardData.kpis.critical_incidents > 0 ? 'text-error' : 'text-medium-emphasis'">Caídos</div>
               <div class="text-h4 font-weight-black" :class="dashboardData.kpis.critical_incidents > 0 ? 'text-error' : 'text-success'">
                 {{ dashboardData.kpis.critical_incidents }}
               </div>
@@ -184,11 +200,11 @@ const slowestOptions = computed(() => ({
         </VCard>
       </VCol>
 
-      <VCol cols="12" sm="6" md="3">
-        <VCard class="border elevation-0" :loading="isLoading">
-          <VCardText class="d-flex align-center justify-space-between">
+      <VCol cols="12" sm="6" lg>
+        <VCard class="border elevation-0 h-100" :loading="isLoading">
+          <VCardText class="d-flex align-center justify-space-between h-100">
             <div>
-              <div class="text-overline text-medium-emphasis">Latencia Promedio</div>
+              <div class="text-overline text-medium-emphasis">Latencia Avg</div>
               <div class="text-h4 font-weight-black text-warning">{{ dashboardData.kpis.avg_latency }}</div>
             </div>
             <VAvatar color="warning" variant="tonal" rounded size="54">
@@ -289,7 +305,7 @@ const slowestOptions = computed(() => ({
 <style scoped lang="scss">
 .border {
   border: 1px solid rgba(var(--v-border-color), 0.12);
-  border-radius: 12px; // Un toque un poco más moderno para las cards
+  border-radius: 12px;
 }
 .pulse-animation {
   animation: pulse 2s infinite;

@@ -7,6 +7,7 @@ import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-ill
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
 import authV2LoginMaskDark from '@images/pages/auth-v2-login-mask-dark.png'
 import authV2LoginMaskLight from '@images/pages/auth-v2-login-mask-light.png'
+import { ref, onMounted } from 'vue'
 
 const configuracionStore = useConfiguracionStore()
 
@@ -26,12 +27,25 @@ interface LoginForm {
   password: string
 }
 
+// Nuevos estados para manejar la interfaz
+const errorMessage = ref<string | null>(null)
+const isLoading = ref(false)
+
 const onSubmit = async (): Promise<void> => {
   try {
-    await login(form.value as LoginForm)
+    errorMessage.value = null // Limpiamos errores previos al reintentar
+    isLoading.value = true    // Encendemos el botón de carga
+
+    const res = await login(form.value as LoginForm)
   }
   catch (e: any) {
+    // Capturamos el mensaje de Laravel (suele venir en data.message)
+    errorMessage.value = e?.data?.message || e?.response?.data?.message || 'Error al iniciar sesión. Verifica tus credenciales.'
+
+    // Mantenemos tu manejador global por si registra logs u otras cosas
     manejaError(e)
+  } finally {
+    isLoading.value = false   // Apagamos el botón de carga sin importar si falló o no
   }
 }
 
@@ -110,7 +124,20 @@ onMounted(() => {
         <VCardText>
           <VForm @submit.prevent="onSubmit">
             <VRow>
-              <!-- email -->
+
+              <VCol cols="12" v-if="errorMessage" class="pb-0">
+                <VAlert
+                  type="error"
+                  variant="tonal"
+                  density="compact"
+                  closable
+                  @click:close="errorMessage = null"
+                  class="mb-2 text-body-2"
+                >
+                  {{ errorMessage }}
+                </VAlert>
+              </VCol>
+
               <VCol cols="12">
                 <VTextField
                   v-model="form.usuario"
@@ -118,10 +145,11 @@ onMounted(() => {
                   label="Email"
                   type="email"
                   placeholder="johndoe@email.com"
+                  :error="!!errorMessage"
+                  @input="errorMessage = null"
                 />
               </VCol>
 
-              <!-- password -->
               <VCol cols="12">
                 <VTextField
                   v-model="form.password"
@@ -130,60 +158,21 @@ onMounted(() => {
                   :type="isPasswordVisible ? 'text' : 'password'"
                   autocomplete="password"
                   :append-inner-icon="isPasswordVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                  :error="!!errorMessage"
+                  @input="errorMessage = null"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
 
-                <!-- remember me checkbox -->
-                <!--                <div class="d-flex align-center justify-space-between flex-wrap my-6 gap-x-2"> -->
-                <!--                  <VCheckbox -->
-                <!--                    v-model="form.remember" -->
-                <!--                    label="Remember me" -->
-                <!--                  /> -->
-
-                <!--                  <a -->
-                <!--                    class="text-primary" -->
-                <!--                    href="javascript:void(0)" -->
-                <!--                  > -->
-                <!--                    Forgot Password? -->
-                <!--                  </a> -->
-                <!--                </div> -->
-
-                <!-- login button -->
                 <VBtn
                   class="mt-4"
                   block
                   type="submit"
+                  :loading="isLoading"
                 >
                   Iniciar Sesión
                 </VBtn>
               </VCol>
 
-              <!-- create account -->
-<!--              <VCol-->
-<!--                cols="12"-->
-<!--                class="text-body-1 text-center"-->
-<!--              >-->
-<!--                <span class="d-inline-block">-->
-<!--                  New on our platform?-->
-<!--                </span>-->
-<!--                <a-->
-<!--                  class="text-primary ms-1 d-inline-block text-body-1"-->
-<!--                  href="javascript:void(0)"-->
-<!--                >-->
-<!--                  Create an account-->
-<!--                </a>-->
-<!--              </VCol>-->
-
-<!--              <VCol-->
-<!--                cols="12"-->
-<!--                class="d-flex align-center"-->
-<!--              >-->
-<!--                <VDivider />-->
-<!--                <span class="mx-4 text-high-emphasis">or</span>-->
-<!--                <VDivider />-->
-<!--              </VCol>-->
-
-              <!-- auth providers -->
               <VCol
                 cols="12"
                 class="text-center"
