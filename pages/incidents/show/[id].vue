@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { IncidentInterface } from '@/types/incidents/types'
-import type { SendResponseInterface } from '@/types/generales/types'
+import type { VForm } from 'vuetify/lib/components/VForm'
+import type {SendResponseInterface, SendResponseSuccessInterface} from '@/types/generales/types'
 import { manejaError } from '@/utils/funcionesComunes'
 import { useRoute } from 'vue-router'
 
@@ -12,11 +12,21 @@ definePageMeta({
   subject: 'Incident',
 })
 
-const { get } = useClienteRequest()
+const { get, post } = useClienteRequest()
 const { paginaEspera } = useCargandoPagina()
+const { success } = useToast()
 
 const route = useRoute()
 const id = route.params.id
+
+const comentarioData = ref({
+  incident_id: null as number | null,
+  description: ''
+})
+const refFormComentario = ref<VForm>()
+const isModalVisible = ref(false)
+const isLoading = ref(false)
+const isFormValid = ref(false)
 
 // Ampliamos el estado inicial para evitar errores en la consola antes de que cargue la data
 const item = ref<any>({
@@ -47,10 +57,48 @@ const getIncident = async () => {
 
 getIncident()
 
+const abrirModalComentario = (id: number) => {
+  comentarioData.value.incident_id = id
+  comentarioData.value.description = ''
+  isModalVisible.value = true
+}
+
 const puedeMostrarDatos = computed(() => {
   return item.value.id !== null
 })
 
+const guardarComentario = async () => {
+  const { valid } = await refFormComentario.value?.validate() || { valid: false }
+
+  if (!valid) return
+
+  try {
+    isLoading.value = true
+
+    // Mandamos el payload a la ruta que configuraste en tu backend
+    const respuesta = await post<SendResponseSuccessInterface>(
+      'api/incidents/registrar/Comentario',
+      comentarioData.value
+    )
+
+    success(respuesta.message || 'Comentario registrado con éxito')
+    cerrarModal()
+
+    await getIncident()
+
+  } catch (errorCapturado) {
+    manejaError(errorCapturado)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const cerrarModal = () => {
+  isModalVisible.value = false
+  comentarioData.value.incident_id = null
+  comentarioData.value.description = ''
+  refFormComentario.value?.resetValidation()
+}
 // === FUNCIÓN PARA FORMATEAR FECHAS (Unix a Legible) ===
 const formatDateTime = (timestamp: number | null) => {
   if (!timestamp) return '---'
@@ -73,14 +121,26 @@ const formatDateTime = (timestamp: number | null) => {
         Detalle del Incidente <span class="text-primary">#{{ item.id || '...' }}</span>
       </h1>
     </div>
-    <VBtn
-      color="secondary"
-      variant="tonal"
-      to="/incidents"
-    >
-      <VIcon class="mr-2 ri-arrow-left-line"/>
-      Regresar
-    </VBtn>
+    <div>
+      <VBtn
+        prepend-icon="ri-message-2-line"
+        color="info"
+        @click="abrirModalComentario(item.id)"
+        class="mr-1"
+        variant="outlined"
+      >
+        Registrar Comentario
+      </VBtn>
+      <VBtn
+        color="secondary"
+        variant="tonal"
+        to="/incidents"
+      >
+        <VIcon class="mr-2 ri-arrow-left-line"/>
+        Regresar
+      </VBtn>
+    </div>
+
   </div>
 
   <VRow v-if="puedeMostrarDatos">
@@ -97,7 +157,7 @@ const formatDateTime = (timestamp: number | null) => {
               </span>
               <VChip
                 :color="item.status === 'open' ? 'error' : 'success'"
-                variant="elevated"
+                variant="tonal"
                 class="font-weight-bold text-uppercase"
               >
                 {{ item.status === 'open' ? 'Pendiente' : 'Resuelto' }}
@@ -198,6 +258,80 @@ const formatDateTime = (timestamp: number | null) => {
     </VCol>
 
   </VRow>
+  <VDialog
+    v-model="isModalVisible"
+    max-width="600"
+    persistent
+  >
+    <VCard>
+      <VCardItem class="pb-3">
+        <template #title>
+          <div class="d-flex justify-space-between align-center">
+            <span class="text-h6 font-weight-bold">
+              <VIcon icon="ri-chat-new-line" class="mr-2 text-primary" />
+              Nuevo Comentario
+            </span>
+            <VBtn
+              icon="ri-close-line"
+              variant="text"
+              density="comfortable"
+              color="secondary"
+              @click="cerrarModal"
+            />
+          </div>
+        </template>
+      </VCardItem>
+
+      <VDivider />
+
+      <VCardText class="pt-5">
+        <VAlert
+          type="info"
+          variant="tonal"
+          class="mb-4 text-body-2"
+          icon="ri-information-line"
+        >
+          Estás agregando un comentario al incidente <strong>#{{ comentarioData.incident_id }}</strong>. Este registro quedará vinculado a tu usuario de forma permanente.
+        </VAlert>
+
+        <VForm
+          ref="refFormComentario"
+          v-model="isFormValid"
+          @submit.prevent="guardarComentario"
+        >
+          <VTextarea
+            v-model="comentarioData.description"
+            label="Descripción del comentario"
+            placeholder="Ej: Se reinició el servicio y se monitorea estabilidad..."
+            :rules="[v => !!v || 'Debes escribir un comentario para poder guardar.']"
+            rows="4"
+            variant="outlined"
+            auto-grow
+          />
+
+          <div class="d-flex justify-end mt-4">
+            <VBtn
+              variant="tonal"
+              color="secondary"
+              class="mr-3"
+              @click="cerrarModal"
+              :disabled="isLoading"
+            >
+              Cancelar
+            </VBtn>
+            <VBtn
+              type="submit"
+              color="primary"
+              :loading="isLoading"
+            >
+              <VIcon start icon="ri-save-3-line" />
+              Guardar Comentario
+            </VBtn>
+          </div>
+        </VForm>
+      </VCardText>
+    </VCard>
+  </VDialog>
 </template>
 
 <style scoped lang="scss">

@@ -15,8 +15,8 @@ const { del, post } = useClienteRequest() // <-- Agregamos 'post' aquí
 const { success, preguntaEliminar } = useToast()
 const dataTable = ref<any>(null)
 
-const isModalVisible = ref(false)
 const refFormComentario = ref<VForm>()
+const isModalVisible = ref(false)
 const isFormValid = ref(false)
 const isLoading = ref(false)
 
