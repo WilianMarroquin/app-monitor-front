@@ -19,7 +19,11 @@ const currentTime = ref(Date.now())
 
 const liveData = ref({
   summary: { total: 0, up: 0, down: 0, status_color: 'success' },
-  active_alerts: [] as any[]
+  active_alerts: [] as any[],
+  engine_status: {
+    is_active: false,
+    last_ping_human: 'Cargando...'
+  },
 })
 
 const fetchLiveStatus = async () => {
@@ -93,16 +97,36 @@ const matteColor = computed(() => {
       </div>
     </div>
 
-    <VBtn
-      color="primary"
-      variant="tonal"
-      @click="fetchLiveStatus"
-      :loading="isLoading && !isInitialLoad"
-      :disabled="isLoading"
-    >
-      <VIcon start icon="ri-refresh-line" />
-      Actualizar Ahora
-    </VBtn>
+    <div class="d-flex justify-space-between">
+      <div class="d-flex align-center gap-4 mr-3">
+        <VChip
+          v-if="!isLoading"
+          :color="liveData.engine_status.is_active ? 'success' : 'error'"
+          variant="outlined"
+          size="large"
+          class="font-weight-medium"
+        >
+          <VIcon
+            start
+            :icon="liveData.engine_status.is_active ? 'ri-pulse-line' : 'ri-cloud-off-line'"
+            :class="liveData.engine_status.is_active ? 'pulse-animation' : ''"
+          />
+          Monitor: {{ liveData.engine_status.is_active ? 'En línea' : 'Detenido' }}
+          <span class="text-caption ml-1 opacity-70">({{ liveData.engine_status.last_ping_human }})</span>
+        </VChip>
+      </div>
+      <VBtn
+        color="primary"
+        variant="tonal"
+        @click="fetchLiveStatus"
+        :loading="isLoading && !isInitialLoad"
+        :disabled="isLoading"
+      >
+        <VIcon start icon="ri-refresh-line" />
+        Actualizar Ahora
+      </VBtn>
+    </div>
+
   </div>
 
   <VRow v-if="isInitialLoad">

@@ -20,6 +20,10 @@ const isDark = computed(() => theme.global.current.value.dark)
 
 const dashboardData = ref({
   period: { start: '', end: '', days: 0 },
+  engine_status: {
+    is_active: false,
+    last_ping_human: 'Cargando...'
+  },
   kpis: {
     uptime_percentage: 100,
     total_downtime_minutes: 0,
@@ -143,9 +147,28 @@ const ticketsOptions = computed(() => ({
 </script>
 
 <template>
-  <div class="mb-6">
-    <h1 class="text-h4 font-weight-bold mb-2">Disponibilidad y Atención</h1>
-    <p class="text-medium-emphasis">Monitoreo de SLAs y métricas operativas del equipo.</p>
+  <div class="mb-6 d-flex flex-wrap justify-space-between align-center mb-4 gap-4">
+    <div>
+      <h1 class="text-h4 font-weight-bold mb-2">Disponibilidad y Atención</h1>
+      <p class="text-medium-emphasis">Monitoreo de SLAs y métricas operativas del equipo.</p>
+    </div>
+    <div class="d-flex align-center gap-4">
+      <VChip
+        v-if="!isLoading"
+        :color="dashboardData.engine_status.is_active ? 'success' : 'error'"
+        variante="outlined"
+        size="large"
+        class="font-weight-medium"
+      >
+        <VIcon
+          start
+          :icon="dashboardData.engine_status.is_active ? 'ri-pulse-line' : 'ri-cloud-off-line'"
+          :class="dashboardData.engine_status.is_active ? 'pulse-animation' : ''"
+        />
+        Monitor: {{ dashboardData.engine_status.is_active ? 'En línea' : 'Detenido' }}
+        <span class="text-caption ml-1 opacity-70">({{ dashboardData.engine_status.last_ping_human }})</span>
+      </VChip>
+    </div>
   </div>
 
   <VCard class="mb-6 elevation-1">

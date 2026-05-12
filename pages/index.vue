@@ -19,6 +19,10 @@ let pollingInterval: ReturnType<typeof setInterval> | null = null
 
 // Estructura inicial alineada con el Payload del Backend refactorizado
 const dashboardData = ref({
+  engine_status: {
+    is_active: false,
+    last_ping_human: 'Cargando...'
+  },
   kpis: {
     global_uptime: '0%',
     registered_services: 0,
@@ -131,14 +135,33 @@ const slowestOptions = computed(() => ({
 
 <template>
   <div>
-    <div class="d-flex flex-wrap justify-space-between align-center mb-6 gap-4">
+    <div class="d-flex flex-wrap justify-space-between align-center mb-4 gap-4">
       <div>
         <h1 class="text-h4 font-weight-bold mb-1">Centro de Mando</h1>
         <p class="text-medium-emphasis">Single Pane of Glass - Estado global de la infraestructura.</p>
       </div>
-      <VBtn color="primary" variant="tonal" @click="() => fetchDashboard(false)" :loading="isLoading">
-        <VIcon start icon="ri-refresh-line" /> Actualizar
-      </VBtn>
+
+      <div class="d-flex align-center gap-4">
+        <VChip
+          v-if="!isLoading"
+          :color="dashboardData.engine_status.is_active ? 'success' : 'error'"
+          variant="outlined"
+          size="large"
+          class="font-weight-medium"
+        >
+          <VIcon
+            start
+            :icon="dashboardData.engine_status.is_active ? 'ri-pulse-line' : 'ri-cloud-off-line'"
+            :class="dashboardData.engine_status.is_active ? 'pulse-animation' : ''"
+          />
+          Monitor: {{ dashboardData.engine_status.is_active ? 'En línea' : 'Detenido' }}
+          <span class="text-caption ml-1 opacity-70">({{ dashboardData.engine_status.last_ping_human }})</span>
+        </VChip>
+
+        <VBtn color="primary" @click="() => fetchDashboard(false)" :loading="isLoading">
+          <VIcon start icon="ri-refresh-line" /> Actualizar
+        </VBtn>
+      </div>
     </div>
 
     <VRow class="mb-4">
