@@ -4,7 +4,7 @@ import avatar1 from '@images/avatars/avatar-1.png'
 import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 
 const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
-const { user } = useSanctumAuth()
+const { user, logout } = useSanctumAuth()
 const { post } = useClienteRequest()
 const { success } = useToast()
 
@@ -24,17 +24,17 @@ const userProfileList = [
   },
 ]
 
-const cerrarSecion = async () => {
-  try {
-    const res = await post('api/logout', {})
-    success(res?.message || 'Sesión cerrada exitosamente')
-    user.value = null
-    navigateTo('/login')
-  }
-  catch (e) {
-    manejaError(e)
-  }
-}
+// const cerrarSecion = async () => {
+//   try {
+//     const res = await post('api/logout', {})
+//     success(res?.message || 'Sesión cerrada exitosamente')
+//     user.value = null
+//     navigateTo('/login')
+//   }
+//   catch (e) {
+//     manejaError(e)
+//   }
+// }
 </script>
 
 <template>
@@ -120,7 +120,7 @@ const cerrarSecion = async () => {
                 color="error"
                 size="small"
                 append-icon="ri-logout-box-r-line"
-                @click="cerrarSecion"
+                @click="logout"
               >
                 Logout
               </VBtn>

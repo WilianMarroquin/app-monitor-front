@@ -26,6 +26,7 @@ export default defineNuxtConfig({
     mode: 'cookie',
     baseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
     userStateKey: 'sanctum.user.identity',
+    redirectIfUnauthenticated: true,
     endpoints: {
       csrf: 'sanctum/csrf-cookie',
       login: 'api/login',
