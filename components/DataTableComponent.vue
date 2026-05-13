@@ -111,10 +111,10 @@ getItems()
 watch([currentPage, itemsbyPage, filtros], getItems, { deep: true })
 
 const reiniciar = () => {
-  currentPage.value = 1
-  itemsbyPage.value = cantidadPorPagina
-  filtros.value = {}
-  orden.value = [{ key: columnas[0].key, order: 'desc' }]
+  // currentPage.value = 1
+  // itemsbyPage.value = cantidadPorPagina
+  // filtros.value = {}
+  // orden.value = [{ key: columnas[0].key, order: 'desc' }]
 
   getItems()
 }
