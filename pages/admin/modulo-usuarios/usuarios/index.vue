@@ -18,6 +18,10 @@ const headers = [
     key: 'id',
   },
   {
+    title: 'Nombre',
+    key: 'nombre_completo',
+  },
+  {
     title: 'Usuario',
     key: 'usuario',
   },
