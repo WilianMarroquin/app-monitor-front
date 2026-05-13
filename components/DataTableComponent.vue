@@ -69,7 +69,7 @@ const search = ref<string>('')
 let itemsbyPage = ref<number>(cantidadPorPagina)
 let itemsbyPageOptions = ref<number[]>(cantidadPorPaginaOpciones)
 
-const orden = ref([{ key: columnas[0].key, order: 'asc' }] as const)
+const orden = ref([{ key: columnas[0].key, order: 'desc' }] as const)
 
 const getItems = async (): Promise<void> => {
 
@@ -86,7 +86,6 @@ const getItems = async (): Promise<void> => {
     let key = Object.keys(filtros.value)
 
     for (let i = 0; i < key.length; i++) {
-      console.log('key[i]', key[i])
       data[`filter[${key[i]}]`] = filtros.value[key[i]]
     }
   }
@@ -115,7 +114,7 @@ const reiniciar = () => {
   currentPage.value = 1
   itemsbyPage.value = cantidadPorPagina
   filtros.value = {}
-  orden.value = [{ key: columnas[0].key, order: 'asc' }]
+  orden.value = [{ key: columnas[0].key, order: 'desc' }]
 
   getItems()
 }

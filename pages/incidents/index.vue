@@ -111,11 +111,11 @@ const limpiarFiltros = () => {
 
 const headers = [
   { title: 'id', key: 'id' },
-  { title: 'Descripción', key: 'description_corta' },
+  { title: 'Descripción', key: 'description_corta', sortable: false },
   { title: 'Estado', key: 'status' },
   { title: 'Apertura', key: 'opened_at' },
   { title: 'Cierre', key: 'resolved_at' },
-  { title: 'Servicio', key: 'service.name' },
+  { title: 'Servicio', key: 'service.name', sortable: false  },
   { title: 'Acciones', key: 'Acciones', sortable: false},
 ]
 
