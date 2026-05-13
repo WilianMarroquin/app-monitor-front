@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue' // <-- Importamos watch
+import { ref, watch } from 'vue'
 import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseSuccessInterface } from '@/types/generales/types'
 import type { VForm } from 'vuetify/lib/components/VForm'
@@ -11,45 +11,46 @@ definePageMeta({
 })
 
 const { can } = useAbility()
-const { del, post } = useClienteRequest() // <-- Agregamos 'post' aquí
+const { del, post } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
-const dataTable = ref<any>(null)
+
+// === AISLAMIENTO DE COMPONENTES (3 Refs distintos) ===
+const dataTableOpen = ref<any>(null)
+const dataTableResolved = ref<any>(null)
+const dataTableAll = ref<any>(null)
 
 const refFormComentario = ref<VForm>()
 const isModalVisible = ref(false)
 const isFormValid = ref(false)
 const isLoading = ref(false)
 
-// === ESTADO DE LOS INPUTS (Lo que el usuario ve) ===
+// === ESTADO DE LOS INPUTS ===
 const currentTab = ref('open')
 const filterServiceId = ref(null)
 const filterDateFrom = ref(null)
 const filterDateTo = ref(null)
 
-// === ESTADO DE LA TABLA (Lo que realmente se manda a la API) ===
-// Lo inicializamos con el valor por defecto de la pestaña
+// === ESTADO DE LA TABLA (Solo variables globales, el status se inyecta en el template) ===
 const filtrosTabla = ref({
-  status: 'open',
   service_id: null,
   fecha_inicio: null,
   fecha_fin: null
 })
 
-// === DEFERRED FILTERING (Ejecución Manual) ===
+// === APLICAR FILTROS Y RECARGAR TABLA ACTIVA ===
 const aplicarFiltros = () => {
-  // Copiamos los valores de los inputs hacia el objeto de la tabla
   filtrosTabla.value = {
-    status: currentTab.value === 'all' ? null : currentTab.value,
     service_id: filterServiceId.value,
     fecha_inicio: filterDateFrom.value,
     fecha_fin: filterDateTo.value
   }
 
-  // Opcional: Si tu componente DataTableComponent no recarga automáticamente
-  // al cambiar los filtros, forzamos la recarga aquí:
-  if (dataTable.value) {
-    dataTable.value.getItems()
-  }
+  // Refrescamos SOLO la tabla de la pestaña actual
+  setTimeout(() => {
+    if (currentTab.value === 'open' && dataTableOpen.value) dataTableOpen.value.getItems()
+    if (currentTab.value === 'resolved' && dataTableResolved.value) dataTableResolved.value.getItems()
+    if (currentTab.value === 'all' && dataTableAll.value) dataTableAll.value.getItems()
+  }, 50) // Un pequeñísimo delay para que Vue alcance a renderizar la pestaña
 }
 
 const comentarioData = ref({
@@ -63,7 +64,6 @@ const abrirModalComentario = (id: number) => {
   isModalVisible.value = true
 }
 
-// Función para cerrar y limpiar
 const cerrarModal = () => {
   isModalVisible.value = false
   comentarioData.value.incident_id = null
@@ -71,12 +71,10 @@ const cerrarModal = () => {
   refFormComentario.value?.resetValidation()
 }
 
-// Truco de UX: Normalmente queremos que las Pestañas (Tabs) sí cambien de inmediato
-// sin tener que darle al botón "Aplicar". Con este watch lo logramos:
+// Al cambiar de tab, aplicamos los filtros y refrescamos la tabla correspondiente
 watch(currentTab, () => {
   aplicarFiltros()
 })
-
 
 const guardarComentario = async () => {
   const { valid } = await refFormComentario.value?.validate() || { valid: false }
@@ -86,7 +84,6 @@ const guardarComentario = async () => {
   try {
     isLoading.value = true
 
-    // Mandamos el payload a la ruta que configuraste en tu backend
     const respuesta = await post<SendResponseSuccessInterface>(
       'api/incidents/registrar/Comentario',
       comentarioData.value
@@ -95,8 +92,8 @@ const guardarComentario = async () => {
     success(respuesta.message || 'Comentario registrado con éxito')
     cerrarModal()
 
-    // Opcional: si quieres que la tabla parpadee o se recargue
-    // if (dataTable.value) dataTable.value.getItems()
+    // Recargar solo la tabla activa
+    aplicarFiltros()
 
   } catch (errorCapturado) {
     manejaError(errorCapturado)
@@ -104,11 +101,12 @@ const guardarComentario = async () => {
     isLoading.value = false
   }
 }
+
 const limpiarFiltros = () => {
   filterServiceId.value = null
   filterDateFrom.value = null
   filterDateTo.value = null
-  aplicarFiltros() // Aplicamos los filtros en blanco para reiniciar la tabla
+  aplicarFiltros()
 }
 
 const headers = [
@@ -123,18 +121,14 @@ const headers = [
 
 const formatDateTime = (timestamp: number | null) => {
   if (!timestamp) return '---'
-
-  // Multiplicamos x1000 para pasar de segundos (PHP) a milisegundos (JS)
   const date = new Date(timestamp * 1000)
-
-  // Formateo nativo de JS (puedes ajustarlo a tu gusto)
   return date.toLocaleString('es-GT', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: true // Para que salga en formato AM/PM
+    hour12: true
   })
 }
 </script>
@@ -201,92 +195,130 @@ const formatDateTime = (timestamp: number | null) => {
         </VCol>
 
         <VCol cols="12" md="2">
-          <VBtn
-            color="primary"
-            block
-            @click="aplicarFiltros"
-          >
-            <VIcon start icon="ri-filter-line" />
-            Aplicar
+          <VBtn color="primary" block @click="aplicarFiltros">
+            <VIcon start icon="ri-filter-line" /> Aplicar
           </VBtn>
         </VCol>
 
-        <VCol cols="12" md="2" >
-          <VBtn
-            v-if="filterServiceId || filterDateFrom || filterDateTo"
-            variant="tonal"
-            color="error"
-            block
-            @click="limpiarFiltros"
-          >
-            <VIcon start icon="ri-filter-off-line" />
-            Limpiar
+        <VCol cols="12" md="2" v-if="filterServiceId || filterDateFrom || filterDateTo">
+          <VBtn variant="tonal" color="error" block @click="limpiarFiltros">
+            <VIcon start icon="ri-filter-off-line" /> Limpiar
           </VBtn>
         </VCol>
       </VRow>
     </VCardText>
   </VCard>
 
-  <DataTableComponent
-    ref="dataTable"
-    :columnas="headers"
-    endpoint="api/incidents"
-    :cantidad-por-pagina="10"
-    :cantidad-por-pagina-opciones="[10, 20, 30]"
-    :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
-    :filtros="filtrosTabla"
-    :relaciones="['service']"
-  >
-    <template #item.opened_at="{ item }">
-      <div class="text-caption font-weight-medium">
-        <VIcon size="small" icon="ri-calendar-line" class="mr-1 text-primary" />
-        {{ formatDateTime(item.opened_at) }}
-      </div>
-    </template>
+  <VWindow v-model="currentTab">
 
-    <template #item.resolved_at="{ item }">
-      <div class="text-caption font-weight-medium">
-        <VIcon size="small" icon="ri-time-line" class="mr-1 text-success" v-if="item.resolved_at"/>
-        {{ formatDateTime(item.resolved_at) }}
-      </div>
-    </template>
-    <template #item.status="{ item }">
-      <VChip
-        :color="item.status === 'open' ? 'error' : 'success'"
-        size="small"
-        class="font-weight-bold text-uppercase"
+    <VWindowItem value="open">
+      <DataTableComponent
+        ref="dataTableOpen"
+        :columnas="headers"
+        endpoint="api/incidents"
+        :cantidad-por-pagina="10"
+        :cantidad-por-pagina-opciones="[10, 20, 30]"
+        :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
+        :filtros="{ ...filtrosTabla, status: 'open' }"
+        :relaciones="['service']"
       >
-        {{ item.status === 'open' ? 'Pendiente' : 'Resuelto' }}
-      </VChip>
-    </template>
+        <template #item.opened_at="{ item }">
+          <div class="text-caption font-weight-medium">
+            <VIcon size="small" icon="ri-calendar-line" class="mr-1 text-primary" />
+            {{ formatDateTime(item.opened_at) }}
+          </div>
+        </template>
+        <template #item.resolved_at="{ item }">
+          <div class="text-caption font-weight-medium">
+            <VIcon size="small" icon="ri-time-line" class="mr-1 text-success" v-if="item.resolved_at"/>
+            {{ formatDateTime(item.resolved_at) }}
+          </div>
+        </template>
+        <template #item.status="{ item }">
+          <VChip :color="item.status === 'open' ? 'error' : 'success'" size="small" class="font-weight-bold text-uppercase">
+            {{ item.status === 'open' ? 'Pendiente' : 'Resuelto' }}
+          </VChip>
+        </template>
+        <template #item.Acciones="{ item }">
+          <VBtn v-if="can('Ver Incidentes', 'Incident')" icon="ri-eye-line" variant="tonal" color="info" :to="`/incidents/show/${item.id}`" class="mr-1" size="small"/>
+          <VBtn v-if="can('Registrar Comentario Incidentes', 'Incident')" icon="ri-message-2-line" variant="tonal" color="warning" @click="abrirModalComentario(item.id)" class="mr-1" size="small"/>
+        </template>
+      </DataTableComponent>
+    </VWindowItem>
 
-    <template #item.Acciones="{ item }">
-      <VBtn
-        v-if="can('Ver Incidentes', 'Incident')"
-        icon="ri-eye-line"
-        variant="tonal"
-        color="info"
-        :to="`/incidents/show/${item.id}`"
-        class="mr-1"
-        size="small"
-      />
+    <VWindowItem value="resolved">
+      <DataTableComponent
+        ref="dataTableResolved"
+        :columnas="headers"
+        endpoint="api/incidents"
+        :cantidad-por-pagina="10"
+        :cantidad-por-pagina-opciones="[10, 20, 30]"
+        :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
+        :filtros="{ ...filtrosTabla, status: 'resolved' }"
+        :relaciones="['service']"
+      >
+        <template #item.opened_at="{ item }">
+          <div class="text-caption font-weight-medium">
+            <VIcon size="small" icon="ri-calendar-line" class="mr-1 text-primary" />
+            {{ formatDateTime(item.opened_at) }}
+          </div>
+        </template>
+        <template #item.resolved_at="{ item }">
+          <div class="text-caption font-weight-medium">
+            <VIcon size="small" icon="ri-time-line" class="mr-1 text-success" v-if="item.resolved_at"/>
+            {{ formatDateTime(item.resolved_at) }}
+          </div>
+        </template>
+        <template #item.status="{ item }">
+          <VChip :color="item.status === 'open' ? 'error' : 'success'" size="small" class="font-weight-bold text-uppercase">
+            {{ item.status === 'open' ? 'Pendiente' : 'Resuelto' }}
+          </VChip>
+        </template>
+        <template #item.Acciones="{ item }">
+          <VBtn v-if="can('Ver Incidentes', 'Incident')" icon="ri-eye-line" variant="tonal" color="info" :to="`/incidents/show/${item.id}`" class="mr-1" size="small"/>
+          <VBtn v-if="can('Registrar Comentario Incidentes', 'Incident')" icon="ri-message-2-line" variant="tonal" color="warning" @click="abrirModalComentario(item.id)" class="mr-1" size="small"/>
+        </template>
+      </DataTableComponent>
+    </VWindowItem>
 
-      <VBtn
-        v-if="can('Registrar Comentario Incidentes', 'Incident')"
-        icon="ri-message-2-line"
-        variant="tonal"
-        color="warning"
-        @click="abrirModalComentario(item.id)"
-        class="mr-1"
-        size="small"
-      />
-    </template>
-  </DataTableComponent>
-  <VDialog
-    v-model="isModalVisible"
-    max-width="600"
-    persistent
-  >
+    <VWindowItem value="all">
+      <DataTableComponent
+        ref="dataTableAll"
+        :columnas="headers"
+        endpoint="api/incidents"
+        :cantidad-por-pagina="10"
+        :cantidad-por-pagina-opciones="[10, 20, 30]"
+        :botones="['xlsx', 'pdf', 'csv', 'reiniciar']"
+        :filtros="filtrosTabla"
+        :relaciones="['service']"
+      >
+        <template #item.opened_at="{ item }">
+          <div class="text-caption font-weight-medium">
+            <VIcon size="small" icon="ri-calendar-line" class="mr-1 text-primary" />
+            {{ formatDateTime(item.opened_at) }}
+          </div>
+        </template>
+        <template #item.resolved_at="{ item }">
+          <div class="text-caption font-weight-medium">
+            <VIcon size="small" icon="ri-time-line" class="mr-1 text-success" v-if="item.resolved_at"/>
+            {{ formatDateTime(item.resolved_at) }}
+          </div>
+        </template>
+        <template #item.status="{ item }">
+          <VChip :color="item.status === 'open' ? 'error' : 'success'" size="small" class="font-weight-bold text-uppercase">
+            {{ item.status === 'open' ? 'Pendiente' : 'Resuelto' }}
+          </VChip>
+        </template>
+        <template #item.Acciones="{ item }">
+          <VBtn v-if="can('Ver Incidentes', 'Incident')" icon="ri-eye-line" variant="tonal" color="info" :to="`/incidents/show/${item.id}`" class="mr-1" size="small"/>
+          <VBtn v-if="can('Registrar Comentario Incidentes', 'Incident')" icon="ri-message-2-line" variant="tonal" color="warning" @click="abrirModalComentario(item.id)" class="mr-1" size="small"/>
+        </template>
+      </DataTableComponent>
+    </VWindowItem>
+
+  </VWindow>
+
+  <VDialog v-model="isModalVisible" max-width="600" persistent>
     <VCard>
       <VCardItem class="pb-3">
         <template #title>
@@ -295,34 +327,16 @@ const formatDateTime = (timestamp: number | null) => {
               <VIcon icon="ri-chat-new-line" class="mr-2 text-primary" />
               Nuevo Comentario
             </span>
-            <VBtn
-              icon="ri-close-line"
-              variant="text"
-              density="comfortable"
-              color="secondary"
-              @click="cerrarModal"
-            />
+            <VBtn icon="ri-close-line" variant="text" density="comfortable" color="secondary" @click="cerrarModal" />
           </div>
         </template>
       </VCardItem>
-
       <VDivider />
-
       <VCardText class="pt-5">
-        <VAlert
-          type="info"
-          variant="tonal"
-          class="mb-4 text-body-2"
-          icon="ri-information-line"
-        >
+        <VAlert type="info" variant="tonal" class="mb-4 text-body-2" icon="ri-information-line">
           Estás agregando un comentario al incidente <strong>#{{ comentarioData.incident_id }}</strong>. Este registro quedará vinculado a tu usuario de forma permanente.
         </VAlert>
-
-        <VForm
-          ref="refFormComentario"
-          v-model="isFormValid"
-          @submit.prevent="guardarComentario"
-        >
+        <VForm ref="refFormComentario" v-model="isFormValid" @submit.prevent="guardarComentario">
           <VTextarea
             v-model="comentarioData.description"
             label="Descripción del comentario"
@@ -332,25 +346,9 @@ const formatDateTime = (timestamp: number | null) => {
             variant="outlined"
             auto-grow
           />
-
           <div class="d-flex justify-end mt-4">
-            <VBtn
-              variant="tonal"
-              color="secondary"
-              class="mr-3"
-              @click="cerrarModal"
-              :disabled="isLoading"
-            >
-              Cancelar
-            </VBtn>
-            <VBtn
-              type="submit"
-              color="primary"
-              :loading="isLoading"
-            >
-              <VIcon start icon="ri-save-3-line" />
-              Guardar Comentario
-            </VBtn>
+            <VBtn variant="tonal" color="secondary" class="mr-3" @click="cerrarModal" :disabled="isLoading">Cancelar</VBtn>
+            <VBtn type="submit" color="primary" :loading="isLoading"><VIcon start icon="ri-save-3-line" /> Guardar Comentario</VBtn>
           </div>
         </VForm>
       </VCardText>
