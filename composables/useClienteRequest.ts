@@ -93,9 +93,7 @@ export const useClienteRequest = () => {
       if (statusCode === 401 || statusCode === 419) {
         const { user } = useSanctumAuth()
         user.value = null
-        if (process.client) {
-          navigateTo('/login')
-        }
+        navigateTo('/login')
       }
 
       throw error?.data || error

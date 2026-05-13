@@ -38,12 +38,16 @@ const item = ref<any>({
   service_id: null,
   ping_id: null,
   service: null,
-  comentarios: []
+  comentarios: [],
+  contactos_notificados: []
 })
 
 const getIncident = async () => {
   try {
-    paginaEspera.value = true
+    // Si tu useCargandoPagina() bloquea toda la pantalla, puedes quitar esta línea
+    // para que se luzcan los Skeletons. De lo contrario, funcionarán en conjunto.
+    // paginaEspera.value = true
+
     const respuesta = await get<SendResponseInterface<any>>(`api/incidents/${id}`)
     item.value = respuesta.data
   }
@@ -56,6 +60,23 @@ const getIncident = async () => {
 }
 
 getIncident()
+
+// ==========================================
+// 🧮 DERIVED STATE (Agrupación de Notificaciones)
+// ==========================================
+const notificacionesCaida = computed(() => {
+  if (!item.value.contactos_notificados) return []
+  return item.value.contactos_notificados.filter((c: any) =>
+    ['open', 'down'].includes(c.pivot?.status)
+  )
+})
+
+const notificacionesRegreso = computed(() => {
+  if (!item.value.contactos_notificados) return []
+  return item.value.contactos_notificados.filter((c: any) =>
+    ['resolved', 'up', 'follow-up'].includes(c.pivot?.status)
+  )
+})
 
 const abrirModalComentario = (id: number) => {
   comentarioData.value.incident_id = id
@@ -74,18 +95,13 @@ const guardarComentario = async () => {
 
   try {
     isLoading.value = true
-
-    // Mandamos el payload a la ruta que configuraste en tu backend
     const respuesta = await post<SendResponseSuccessInterface>(
       'api/incidents/registrar/Comentario',
       comentarioData.value
     )
-
     success(respuesta.message || 'Comentario registrado con éxito')
     cerrarModal()
-
     await getIncident()
-
   } catch (errorCapturado) {
     manejaError(errorCapturado)
   } finally {
@@ -99,7 +115,8 @@ const cerrarModal = () => {
   comentarioData.value.description = ''
   refFormComentario.value?.resetValidation()
 }
-// === FUNCIÓN PARA FORMATEAR FECHAS (Unix a Legible) ===
+
+// === FUNCIÓN PARA FORMATEAR FECHAS ===
 const formatDateTime = (timestamp: number | null) => {
   if (!timestamp) return '---'
   const date = new Date(timestamp * 1000)
@@ -128,6 +145,7 @@ const formatDateTime = (timestamp: number | null) => {
         @click="abrirModalComentario(item.id)"
         class="mr-1"
         variant="outlined"
+        :disabled="!puedeMostrarDatos"
       >
         Registrar Comentario
       </VBtn>
@@ -140,14 +158,12 @@ const formatDateTime = (timestamp: number | null) => {
         Regresar
       </VBtn>
     </div>
-
   </div>
 
   <VRow v-if="puedeMostrarDatos">
-
     <VCol cols="12" md="7" lg="8">
-      <VCard class="mb-6 elevation-2 border">
 
+      <VCard class="mb-6 elevation-2 border">
         <VCardItem class="bg-light-primary pb-4">
           <template #title>
             <div class="d-flex justify-space-between align-center">
@@ -189,14 +205,77 @@ const formatDateTime = (timestamp: number | null) => {
 
           <div class="text-subtitle-1 text-medium-emphasis font-weight-bold mb-2">Descripción de la Alerta:</div>
           <VAlert
-            :type="item.status === 'open' ? 'error' : 'warning'"
+            :type="item.status === 'open' ? 'warning' : 'info'"
             variant="tonal"
             icon="ri-alert-line"
             class="text-body-1"
           >
             {{ item.description }}
           </VAlert>
+        </VCardText>
+      </VCard>
 
+      <VCard class="mb-6 elevation-2 border">
+        <VCardItem class="bg-light-secondary pb-3">
+          <template #title>
+            <span class="text-h6 font-weight-bold">
+              <VIcon icon="ri-broadcast-line" class="mr-2" />
+              Auditoría de Notificaciones
+            </span>
+          </template>
+        </VCardItem>
+        <VDivider />
+
+        <VCardText class="pt-5">
+          <div class="mb-6">
+            <div class="d-flex align-center mb-3">
+              <VIcon icon="ri-arrow-down-circle-fill" color="error" class="mr-2" />
+              <h4 class="text-subtitle-1 font-weight-bold text-error">Alertas de Sitio Caído</h4>
+            </div>
+
+            <VList v-if="notificacionesCaida.length > 0" lines="two" border class="rounded">
+              <VListItem v-for="contacto in notificacionesCaida" :key="contacto.id">
+                <template #prepend>
+                  <VAvatar color="error" variant="tonal" class="mr-3">
+                    <VIcon icon="ri-whatsapp-line" />
+                  </VAvatar>
+                </template>
+                <VListItemTitle class="font-weight-bold">{{ contacto.nombre_completo || 'Usuario Desconocido' }}</VListItemTitle>
+                <VListItemSubtitle class="mt-1">
+                  <div class="d-flex flex-wrap gap-4 text-caption">
+                    <span><strong>Registrado:</strong> {{ contacto.telefono || 'N/A' }}</span>
+                    <span><strong>Notificado a:</strong> <span class="text-primary">{{ contacto.pivot?.number || 'N/A' }}</span></span>
+                  </div>
+                </VListItemSubtitle>
+              </VListItem>
+            </VList>
+            <p v-else class="text-body-2 text-medium-emphasis font-italic px-2">No se enviaron alertas de caída para este incidente.</p>
+          </div>
+
+          <div>
+            <div class="d-flex align-center mb-3">
+              <VIcon icon="ri-arrow-up-circle-fill" color="success" class="mr-2" />
+              <h4 class="text-subtitle-1 font-weight-bold text-success">Alertas de Sitio Recuperado</h4>
+            </div>
+
+            <VList v-if="notificacionesRegreso.length > 0" lines="two" border class="rounded">
+              <VListItem v-for="contacto in notificacionesRegreso" :key="contacto.id">
+                <template #prepend>
+                  <VAvatar color="success" variant="tonal" class="mr-3">
+                    <VIcon icon="ri-whatsapp-line" />
+                  </VAvatar>
+                </template>
+                <VListItemTitle class="font-weight-bold">{{ contacto.nombre_completo || 'Usuario Desconocido' }}</VListItemTitle>
+                <VListItemSubtitle class="mt-1">
+                  <div class="d-flex flex-wrap gap-4 text-caption">
+                    <span><strong>Registrado:</strong> {{ contacto.telefono || 'N/A' }}</span>
+                    <span><strong>Notificado a:</strong> <span class="text-primary">{{ contacto.pivot?.number || 'N/A' }}</span></span>
+                  </div>
+                </VListItemSubtitle>
+              </VListItem>
+            </VList>
+            <p v-else class="text-body-2 text-medium-emphasis font-italic px-2">No se han enviado alertas de recuperación todavía.</p>
+          </div>
         </VCardText>
       </VCard>
     </VCol>
@@ -229,22 +308,18 @@ const formatDateTime = (timestamp: number | null) => {
               fill-dot
             >
               <div class="d-flex flex-column mb-4">
-
                 <div class="d-flex justify-space-between align-center mb-1">
                   <strong class="text-caption font-weight-bold text-primary d-flex align-center">
                     <VIcon icon="ri-user-smile-line" size="small" class="mr-1" />
                     {{ comentario.user?.nombre_completo || 'Usuario Desconocido' }}
                   </strong>
-
                   <span class="text-caption text-medium-emphasis">
-            {{ formatDateTime(comentario.created_at) }}
-          </span>
+                    {{ formatDateTime(comentario.created_at) }}
+                  </span>
                 </div>
-
                 <div class="text-body-2 bg-grey-50 pa-3 rounded border mt-1">
                   {{ comentario.description }}
                 </div>
-
               </div>
             </VTimelineItem>
           </VTimeline>
@@ -256,8 +331,49 @@ const formatDateTime = (timestamp: number | null) => {
         </VCardText>
       </VCard>
     </VCol>
-
   </VRow>
+
+  <VRow v-else>
+    <VCol cols="12" md="7" lg="8">
+      <VCard class="mb-6 elevation-2 border">
+        <VCardItem class="pb-4">
+          <VSkeletonLoader type="heading" />
+        </VCardItem>
+        <VDivider />
+        <VCardText class="pt-6">
+          <VSkeletonLoader type="image" height="80" class="mb-4 rounded" />
+          <VSkeletonLoader type="paragraph" />
+        </VCardText>
+      </VCard>
+
+      <VCard class="mb-6 elevation-2 border">
+        <VCardItem class="pb-3">
+          <VSkeletonLoader type="heading" />
+        </VCardItem>
+        <VDivider />
+        <VCardText class="pt-5">
+          <VSkeletonLoader type="subtitle" class="mb-4" width="40%" />
+          <VSkeletonLoader type="list-item-avatar-two-line@2" class="mb-6" />
+
+          <VSkeletonLoader type="subtitle" class="mb-4" width="40%" />
+          <VSkeletonLoader type="list-item-avatar-two-line" />
+        </VCardText>
+      </VCard>
+    </VCol>
+
+    <VCol cols="12" md="5" lg="4">
+      <VCard class="elevation-2 border h-100">
+        <VCardItem class="pb-3">
+          <VSkeletonLoader type="heading" />
+        </VCardItem>
+        <VDivider />
+        <VCardText class="pt-5">
+          <VSkeletonLoader type="list-item-two-line@4" />
+        </VCardText>
+      </VCard>
+    </VCol>
+  </VRow>
+
   <VDialog
     v-model="isModalVisible"
     max-width="600"
