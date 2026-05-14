@@ -90,10 +90,12 @@ export const useClienteRequest = () => {
       console.error('❌ Error en petición HTTP:', error?.data || error)
       const statusCode = error?.status || error?.response?.status || error?.statusCode
 
+      console.log('Codigo de ERROR: ', statusCode)
       if (statusCode === 401 || statusCode === 419) {
         const { user } = useSanctumAuth()
         user.value = null
-        navigateTo('/login')
+        await navigateTo('/login')
+        console.log('Se redirige al login')
       }
 
       throw error?.data || error
