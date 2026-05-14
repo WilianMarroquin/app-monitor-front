@@ -25,6 +25,7 @@ const headers = [
   {
     title: 'Contactos Asignados',
     key: 'contactos_asignados',
+    sortable: false,
   },
   {
     title: 'Acciones',

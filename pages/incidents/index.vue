@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue' // <-- Añadimos computed
 import { manejaError } from '@/utils/funcionesComunes'
 import type { SendResponseSuccessInterface } from '@/types/generales/types'
 import type { VForm } from 'vuetify/lib/components/VForm'
@@ -14,7 +14,7 @@ const { can } = useAbility()
 const { del, post } = useClienteRequest()
 const { success, preguntaEliminar } = useToast()
 
-// === AISLAMIENTO DE COMPONENTES (3 Refs distintos) ===
+// === AISLAMIENTO DE COMPONENTES ===
 const dataTableOpen = ref<any>(null)
 const dataTableResolved = ref<any>(null)
 const dataTableAll = ref<any>(null)
@@ -27,30 +27,75 @@ const isLoading = ref(false)
 // === ESTADO DE LOS INPUTS ===
 const currentTab = ref('open')
 const filterServiceId = ref(null)
-const filterDateFrom = ref(null)
-const filterDateTo = ref(null)
 
-// === ESTADO DE LA TABLA (Solo variables globales, el status se inyecta en el template) ===
+// 👇 NUEVO: Estado del Rango de Fechas
+const filterDateRange = ref<Date[]>([])
+const menuFechas = ref(false)
+
+// 🧮 NORMALIZACIÓN VISUAL: Lo que el usuario lee en el Input (Ej: 2026-05-01 a 2026-05-15)
+const rangoMostrado = computed(() => {
+  if (!filterDateRange.value || filterDateRange.value.length === 0) return null
+
+  const formatear = (d: Date) => {
+    const yyyy = d.getFullYear()
+    const mm = String(d.getMonth() + 1).padStart(2, '0')
+    const dd = String(d.getDate()).padStart(2, '0')
+    return `${yyyy}-${mm}-${dd}`
+  }
+
+  const start = filterDateRange.value[0]
+  // Tomamos el último elemento (Vuetify a veces guarda todos los días intermedios en el array)
+  const end = filterDateRange.value[filterDateRange.value.length - 1]
+
+  if (start && end && start.getTime() !== end.getTime()) {
+    return `${formatear(start)} a ${formatear(end)}`
+  } else if (start) {
+    return formatear(start)
+  }
+  return null
+})
+
+// === ESTADO DE LA TABLA (Payload al Backend) ===
 const filtrosTabla = ref({
   service_id: null,
-  fecha_inicio: null,
-  fecha_fin: null
+  rangoFechas: null as string | null
 })
 
 // === APLICAR FILTROS Y RECARGAR TABLA ACTIVA ===
 const aplicarFiltros = () => {
-  filtrosTabla.value = {
-    service_id: filterServiceId.value,
-    fecha_inicio: filterDateFrom.value,
-    fecha_fin: filterDateTo.value
+  let rango = null
+
+  // 🧮 DATA AGGREGATION: Armamos el string exacto que pidió tu Laravel
+  if (filterDateRange.value && filterDateRange.value.length > 0) {
+    const formatear = (d: Date) => {
+      const yyyy = d.getFullYear()
+      const mm = String(d.getMonth() + 1).padStart(2, '0')
+      const dd = String(d.getDate()).padStart(2, '0')
+      return `${yyyy}-${mm}-${dd}`
+    }
+
+    const start = filterDateRange.value[0]
+    const end = filterDateRange.value[filterDateRange.value.length - 1]
+
+    if (start && end && start.getTime() !== end.getTime()) {
+      rango = `${formatear(start)}-${formatear(end)}` // Ej: 2026-05-01-2026-05-15
+    } else if (start) {
+      rango = `${formatear(start)}-` // Ej: 2026-05-01- (Si solo eligió un día)
+    }
   }
 
-  // Refrescamos SOLO la tabla de la pestaña actual
+  filtrosTabla.value = {
+    service_id: filterServiceId.value,
+    rangoFechas: rango
+  }
+
+  menuFechas.value = false // Cerramos el calendario al aplicar
+
   setTimeout(() => {
     if (currentTab.value === 'open' && dataTableOpen.value) dataTableOpen.value.getItems()
     if (currentTab.value === 'resolved' && dataTableResolved.value) dataTableResolved.value.getItems()
     if (currentTab.value === 'all' && dataTableAll.value) dataTableAll.value.getItems()
-  }, 50) // Un pequeñísimo delay para que Vue alcance a renderizar la pestaña
+  }, 50)
 }
 
 const comentarioData = ref({
@@ -71,30 +116,20 @@ const cerrarModal = () => {
   refFormComentario.value?.resetValidation()
 }
 
-// Al cambiar de tab, aplicamos los filtros y refrescamos la tabla correspondiente
 watch(currentTab, () => {
   aplicarFiltros()
 })
 
 const guardarComentario = async () => {
   const { valid } = await refFormComentario.value?.validate() || { valid: false }
-
   if (!valid) return
 
   try {
     isLoading.value = true
-
-    const respuesta = await post<SendResponseSuccessInterface>(
-      'api/incidents/registrar/Comentario',
-      comentarioData.value
-    )
-
+    const respuesta = await post<SendResponseSuccessInterface>('api/incidents/registrar/Comentario', comentarioData.value)
     success(respuesta.message || 'Comentario registrado con éxito')
     cerrarModal()
-
-    // Recargar solo la tabla activa
     aplicarFiltros()
-
   } catch (errorCapturado) {
     manejaError(errorCapturado)
   } finally {
@@ -104,8 +139,7 @@ const guardarComentario = async () => {
 
 const limpiarFiltros = () => {
   filterServiceId.value = null
-  filterDateFrom.value = null
-  filterDateTo.value = null
+  filterDateRange.value = [] // Vaciamos el calendario
   aplicarFiltros()
 }
 
@@ -123,12 +157,8 @@ const formatDateTime = (timestamp: number | null) => {
   if (!timestamp) return '---'
   const date = new Date(timestamp * 1000)
   return date.toLocaleString('es-GT', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: true
   })
 }
 </script>
@@ -174,24 +204,33 @@ const formatDateTime = (timestamp: number | null) => {
           />
         </VCol>
 
-        <VCol cols="12" md="3">
-          <VTextField
-            v-model="filterDateFrom"
-            type="date"
-            label="Desde"
-            hide-details
-            clearable
-          />
-        </VCol>
-
-        <VCol cols="12" md="3">
-          <VTextField
-            v-model="filterDateTo"
-            type="date"
-            label="Hasta"
-            hide-details
-            clearable
-          />
+        <VCol cols="12" md="4">
+          <VMenu
+            v-model="menuFechas"
+            :close-on-content-click="false"
+            location="bottom"
+          >
+            <template #activator="{ props }">
+              <VTextField
+                v-model="rangoMostrado"
+                v-bind="props"
+                label="Rango de Fechas"
+                prepend-inner-icon="ri-calendar-line"
+                readonly
+                hide-details
+                clearable
+                @click:clear="filterDateRange = []"
+              />
+            </template>
+            <VCard>
+              <VDatePicker
+                v-model="filterDateRange"
+                multiple="range"
+                color="primary"
+                hide-header
+              />
+            </VCard>
+          </VMenu>
         </VCol>
 
         <VCol cols="12" md="2">
@@ -200,7 +239,7 @@ const formatDateTime = (timestamp: number | null) => {
           </VBtn>
         </VCol>
 
-        <VCol cols="12" md="2" v-if="filterServiceId || filterDateFrom || filterDateTo">
+        <VCol cols="12" md="2" v-if="filterServiceId || filterDateRange.length > 0">
           <VBtn variant="tonal" color="error" block @click="limpiarFiltros">
             <VIcon start icon="ri-filter-off-line" /> Limpiar
           </VBtn>
@@ -210,7 +249,6 @@ const formatDateTime = (timestamp: number | null) => {
   </VCard>
 
   <VWindow v-model="currentTab">
-
     <VWindowItem value="open">
       <DataTableComponent
         ref="dataTableOpen"
@@ -315,7 +353,6 @@ const formatDateTime = (timestamp: number | null) => {
         </template>
       </DataTableComponent>
     </VWindowItem>
-
   </VWindow>
 
   <VDialog v-model="isModalVisible" max-width="600" persistent>

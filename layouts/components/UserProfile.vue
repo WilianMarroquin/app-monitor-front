@@ -68,6 +68,7 @@ const userProfileList = [
               </VAvatar>
 
               <div>
+
                 <div class="text-body-2 font-weight-medium text-high-emphasis">
                   {{ usuarioAutenticado?.primer_nombre }} {{ usuarioAutenticado?.primer_apellido }}
                 </div>

@@ -25,6 +25,7 @@ const headers = [
   {
     title: 'Puerto',
     key: 'port',
+    sortable: false,
   },
   {
     title: 'Type',
@@ -37,6 +38,7 @@ const headers = [
   {
     title: 'Entorno',
     key: 'entorno',
+    sortable: false
   },
   {
     title: 'Acciones',

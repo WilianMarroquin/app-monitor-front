@@ -20,6 +20,7 @@ const headers = [
   {
     title: 'Nombre',
     key: 'nombre_completo',
+    sortable: false
   },
   {
     title: 'Usuario',

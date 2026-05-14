@@ -24,6 +24,7 @@ const headers = [
   {
     title: 'Permisos',
     key: 'permissions',
+    sortable: false,
   },
   {
     title: 'Acciones',
