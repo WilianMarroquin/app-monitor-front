@@ -24,17 +24,17 @@ const userProfileList = [
   },
 ]
 
-// const cerrarSecion = async () => {
-//   try {
-//     const res = await post('api/logout', {})
-//     success(res?.message || 'Sesión cerrada exitosamente')
-//     user.value = null
-//     navigateTo('/login')
-//   }
-//   catch (e) {
-//     manejaError(e)
-//   }
-// }
+const cerrarSecion = async () => {
+  try {
+    const res = await post('api/logout', {})
+    success(res?.message || 'Sesión cerrada exitosamente')
+    user.value = null
+    window.location.href = '/login'
+  }
+  catch (e) {
+    manejaError(e)
+  }
+}
 </script>
 
 <template>
@@ -121,7 +121,7 @@ const userProfileList = [
                 color="error"
                 size="small"
                 append-icon="ri-logout-box-r-line"
-                @click="logout"
+                @click="cerrarSecion"
               >
                 Logout
               </VBtn>
