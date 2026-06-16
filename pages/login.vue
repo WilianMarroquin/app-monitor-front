@@ -111,6 +111,7 @@ onMounted(() => {
       <VCard
         flat
         :max-width="500"
+        :min-width="500"
         class="mt-12 mt-sm-0 pa-5 pa-lg-7"
       >
         <VCardText>
@@ -144,7 +145,7 @@ onMounted(() => {
                 <VTextField
                   v-model="form.usuario"
                   autofocus
-                  label="Email"
+                  label="Usuario"
                   type="email"
                   placeholder="johndoe@email.com"
                   :error="!!errorMessage"

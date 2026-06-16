@@ -14,30 +14,30 @@ const authProviders = [
     color: '#1da1f2',
     colorInDark: '#1da1f2',
   },
-  {
-    icon: 'bxl-github',
-    color: '#272727',
-    colorInDark: '#fff',
-  },
-  {
-    icon: 'bxl-google',
-    color: '#db4437',
-    colorInDark: '#db4437',
-  },
+  // {
+  //   icon: 'bxl-github',
+  //   color: '#272727',
+  //   colorInDark: '#fff',
+  // },
+  // {
+  //   icon: 'bxl-google',
+  //   color: '#db4437',
+  //   colorInDark: '#db4437',
+  // },
 ]
 </script>
 
 <template>
   <div class="d-flex justify-center flex-wrap gap-2">
-    <VBtn
-      v-for="link in authProviders"
-      :key="link.icon"
-      icon
-      variant="text"
-      size="small"
-      :color="global.name.value === 'dark' ? link.colorInDark : link.color"
-    >
-      <VIcon :icon="link.icon" />
-    </VBtn>
+<!--    <VBtn-->
+<!--      v-for="link in authProviders"-->
+<!--      :key="link.icon"-->
+<!--      icon-->
+<!--      variant="text"-->
+<!--      size="small"-->
+<!--      :color="global.name.value === 'dark' ? link.colorInDark : link.color"-->
+<!--    >-->
+<!--      <VIcon :icon="link.icon" />-->
+<!--    </VBtn>-->
   </div>
 </template>
