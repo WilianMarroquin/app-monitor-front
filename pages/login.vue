@@ -5,6 +5,8 @@ import { manejaError, validaSiExisteDato } from '@/utils/funcionesComunes'
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
+import FondoLoginOscuro from '@images/pages/Fondo Login.png'
+import FondoLoginClaro from '@images/pages/Fondo Login Claro.png'
 import authV2LoginMaskDark from '@images/pages/auth-v2-login-mask-dark.png'
 import authV2LoginMaskLight from '@images/pages/auth-v2-login-mask-light.png'
 import { ref, onMounted } from 'vue'
@@ -51,16 +53,16 @@ const onSubmit = async (): Promise<void> => {
 
 await configuracionStore.cargarGenerales()
 
-const fondoLoginTemaClaro = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.fondo_login_tema_claro) ? configuracionStore.configuracionesGenerales.fondo_login_tema_claro : authV2LoginIllustrationBorderedLight
-const fondoLoginTemaOscuro = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.fondo_login_tema_oscuro) ? configuracionStore.configuracionesGenerales.fondo_login_tema_oscuro : authV2LoginIllustrationBorderedDark
+// const fondoLoginTemaClaro = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.fondo_login_tema_claro) ? configuracionStore.configuracionesGenerales.fondo_login_tema_claro : authV2LoginIllustrationBorderedLight
+// const fondoLoginTemaOscuro = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.fondo_login_tema_oscuro) ? configuracionStore.configuracionesGenerales.fondo_login_tema_oscuro : authV2LoginIllustrationBorderedDark
 const logo = validaSiExisteDato(configuracionStore?.configuracionesGenerales?.logo) ? configuracionStore.configuracionesGenerales.logo : '/img/sysbase/logo.png'
 
 const isPasswordVisible = ref(false)
 const authV2LoginMask = useGenerateImageVariant(authV2LoginMaskLight, authV2LoginMaskDark)
-const authV2LoginIllustration = useGenerateImageVariant(fondoLoginTemaClaro, fondoLoginTemaOscuro, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
+const authV2LoginIllustration = useGenerateImageVariant(FondoLoginClaro, FondoLoginOscuro, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 
 onMounted(() => {
-  console.log(authV2LoginIllustration.value)
+  console.log(logo)
 })
 </script>
 
@@ -68,7 +70,7 @@ onMounted(() => {
   <a href="javascript:void(0)">
     <div class="app-logo auth-logo">
       <img
-        :src="logo"
+        src="/img/sysbase/logo.png"
         alt="Logo"
         height="50"
         class="mx-auto"
