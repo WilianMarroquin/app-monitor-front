@@ -5,8 +5,8 @@ import type { UsuarioInterface } from '@/types/admin/modulo-usuarios/types'
 
 const usuarioAutenticado = useSanctumUser<UsuarioInterface>()
 const { user, logout } = useSanctumAuth()
-const { post } = useClienteRequest()
-const { success } = useToast()
+// const { post } = useClienteRequest()
+// const { success } = useToast()
 
 const userProfileList = [
   { type: 'divider' },
@@ -26,10 +26,11 @@ const userProfileList = [
 
 const cerrarSecion = async () => {
   try {
-    const res = await post('api/logout', {})
-    success(res?.message || 'Sesión cerrada exitosamente')
-    user.value = null
-    window.location.href = '/login'
+    await logout()
+    // const res = await post('api/logout', {})
+    // success(res?.message || 'Sesión cerrada exitosamente')
+    // user.value = null
+    // window.location.href = '/login'
   }
   catch (e) {
     manejaError(e)

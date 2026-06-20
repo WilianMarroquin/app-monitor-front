@@ -2,6 +2,9 @@ export const useClienteRequest = () => {
   const config = useRuntimeConfig()
   const event = useRequestEvent()
 
+  // 👉 Obtenemos la referencia de la cookie del token de forma síncrona aquí
+  const sanctumToken = useCookie('sanctum.token.cookie')
+
   const baseURL = config.public.apiBase || 'http://localhost:8000'
 
   const contieneArchivo = (data: any): boolean => {
@@ -63,6 +66,11 @@ export const useClienteRequest = () => {
       },
     }
 
+    // 👉 Inyectamos el Bearer Token desde la cookie si existe
+    if (sanctumToken.value) {
+      opts.headers['Authorization'] = `Bearer ${sanctumToken.value}`
+    }
+
     if (body) {
       opts.body = isFormData
         ? body instanceof FormData
@@ -88,17 +96,27 @@ export const useClienteRequest = () => {
     }
     catch (error: any) {
       console.error('❌ Error en petición HTTP:', error?.data || error)
-      const statusCode = error?.status || error?.response?.status || error?.statusCode
-
-      console.log('Codigo de ERROR: ', statusCode)
-      if (statusCode === 401 || statusCode === 419) {
-        const { user } = useSanctumAuth()
-        user.value = null
-        await navigateTo('/login')
-        console.log('Se redirige al login')
-      }
-
-      throw error?.data || error
+      // const statusCode = error?.status || error?.response?.status || error?.statusCode
+      //
+      // console.log('Codigo de ERROR: ', statusCode)
+      // if (statusCode === 401 || statusCode === 419) {
+      //   const { user } = useSanctumAuth()
+      //   user.value = null   // const statusCode = error?.status || error?.response?.status || error?.statusCode
+      //       //¡
+      //       // console.log('Codigo de ERROR: ', statusCode)
+      //       // if (statusCode === 401 || statusCode === 419) {
+      //       //   const { user } = useSanctumAuth()
+      //       //   user.value = null
+      //       //   await navigateTo('/login')
+      //       //   console.log('Se redirige al login')
+      //       // }
+      //       //
+      //       // throw error?.data || error
+      //   await navigateTo('/login')
+      //   console.log('Se redirige al login')
+      // }
+      //
+      // throw error?.data || error
     }
   }
 

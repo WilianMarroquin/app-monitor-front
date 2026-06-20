@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   },
 
   sanctum: {
-    mode: 'cookie',
+    mode: 'token',
     baseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
     userStateKey: 'sanctum.user.identity',
     redirectIfUnauthenticated: true,
